@@ -1,29 +1,66 @@
 import 'package:flutter/material.dart';
-import 'theme/app_theme.dart';
-import 'data/api.dart';
-import 'features/auth/login_page.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+import 'core/colors.dart';
+import 'pages/login_page.dart';
+import 'widgets/app_shell.dart';
 
-  final api = Api();
-  // dùng service mới
-  api.mqtt.connect(onStatus: (s) => debugPrint("MQTT: $s"));
+void main() => runApp(const CinemaApp());
 
-  runApp(PheniCarApp(api: api));
-}
-
-class PheniCarApp extends StatelessWidget {
-  final Api api;
-  const PheniCarApp({super.key, required this.api});
+class CinemaApp extends StatelessWidget {
+  const CinemaApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final overlay = MaterialStateProperty.resolveWith<Color?>((states) {
+      if (states.contains(MaterialState.hovered) ||
+          states.contains(MaterialState.pressed) ||
+          states.contains(MaterialState.focused)) {
+        return kOrange.withOpacity(.12);
+      }
+      return null;
+    });
+
     return MaterialApp(
-      title: 'PheniCar',
-      theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
-      home: LoginPage(api: api),
+      title: 'Phenikaa Cinemas',
+      theme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.light(
+          primary: kOrange,
+          secondary: kOrange,
+          background: Colors.white,
+          surface: const Color(0xFFF6F7F9),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          elevation: .6,
+          surfaceTintColor: Colors.transparent,
+          foregroundColor: Colors.black,
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: ButtonStyle(overlayColor: overlay),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(overlayColor: overlay),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: ButtonStyle(overlayColor: overlay),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(overlayColor: overlay),
+        ),
+        chipTheme: const ChipThemeData(
+          backgroundColor: Color(0xFFF1F3F6),
+          labelStyle: TextStyle(color: Colors.black87),
+        ),
+      ),
+      initialRoute: '/login',
+      routes: {
+        '/login': (_) => const LoginPage(),
+        '/shell': (_) => const AppShell(), // ← Shell có NavigationBar
+      },
     );
   }
 }
