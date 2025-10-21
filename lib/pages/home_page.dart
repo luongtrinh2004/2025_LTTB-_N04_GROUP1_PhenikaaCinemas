@@ -280,17 +280,13 @@ class _AccountButton extends StatelessWidget {
 // ────────────────────────────────────────────────────────────
 //
 class _ChipCategory extends StatelessWidget {
-  final String? icon;
   final String label;
-  const _ChipCategory({this.icon, required this.label});
+  const _ChipCategory({required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Chip(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      avatar: icon != null
-          ? Text(icon!, style: const TextStyle(fontSize: 16))
-          : null,
       label: Text(label),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       side: const BorderSide(color: Colors.transparent),
@@ -306,11 +302,10 @@ class _SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-        const Spacer(),
-        if (action != null) action!,
+        Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+        action ?? const SizedBox.shrink(),
       ],
     );
   }
