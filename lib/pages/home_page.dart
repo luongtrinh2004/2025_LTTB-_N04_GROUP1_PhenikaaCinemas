@@ -21,41 +21,47 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   static const _orange = Color(0xFFFF7A00);
 
-  final List<Map<String, Object>> movies = const [
+  final List<Map<String, dynamic>> movies = const [
     {
       'title': 'MAI',
       'poster': 'img/mai.webp',
       'rating': 8.7,
       'duration': '120 phút',
+      'genres': ['Tâm lý', 'Lãng mạn'],
     },
     {
       'title': 'Tay Anh Giữ Một Vì Sao',
       'poster': 'img/tay_anh_giu_mot_vi_sao.jpg',
       'rating': 8.3,
       'duration': '115 phút',
+      'genres': ['Lãng mạn'],
     },
     {
       'title': 'Tee Yod',
       'poster': 'img/tee_yod.jpeg',
       'rating': 7.5,
       'duration': '110 phút',
+      'genres': ['Kinh dị'],
     },
     {
       'title': 'Tử Chiến Trên Không',
       'poster': 'img/tu_chien_tren_khong.jpg',
       'rating': 7.9,
       'duration': '118 phút',
+      'genres': ['Hành động'],
     },
     {
       'title': 'Avatar3',
       'poster': 'img/avatar3.jpg',
       'rating': 7.1,
       'duration': '157 phút',
+      'genres': ['Hành động', 'Giả tưởng'],
     }
   ];
 
   late final PageController _page;
   Timer? _auto;
+  String? _selectedCategory; // null = Tất cả
 
   @override
   void initState() {
@@ -86,7 +92,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void _openDetail(Map<String, Object> movie) {
+  void _openDetail(Map<String, dynamic> movie) {
     final title =
         (movie['title'] as String).trim().toLowerCase();
     Widget? page;
@@ -101,7 +107,7 @@ class _HomePageState extends State<HomePage> {
     } else if (title == 'tử chiến trên không' ||
         title == 'tu chien tren khong') {
       page = const TuChienTrenKhongDetailPage();
-    } else if (title == 'Avatar 3' || title == 'avatar3') {
+    } else if (title == 'avatar 3' || title == 'avatar3') {
       page = const Avatar3DetailPage();
     }
 
@@ -128,6 +134,12 @@ class _HomePageState extends State<HomePage> {
       'Giả tưởng',
       'Hoạt hình'
     ];
+    final filteredMovies = _selectedCategory == null
+        ? movies
+        : movies.where((m) {
+            final gs = (m['genres'] as List).cast<String>();
+            return gs.contains(_selectedCategory);
+          }).toList();
 
     return Scaffold(
       appBar: const AppHeader(right: _AccountButton()),
@@ -160,10 +172,25 @@ class _HomePageState extends State<HomePage> {
                 itemCount: categories.length,
                 separatorBuilder: (_, __) =>
                     const SizedBox(width: 10),
-                itemBuilder: (_, i) =>
-                    _ChipCategory(label: categories[i]),
+                itemBuilder: (_, i) {
+                  final label = categories[i];
+                  final selected =
+                      _selectedCategory == label;
+                  return ChoiceChip(
+                    label: Text(label),
+                    selected: selected,
+                    onSelected: (_) {
+                      setState(() {
+                        _selectedCategory = selected
+                            ? null
+                            : label; // bấm lần nữa để bỏ lọc
+                      });
+                    },
+                  );
+                },
               ),
             ),
+
             const SizedBox(height: 22),
 
             // --- Now Playing ---
@@ -183,8 +210,13 @@ class _HomePageState extends State<HomePage> {
                 controller: _page,
                 padEnds: false,
                 itemBuilder: (context, index) {
-                  final movie =
-                      movies[index % movies.length];
+                  if (filteredMovies.isEmpty) {
+                    return const Center(
+                        child: Text(
+                            'Không có phim thuộc thể loại này'));
+                  }
+                  final movie = filteredMovies[
+                      index % filteredMovies.length];
                   return AnimatedBuilder(
                     animation: _page,
                     builder: (context, child) {
@@ -215,14 +247,17 @@ class _HomePageState extends State<HomePage> {
               child: AnimatedBuilder(
                 animation: _page,
                 builder: (_, __) {
+                  final len = filteredMovies.length;
+                  if (len == 0)
+                    return const SizedBox
+                        .shrink(); // thêm: tránh chia/mod 0
                   final cur = ((_page.page ??
                               _page.initialPage.toDouble())
                           .round()) %
-                      movies.length;
+                      len;
                   return Row(
                     mainAxisSize: MainAxisSize.min,
-                    children:
-                        List.generate(movies.length, (i) {
+                    children: List.generate(len, (i) {
                       final active = cur == i;
                       return Container(
                         margin: const EdgeInsets.symmetric(
@@ -257,18 +292,26 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 12),
             SizedBox(
               height: 160,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: movies.length,
-                separatorBuilder: (_, __) =>
-                    const SizedBox(width: 14),
-                itemBuilder: (_, i) => _SmallMovieTile(
-                  movie: movies[(i + 1) % movies.length],
-                  onTap: () => _openDetail(
-                      movies[(i + 1) % movies.length]),
-                ),
-              ),
+              child: filteredMovies.isEmpty
+                  ? const Center(
+                      child: Text('Không có phim'))
+                  : ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: filteredMovies.length,
+                      separatorBuilder: (_, __) =>
+                          const SizedBox(width: 14),
+                      itemBuilder: (_, i) =>
+                          _SmallMovieTile(
+                        movie: filteredMovies[(i + 1) %
+                            filteredMovies.length],
+                        onTap: () => _openDetail(
+                          filteredMovies[(i + 1) %
+                              filteredMovies.length],
+                        ),
+                      ),
+                    ),
             ),
+
             const SizedBox(height: 16),
           ],
         ),
@@ -331,21 +374,6 @@ class _AccountButton extends StatelessWidget {
 //   SUB WIDGETS
 // ────────────────────────────────────────────────────────────
 //
-class _ChipCategory extends StatelessWidget {
-  final String label;
-  const _ChipCategory({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Chip(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      label: Text(label),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12)),
-      side: const BorderSide(color: Colors.transparent),
-    );
-  }
-}
 
 class _SectionHeader extends StatelessWidget {
   final String title;
@@ -367,7 +395,7 @@ class _SectionHeader extends StatelessWidget {
 }
 
 class _MoviePosterCard extends StatelessWidget {
-  final Map<String, Object> movie;
+  final Map<String, dynamic> movie;
   final VoidCallback? onTap;
 
   const _MoviePosterCard({
@@ -428,7 +456,7 @@ class _MoviePosterCard extends StatelessWidget {
 }
 
 class _SmallMovieTile extends StatelessWidget {
-  final Map<String, Object> movie;
+  final Map<String, dynamic> movie;
   final VoidCallback? onTap;
 
   const _SmallMovieTile({

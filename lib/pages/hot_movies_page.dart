@@ -215,9 +215,7 @@ class _MovieCard extends StatelessWidget {
                         const Icon(Icons.access_time,
                             size: 16),
                         const SizedBox(width: 4),
-                        Text((movie['duration']
-                                as String?) ??
-                            ''),
+                        Text(movie.duration),
                       ],
                     ),
                     const SizedBox(height: 6),
