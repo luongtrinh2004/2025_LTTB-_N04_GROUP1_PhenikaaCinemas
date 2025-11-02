@@ -9,6 +9,8 @@ import 'movies_detail_page/tay_anh_giu_mot_vi_sao_detail_page.dart';
 import 'movies_detail_page/tee_yod_detail_page.dart';
 import 'movies_detail_page/tu_chien_tren_khong_detail_page.dart';
 
+import 'movies_detail_page/avatar3_detail_page.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -20,18 +22,36 @@ class _HomePageState extends State<HomePage> {
   static const _orange = Color(0xFFFF7A00);
 
   final List<Map<String, Object>> movies = const [
-    {'title': 'MAI', 'poster': 'img/mai.webp', 'rating': 8.7},
+    {
+      'title': 'MAI',
+      'poster': 'img/mai.webp',
+      'rating': 8.7,
+      'duration': '120 phút',
+    },
     {
       'title': 'Tay Anh Giữ Một Vì Sao',
       'poster': 'img/tay_anh_giu_mot_vi_sao.jpg',
-      'rating': 8.3
+      'rating': 8.3,
+      'duration': '115 phút',
     },
-    {'title': 'Tee Yod', 'poster': 'img/tee_yod.jpeg', 'rating': 7.5},
+    {
+      'title': 'Tee Yod',
+      'poster': 'img/tee_yod.jpeg',
+      'rating': 7.5,
+      'duration': '110 phút',
+    },
     {
       'title': 'Tử Chiến Trên Không',
       'poster': 'img/tu_chien_tren_khong.jpg',
-      'rating': 7.9
+      'rating': 7.9,
+      'duration': '118 phút',
     },
+    {
+      'title': 'Avatar3',
+      'poster': 'img/avatar3.jpg',
+      'rating': 7.1,
+      'duration': '157 phút',
+    }
   ];
 
   late final PageController _page;
@@ -47,7 +67,10 @@ class _HomePageState extends State<HomePage> {
 
     _auto = Timer.periodic(const Duration(seconds: 5), (_) {
       if (!mounted) return;
-      final next = (_page.page ?? _page.initialPage.toDouble()).round() + 1;
+      final next =
+          (_page.page ?? _page.initialPage.toDouble())
+                  .round() +
+              1;
       _page.animateToPage(
         next,
         duration: const Duration(milliseconds: 600),
@@ -64,7 +87,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _openDetail(Map<String, Object> movie) {
-    final title = (movie['title'] as String).trim().toLowerCase();
+    final title =
+        (movie['title'] as String).trim().toLowerCase();
     Widget? page;
 
     if (title == 'mai') {
@@ -77,13 +101,18 @@ class _HomePageState extends State<HomePage> {
     } else if (title == 'tử chiến trên không' ||
         title == 'tu chien tren khong') {
       page = const TuChienTrenKhongDetailPage();
+    } else if (title == 'Avatar 3' || title == 'avatar3') {
+      page = const Avatar3DetailPage();
     }
 
     if (page != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => page!));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => page!));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Chưa có trang chi tiết cho phim này.')),
+        const SnackBar(
+            content: Text(
+                'Chưa có trang chi tiết cho phim này.')),
       );
     }
   }
@@ -97,6 +126,7 @@ class _HomePageState extends State<HomePage> {
       'Tâm lý',
       'Hành động',
       'Giả tưởng',
+      'Hoạt hình'
     ];
 
     return Scaffold(
@@ -120,15 +150,18 @@ class _HomePageState extends State<HomePage> {
 
             // --- Categories ---
             const Text('Thể loại',
-                style: TextStyle(fontWeight: FontWeight.w700)),
+                style:
+                    TextStyle(fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
             SizedBox(
               height: 44,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 10),
-                itemBuilder: (_, i) => _ChipCategory(label: categories[i]),
+                separatorBuilder: (_, __) =>
+                    const SizedBox(width: 10),
+                itemBuilder: (_, i) =>
+                    _ChipCategory(label: categories[i]),
               ),
             ),
             const SizedBox(height: 22),
@@ -150,18 +183,22 @@ class _HomePageState extends State<HomePage> {
                 controller: _page,
                 padEnds: false,
                 itemBuilder: (context, index) {
-                  final movie = movies[index % movies.length];
+                  final movie =
+                      movies[index % movies.length];
                   return AnimatedBuilder(
                     animation: _page,
                     builder: (context, child) {
                       double currentPage = 0;
                       try {
-                        currentPage =
-                            _page.page ?? _page.initialPage.toDouble();
+                        currentPage = _page.page ??
+                            _page.initialPage.toDouble();
                       } catch (_) {}
-                      final diff = (index - currentPage).abs();
-                      final scale = 1 - (diff * 0.12).clamp(0.0, 0.12);
-                      return Transform.scale(scale: scale, child: child);
+                      final diff =
+                          (index - currentPage).abs();
+                      final scale = 1 -
+                          (diff * 0.12).clamp(0.0, 0.12);
+                      return Transform.scale(
+                          scale: scale, child: child);
                     },
                     child: _MoviePosterCard(
                       movie: movie,
@@ -178,21 +215,27 @@ class _HomePageState extends State<HomePage> {
               child: AnimatedBuilder(
                 animation: _page,
                 builder: (_, __) {
-                  final cur =
-                      ((_page.page ?? _page.initialPage.toDouble()).round()) %
-                          movies.length;
+                  final cur = ((_page.page ??
+                              _page.initialPage.toDouble())
+                          .round()) %
+                      movies.length;
                   return Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: List.generate(movies.length, (i) {
+                    children:
+                        List.generate(movies.length, (i) {
                       final active = cur == i;
                       return Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 4),
                         width: active ? 10 : 6,
                         height: 6,
                         decoration: BoxDecoration(
-                          color:
-                              active ? _orange : Colors.black.withOpacity(.2),
-                          borderRadius: BorderRadius.circular(6),
+                          color: active
+                              ? _orange
+                              : Colors.black
+                                  .withOpacity(.2),
+                          borderRadius:
+                              BorderRadius.circular(6),
                         ),
                       );
                     }),
@@ -217,10 +260,12 @@ class _HomePageState extends State<HomePage> {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: movies.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 14),
+                separatorBuilder: (_, __) =>
+                    const SizedBox(width: 14),
                 itemBuilder: (_, i) => _SmallMovieTile(
                   movie: movies[(i + 1) % movies.length],
-                  onTap: () => _openDetail(movies[(i + 1) % movies.length]),
+                  onTap: () => _openDetail(
+                      movies[(i + 1) % movies.length]),
                 ),
               ),
             ),
@@ -245,27 +290,34 @@ class _AccountButton extends StatelessWidget {
     return PopupMenuButton<String>(
       onSelected: (v) {
         if (v == 'logout') {
-          Navigator.of(context).pushNamedAndRemoveUntil('/login', (r) => false);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              '/login', (r) => false);
         } else if (v == 'profile') {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Đi đến Hồ sơ')),
           );
         } else if (v == 'tickets') {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Đi đến Vé của tôi')),
+            const SnackBar(
+                content: Text('Đi đến Vé của tôi')),
           );
         }
       },
       itemBuilder: (context) => const [
-        PopupMenuItem(value: 'profile', child: Text('Hồ sơ')),
-        PopupMenuItem(value: 'tickets', child: Text('Vé của tôi')),
-        PopupMenuItem(value: 'logout', child: Text('Đăng xuất')),
+        PopupMenuItem(
+            value: 'profile', child: Text('Hồ sơ')),
+        PopupMenuItem(
+            value: 'tickets', child: Text('Vé của tôi')),
+        PopupMenuItem(
+            value: 'logout', child: Text('Đăng xuất')),
       ],
       offset: const Offset(0, kToolbarHeight),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: const [
-          CircleAvatar(radius: 18, child: Icon(Icons.person, size: 20)),
+          CircleAvatar(
+              radius: 18,
+              child: Icon(Icons.person, size: 20)),
           SizedBox(width: 4),
           Icon(Icons.keyboard_arrow_down),
         ],
@@ -288,7 +340,8 @@ class _ChipCategory extends StatelessWidget {
     return Chip(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       label: Text(label),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12)),
       side: const BorderSide(color: Colors.transparent),
     );
   }
@@ -304,7 +357,9 @@ class _SectionHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+        Text(title,
+            style: const TextStyle(
+                fontWeight: FontWeight.w700)),
         action ?? const SizedBox.shrink(),
       ],
     );
@@ -333,11 +388,13 @@ class _MoviePosterCard extends StatelessWidget {
             // Ảnh poster có thể bấm
             Expanded(
               child: ClipRRect(
-                borderRadius: const BorderRadius.all(radius),
+                borderRadius:
+                    const BorderRadius.all(radius),
                 child: Material(
                   color: Colors.transparent,
                   child: Ink.image(
-                    image: AssetImage(movie['poster'] as String),
+                    image: AssetImage(
+                        movie['poster'] as String),
                     fit: BoxFit.cover,
                     child: InkWell(onTap: onTap),
                     // fallback nếu lỗi asset
@@ -351,12 +408,14 @@ class _MoviePosterCard extends StatelessWidget {
               movie['title'] as String,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontWeight: FontWeight.w700),
+              style: const TextStyle(
+                  fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 6),
             Row(
               children: [
-                const Icon(Icons.star_rounded, color: kOrange, size: 18),
+                const Icon(Icons.star_rounded,
+                    color: kOrange, size: 18),
                 const SizedBox(width: 4),
                 Text('${movie['rating']}'),
               ],
@@ -397,7 +456,8 @@ class _SmallMovieTile extends StatelessWidget {
                   width: 100,
                   color: const Color(0xFFF1F3F6),
                   alignment: Alignment.center,
-                  child: const Icon(Icons.broken_image_outlined),
+                  child: const Icon(
+                      Icons.broken_image_outlined),
                 ),
               ),
             ),
@@ -408,20 +468,24 @@ class _SmallMovieTile extends StatelessWidget {
               onTap: onTap,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
                   Text(
                     movie['title'] as String,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 8),
                   Row(
-                    children: const [
-                      Icon(Icons.access_time, size: 16),
-                      SizedBox(width: 6),
-                      Text('120 phút'),
+                    children: [
+                      const Icon(Icons.access_time,
+                          size: 16),
+                      const SizedBox(width: 6),
+                      Text((movie['duration'] as String?) ??
+                          ''),
                     ],
                   ),
                   const SizedBox(height: 8),

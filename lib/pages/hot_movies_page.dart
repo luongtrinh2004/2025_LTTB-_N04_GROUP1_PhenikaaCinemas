@@ -7,6 +7,7 @@ import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/mai_detail_pa
 import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/tee_yod_detail_page.dart';
 import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/tu_chien_tren_khong_detail_page.dart';
 import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/tay_anh_giu_mot_vi_sao_detail_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/avatar3_detail_page.dart';
 
 class HotMoviesPage extends StatelessWidget {
   const HotMoviesPage({super.key});
@@ -21,15 +22,19 @@ class HotMoviesPage extends StatelessWidget {
       ),
       body: ListView.separated(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-        itemCount: _movies.length + 1, // +1 để chèn tiêu đề "Phim hot"
-        separatorBuilder: (_, __) => const SizedBox(height: 14),
+        itemCount: _movies.length +
+            1, // +1 để chèn tiêu đề "Phim hot"
+        separatorBuilder: (_, __) =>
+            const SizedBox(height: 14),
         itemBuilder: (context, i) {
           if (i == 0) {
             return const Padding(
               padding: EdgeInsets.only(bottom: 4, top: 4),
               child: Text(
                 'Phim hot',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800),
               ),
             );
           }
@@ -58,10 +63,14 @@ class HotMoviesPage extends StatelessWidget {
       case 'star_hand':
         page = const TayAnhGiuMotViSaoDetailPage();
         break;
+      case 'avatar3':
+        page = const Avatar3DetailPage();
+        break;
       default:
         page = const MaiDetailPage();
     }
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => page));
   }
 }
 
@@ -121,12 +130,20 @@ const _movies = <_Movie>[
       tagLine: 'Tình cảm',
       rating: 7.8,
       duration: '115 phút'),
+  _Movie(
+      id: 'avatar3',
+      title: 'AVATAR3',
+      poster: 'img/avatar3.jpg',
+      tagLine: 'Hành động, Giả tưởng',
+      rating: 7.1,
+      duration: '157 phút'),
 ];
 
 class _MovieCard extends StatelessWidget {
   final _Movie movie;
   final VoidCallback onTap;
-  const _MovieCard({required this.movie, required this.onTap});
+  const _MovieCard(
+      {required this.movie, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -164,22 +181,26 @@ class _MovieCard extends StatelessWidget {
                   height: 140,
                   color: const Color(0xFFF1F3F6),
                   alignment: Alignment.center,
-                  child: const Icon(Icons.broken_image_outlined),
+                  child: const Icon(
+                      Icons.broken_image_outlined),
                 ),
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 12, 12, 12),
+                padding: const EdgeInsets.fromLTRB(
+                    0, 12, 12, 12),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
                   children: [
                     Text(movie.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w800)),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800)),
                     const SizedBox(height: 6),
                     Row(
                       children: [
@@ -187,17 +208,22 @@ class _MovieCard extends StatelessWidget {
                             color: kOrange, size: 20),
                         const SizedBox(width: 4),
                         Text('${movie.rating}',
-                            style:
-                                const TextStyle(fontWeight: FontWeight.w600)),
+                            style: const TextStyle(
+                                fontWeight:
+                                    FontWeight.w600)),
                         const SizedBox(width: 10),
-                        const Icon(Icons.access_time, size: 16),
+                        const Icon(Icons.access_time,
+                            size: 16),
                         const SizedBox(width: 4),
-                        Text(movie.duration),
+                        Text((movie['duration']
+                                as String?) ??
+                            ''),
                       ],
                     ),
                     const SizedBox(height: 6),
                     Text(movie.tagLine,
-                        style: const TextStyle(color: Colors.black54)),
+                        style: const TextStyle(
+                            color: Colors.black54)),
                     const Spacer(),
                     Row(
                       children: [
@@ -205,26 +231,36 @@ class _MovieCard extends StatelessWidget {
                           style: FilledButton.styleFrom(
                             backgroundColor: kOrange,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 10),
+                            padding:
+                                const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 10),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius:
+                                  BorderRadius.circular(10),
                             ),
                           ),
                           onPressed: onTap,
                           child: const Text('Xem chi tiết',
-                              style: TextStyle(fontWeight: FontWeight.w700)),
+                              style: TextStyle(
+                                  fontWeight:
+                                      FontWeight.w700)),
                         ),
                         const SizedBox(width: 10),
                         OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: kOrange),
+                            side: const BorderSide(
+                                color: kOrange),
                             foregroundColor: kOrange,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 10),
+                            padding:
+                                const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 10),
                           ),
                           onPressed: onTap,
-                          icon: const Icon(Icons.airplane_ticket_outlined,
+                          icon: const Icon(
+                              Icons
+                                  .airplane_ticket_outlined,
                               size: 18),
                           label: const Text('Đặt vé'),
                         ),

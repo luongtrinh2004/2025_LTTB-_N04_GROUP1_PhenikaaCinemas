@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
-import 'package:flutter_cinema_booking_ui/pages/booking/booking_page.dart';
 
 class MaiDetailPage extends StatelessWidget {
   const MaiDetailPage({super.key});
@@ -36,7 +35,8 @@ class MaiDetailPage extends StatelessWidget {
                     height: 195,
                     color: const Color(0xFFF1F3F6),
                     alignment: Alignment.center,
-                    child: const Icon(Icons.broken_image_outlined),
+                    child: const Icon(
+                        Icons.broken_image_outlined),
                   ),
                 ),
               ),
@@ -84,7 +84,8 @@ class MaiDetailPage extends StatelessWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: stills.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              separatorBuilder: (_, __) =>
+                  const SizedBox(width: 12),
               itemBuilder: (_, i) => ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: AspectRatio(
@@ -95,7 +96,8 @@ class MaiDetailPage extends StatelessWidget {
                     errorBuilder: (_, __, ___) => Container(
                       color: const Color(0xFFF1F3F6),
                       alignment: Alignment.center,
-                      child: const Icon(Icons.broken_image_outlined),
+                      child: const Icon(
+                          Icons.broken_image_outlined),
                     ),
                   ),
                 ),
@@ -113,7 +115,8 @@ class MaiDetailPage extends StatelessWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: _dates.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              separatorBuilder: (_, __) =>
+                  const SizedBox(width: 10),
               itemBuilder: (_, i) => ChoiceChip(
                 label: Text(_dates[i]),
                 selected: i == 0,
@@ -141,19 +144,11 @@ class MaiDetailPage extends StatelessWidget {
             width: double.infinity,
             child: FilledButton(
               onPressed: () {
-                // Ở demo: lấy ngày/giờ đang “selected”.
-                // Nếu bạn đã có state cho chips, truyền giá trị thật vào đây.
-                const selectedDate = 'Hôm nay';
-                const selectedTime = '13:30';
-
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const BookingPage(
-                      movieTitle: 'MAI',
-                      showDate: selectedDate,
-                      showTime: selectedTime,
-                    ),
-                  ),
+                // UI demo: bạn có thể điều hướng sang trang chọn suất / ghế sau
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content:
+                          Text('Đi đến đặt vé (UI demo)')),
                 );
               },
               child: const Text('Đặt vé phim'),
@@ -178,14 +173,17 @@ class _MovieInfo extends StatelessWidget {
       children: [
         Text(
           'MAI',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+          style: TextStyle(
+              fontSize: 22, fontWeight: FontWeight.w800),
         ),
         SizedBox(height: 6),
         Row(
           children: [
             Icon(Icons.star_rounded, color: kOrange),
             SizedBox(width: 6),
-            Text('8.7 / 10', style: TextStyle(fontWeight: FontWeight.w600)),
+            Text('8.7 / 10',
+                style:
+                    TextStyle(fontWeight: FontWeight.w600)),
             SizedBox(width: 12),
             Icon(Icons.access_time, size: 18),
             SizedBox(width: 6),
@@ -206,7 +204,9 @@ class _MovieInfo extends StatelessWidget {
           children: [
             Icon(Icons.language_outlined, size: 18),
             SizedBox(width: 6),
-            Expanded(child: Text('Ngôn ngữ: Tiếng Việt, phụ đề tiếng Anh')),
+            Expanded(
+                child: Text(
+                    'Ngôn ngữ: Tiếng Việt, phụ đề tiếng Anh')),
           ],
         ),
       ],
@@ -222,7 +222,8 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+      style: const TextStyle(
+          fontWeight: FontWeight.w700, fontSize: 16),
     );
   }
 }
@@ -237,7 +238,8 @@ class _Tag extends StatelessWidget {
       label: Text(text),
       backgroundColor: const Color(0xFFF1F3F6),
       side: BorderSide.none,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10)),
     );
   }
 }

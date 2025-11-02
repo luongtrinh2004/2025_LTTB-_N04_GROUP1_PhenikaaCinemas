@@ -30,7 +30,8 @@ class TeeYodDetailPage extends StatelessWidget {
                     height: 195,
                     color: const Color(0xFFF1F3F6),
                     alignment: Alignment.center,
-                    child: const Icon(Icons.broken_image_outlined),
+                    child: const Icon(
+                        Icons.broken_image_outlined),
                   ),
                 ),
               ),
@@ -65,7 +66,8 @@ class TeeYodDetailPage extends StatelessWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: stills.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              separatorBuilder: (_, __) =>
+                  const SizedBox(width: 12),
               itemBuilder: (_, i) => ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: AspectRatio(
@@ -76,7 +78,8 @@ class TeeYodDetailPage extends StatelessWidget {
                     errorBuilder: (_, __, ___) => Container(
                       color: const Color(0xFFF1F3F6),
                       alignment: Alignment.center,
-                      child: const Icon(Icons.broken_image_outlined),
+                      child: const Icon(
+                          Icons.broken_image_outlined),
                     ),
                   ),
                 ),
@@ -91,7 +94,8 @@ class TeeYodDetailPage extends StatelessWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: _dates.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              separatorBuilder: (_, __) =>
+                  const SizedBox(width: 10),
               itemBuilder: (_, i) => ChoiceChip(
                 label: Text(_dates[i]),
                 selected: i == 0,
@@ -117,7 +121,9 @@ class TeeYodDetailPage extends StatelessWidget {
             child: FilledButton(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Đi đến đặt vé (UI demo)')),
+                  const SnackBar(
+                      content:
+                          Text('Đi đến đặt vé (UI demo)')),
                 );
               },
               child: const Text('Đặt vé phim'),
@@ -141,13 +147,16 @@ class _MovieInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Tee Yod',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+            style: TextStyle(
+                fontSize: 22, fontWeight: FontWeight.w800)),
         SizedBox(height: 6),
         Row(
           children: [
             Icon(Icons.star_rounded, color: kOrange),
             SizedBox(width: 6),
-            Text('7.5 / 10', style: TextStyle(fontWeight: FontWeight.w600)),
+            Text('7.5 / 10',
+                style:
+                    TextStyle(fontWeight: FontWeight.w600)),
             SizedBox(width: 12),
             Icon(Icons.access_time, size: 18),
             SizedBox(width: 6),
@@ -168,7 +177,9 @@ class _MovieInfo extends StatelessWidget {
           children: [
             Icon(Icons.language_outlined, size: 18),
             SizedBox(width: 6),
-            Expanded(child: Text('Ngôn ngữ: Thái, phụ đề tiếng Việt')),
+            Expanded(
+                child: Text(
+                    'Ngôn ngữ: Thái, phụ đề tiếng Việt')),
           ],
         ),
       ],
@@ -181,7 +192,8 @@ class _SectionTitle extends StatelessWidget {
   const _SectionTitle(this.text);
   @override
   Widget build(BuildContext context) => Text(text,
-      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16));
+      style: const TextStyle(
+          fontWeight: FontWeight.w700, fontSize: 16));
 }
 
 class _Tag extends StatelessWidget {
@@ -192,6 +204,7 @@ class _Tag extends StatelessWidget {
         label: Text(text),
         backgroundColor: const Color(0xFFF1F3F6),
         side: BorderSide.none,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10)),
       );
 }
