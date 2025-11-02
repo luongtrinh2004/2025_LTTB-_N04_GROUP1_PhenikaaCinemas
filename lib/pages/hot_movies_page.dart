@@ -185,7 +185,7 @@ const _movies = <_Movie>[
       duration: '112 phút'),
   _Movie(
       id: 'gio_van_thoi',
-      title: 'Gió Vẫn Thôi',
+      title: 'Gió Vẫn Thổi',
       poster: 'img/giovanthoi.jpg',
       tagLine: 'Hoạt hình, Tâm lý',
       rating: 8.6,

@@ -16,20 +16,6 @@ class CucVangCuaNgoaiDetailPage extends StatelessWidget {
 
     return Scaffold(
       appBar: const AppHeader(),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.startTop,
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(
-          top: MediaQuery.of(context).padding.top +
-              kToolbarHeight +
-              6,
-        ),
-        child: FloatingActionButton.small(
-          tooltip: 'Quay lại',
-          onPressed: () => Navigator.pop(context),
-          child: const Icon(Icons.arrow_back),
-        ),
-      ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [

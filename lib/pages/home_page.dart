@@ -173,12 +173,12 @@ class _HomePageState extends State<HomePage> {
     } else if (title == 'tử chiến trên không' ||
         title == 'tu chien tren khong') {
       page = const TuChienTrenKhongDetailPage();
-    } else if (title == 'avatar 3' || title == 'avatar 3') {
+    } else if (title == 'avatar 3' || title == 'avatar3') {
       page = const Avatar3DetailPage();
     } else if (title ==
-            'shin cậu bé bút chì: nóng bỏng tay! những vũ công kasukabe ' ||
+            'shin cậu bé bút chì: nóng bỏng tay! những vũ công siêu cay kasukabe' ||
         title ==
-            'shin cau be but chi: nong bong tay! nhung vu cong kasukabe') {
+            'shin cau be but chi: nong bong tay! nhung vu cong sieu cay kasukabe') {
       page = const ShinDetailPage();
     } else if (title == 'năm của anh, ngày của em' ||
         title == 'nam cua anh, ngay cua em') {
