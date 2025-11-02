@@ -8,6 +8,14 @@ import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/tee_yod_detai
 import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/tu_chien_tren_khong_detail_page.dart';
 import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/tay_anh_giu_mot_vi_sao_detail_page.dart';
 import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/avatar3_detail_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/shin_detail_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/nam_cua_anh_ngay_cua_em_detail_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/gio_van_thoi_detail_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/cai_ma_detail_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/cuc_vang_cua_ngoai_detail_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/goodboy_detail_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/roboco_detail_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/van_may_detail_page.dart';
 
 class HotMoviesPage extends StatelessWidget {
   const HotMoviesPage({super.key});
@@ -63,8 +71,32 @@ class HotMoviesPage extends StatelessWidget {
       case 'star_hand':
         page = const TayAnhGiuMotViSaoDetailPage();
         break;
-      case 'avatar3':
+      case 'avatar 3':
         page = const Avatar3DetailPage();
+        break;
+      case 'shin':
+        page = const ShinDetailPage();
+        break;
+      case 'namcuaanh_ngaycuaem':
+        page = const NamCuaAnhNgayCuaEmDetailPage();
+        break;
+      case 'gio_van_thoi':
+        page = const GioVanThoiDetailPage();
+        break;
+      case 'cai_ma':
+        page = const CaiMaDetailPage();
+        break;
+      case 'cuc_vang_cua_ngoai':
+        page = const CucVangCuaNgoaiDetailPage();
+        break;
+      case 'goodboy':
+        page = const GoodBoyDetailPage();
+        break;
+      case 'roboco':
+        page = const RobocoDetailPage();
+        break;
+      case 'vanmay':
+        page = const VanMayDetailPage();
         break;
       default:
         page = const MaiDetailPage();
@@ -127,16 +159,72 @@ const _movies = <_Movie>[
       id: 'star_hand',
       title: 'Tay Anh Giữ Một Vì Sao',
       poster: 'img/tay_anh.webp',
-      tagLine: 'Tình cảm',
+      tagLine: 'Tình cảm, Hài',
       rating: 7.8,
       duration: '115 phút'),
   _Movie(
-      id: 'avatar3',
-      title: 'AVATAR3',
+      id: 'avatar 3',
+      title: 'AVATAR 3',
       poster: 'img/avatar3.jpg',
-      tagLine: 'Hành động, Giả tưởng',
+      tagLine: 'Hành động',
       rating: 7.1,
       duration: '157 phút'),
+  _Movie(
+      id: 'shin',
+      title: 'Shin',
+      poster: 'img/shin.jpg',
+      tagLine: 'Hài, Hoạt hình',
+      rating: 9.0,
+      duration: '105 phút'),
+  _Movie(
+      id: 'namcuaanh_ngaycuaem',
+      title: 'Năm Của Anh, Ngày Của Em',
+      poster: 'img/namcuaanh_ngaycuaem.jpg',
+      tagLine: 'Tình cảm',
+      rating: 7.0,
+      duration: '112 phút'),
+  _Movie(
+      id: 'gio_van_thoi',
+      title: 'Gió Vẫn Thôi',
+      poster: 'img/giovanthoi.jpg',
+      tagLine: 'Hoạt hình, Tâm lý',
+      rating: 8.6,
+      duration: '127 phút'),
+  _Movie(
+      id: 'cai_ma',
+      title: 'Cải Mả',
+      poster: 'img/caima.jpg',
+      tagLine: 'Kinh dị',
+      rating: 7.5,
+      duration: '115 phút'),
+  _Movie(
+      id: 'cuc_vang_cua_ngoai',
+      title: 'Cục Vàng Của Ngoại',
+      poster: 'img/cucvangcuangoai.jpg',
+      tagLine: 'Tâm lý',
+      rating: 8.7,
+      duration: '119 phút'),
+  _Movie(
+      id: 'goodboy',
+      title: 'Good Boy - Chó Cưng Đừng Sợ',
+      poster: 'img/goodboy.jpg',
+      tagLine: 'Kinh dị',
+      rating: 7.5,
+      duration: '73 phút'),
+  _Movie(
+      id: 'roboco',
+      title: 'Tớ và Roboco: Siêu Cấp Đa Vũ Trụ',
+      poster: 'img/roboco.jpg',
+      tagLine: 'Hoạt hình, Hài',
+      rating: 7.2,
+      duration: '64 phút'),
+  _Movie(
+      id: 'vanmay',
+      title: 'Vận May',
+      poster: 'img/vanmay.jpg',
+      tagLine: 'Hành động, Hài',
+      rating: 7.9,
+      duration: '98 phút'),
 ];
 
 class _MovieCard extends StatelessWidget {

@@ -18,13 +18,12 @@ class AllMoviesPage extends StatefulWidget {
 
 class _AllMoviesPageState extends State<AllMoviesPage> {
   static const categories = [
-    'Lãng mạn',
+    'Tình cảm',
     'Hài',
     'Kinh dị',
     'Tâm lý',
     'Hành động',
-    'Giả tưởng',
-    'Hoạt hình'
+    'Hoạt hình',
   ];
   String? _category;
 

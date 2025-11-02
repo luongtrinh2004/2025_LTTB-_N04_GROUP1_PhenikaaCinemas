@@ -8,7 +8,11 @@ class TuChienTrenKhongDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const poster = 'img/tu_chien_tren_khong.jpg';
-    const stills = [poster, poster, poster];
+    const stills = [
+      'img/mai.webp', // bạn có thể thêm các ảnh khác nếu có
+      'img/mai.webp',
+      'img/mai.webp',
+    ];
 
     return Scaffold(
       appBar: const AppHeader(),

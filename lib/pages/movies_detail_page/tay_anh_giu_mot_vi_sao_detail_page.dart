@@ -8,7 +8,11 @@ class TayAnhGiuMotViSaoDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const poster = 'img/tay_anh_giu_mot_vi_sao.jpg';
-    const stills = [poster, poster, poster];
+    const stills = [
+      'img/mai.webp', // bạn có thể thêm các ảnh khác nếu có
+      'img/mai.webp',
+      'img/mai.webp',
+    ];
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -47,7 +51,7 @@ class TayAnhGiuMotViSaoDetailPage extends StatelessWidget {
             runSpacing: 8,
             children: const [
               _Tag('Tình cảm'),
-              _Tag('Âm nhạc'),
+              _Tag('Hài'),
               _Tag('Tuổi trẻ'),
               _Tag('P'),
             ],

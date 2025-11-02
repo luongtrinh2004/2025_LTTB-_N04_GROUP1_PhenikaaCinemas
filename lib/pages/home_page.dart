@@ -11,6 +11,14 @@ import 'movies_detail_page/tee_yod_detail_page.dart';
 import 'movies_detail_page/tu_chien_tren_khong_detail_page.dart';
 
 import 'movies_detail_page/avatar3_detail_page.dart';
+import 'movies_detail_page/shin_detail_page.dart';
+import 'movies_detail_page/nam_cua_anh_ngay_cua_em_detail_page.dart';
+import 'movies_detail_page/gio_van_thoi_detail_page.dart';
+import 'movies_detail_page/roboco_detail_page.dart';
+import 'movies_detail_page/cai_ma_detail_page.dart';
+import 'movies_detail_page/goodboy_detail_page.dart';
+import 'movies_detail_page/cuc_vang_cua_ngoai_detail_page.dart';
+import 'movies_detail_page/van_may_detail_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,14 +36,14 @@ class _HomePageState extends State<HomePage> {
       'poster': 'img/mai.webp',
       'rating': 8.7,
       'duration': '120 phút',
-      'genres': ['Tâm lý', 'Lãng mạn'],
+      'genres': ['Tâm lý', 'Tình cảm'],
     },
     {
       'title': 'Tay Anh Giữ Một Vì Sao',
       'poster': 'img/tay_anh_giu_mot_vi_sao.jpg',
       'rating': 8.3,
       'duration': '115 phút',
-      'genres': ['Lãng mạn'],
+      'genres': ['Tình cảm', 'Hài'],
     },
     {
       'title': 'Tee Yod',
@@ -52,12 +60,69 @@ class _HomePageState extends State<HomePage> {
       'genres': ['Hành động'],
     },
     {
-      'title': 'Avatar3',
+      'title': 'Avatar 3',
       'poster': 'img/avatar3.jpg',
       'rating': 7.1,
       'duration': '157 phút',
-      'genres': ['Hành động', 'Giả tưởng'],
-    }
+      'genres': ['Hành động'],
+    },
+    {
+      'title':
+          'Shin Cậu Bé Bút Chì: Nóng Bỏng Tay! Những Vũ Công Siêu Cay Kasukabe',
+      'poster': 'img/shin.jpg',
+      'rating': 9.0,
+      'duration': '105 phút',
+      'genres': ['Hài', 'Hoạt hình'],
+    },
+    {
+      'title': 'Năm Của Anh, Ngày Của Em',
+      'poster': 'img/namcuaanh_ngaycuaem.jpg',
+      'rating': 7.0,
+      'duration': '112 phút',
+      'genres': ['Tình cảm'],
+    },
+    {
+      'title': 'Gió Vẫn Thổi',
+      'poster': 'img/giovanthoi.jpg',
+      'rating': 8.6,
+      'duration': '127 phút',
+      'genres': ['Hoạt hình', 'Tâm lý'],
+    },
+    {
+      'title': 'Cải Mả',
+      'poster': 'img/caima.jpg',
+      'rating': 7.5,
+      'duration': '115 phút',
+      'genres': ['Kinh dị'],
+    },
+    {
+      'title': 'Cục Vàng Của Ngoại',
+      'poster': 'img/cucvangcuangoai.jpg',
+      'rating': 8.7,
+      'duration': '119 phút',
+      'genres': ['Tâm lý'],
+    },
+    {
+      'title': 'Good Boy - Chó Cưng Đừng Sợ',
+      'poster': 'img/goodboy.jpg',
+      'rating': 7.5,
+      'duration': '73 phút',
+      'genres': ['Kinh dị'],
+    },
+    {
+      'title': 'Tớ Và Roboco: Siêu Cấp Đa Vũ Trụ',
+      'poster': 'img/roboco.jpg',
+      'rating': 7.2,
+      'duration': '64 phút',
+      'genres': ['Hoạt hình', 'Hài'],
+    },
+    {
+      'title': 'Vận May',
+      'poster': 'img/vanmay.jpg',
+      'rating': 7.9,
+      'duration': '98 phút',
+      'genres': ['Hành động', 'Hài'],
+    },
   ];
 
   late final PageController _page;
@@ -108,8 +173,33 @@ class _HomePageState extends State<HomePage> {
     } else if (title == 'tử chiến trên không' ||
         title == 'tu chien tren khong') {
       page = const TuChienTrenKhongDetailPage();
-    } else if (title == 'avatar 3' || title == 'avatar3') {
+    } else if (title == 'avatar 3' || title == 'avatar 3') {
       page = const Avatar3DetailPage();
+    } else if (title ==
+            'shin cậu bé bút chì: nóng bỏng tay! những vũ công kasukabe ' ||
+        title ==
+            'shin cau be but chi: nong bong tay! nhung vu cong kasukabe') {
+      page = const ShinDetailPage();
+    } else if (title == 'năm của anh, ngày của em' ||
+        title == 'nam cua anh, ngay cua em') {
+      page = const NamCuaAnhNgayCuaEmDetailPage();
+    } else if (title == 'gió vẫn thổi' ||
+        title == 'gio van thoi') {
+      page = const GioVanThoiDetailPage();
+    } else if (title == 'cải mả' || title == 'cai ma') {
+      page = const CaiMaDetailPage();
+    } else if (title == 'cục vàng của ngoại' ||
+        title == 'cuc vang cua ngoai') {
+      page = const CucVangCuaNgoaiDetailPage();
+    } else if (title == 'good boy - chó cưng đừng sợ' ||
+        title == 'good boy - cho cung dung so') {
+      page = const GoodBoyDetailPage();
+    } else if (title ==
+            'tớ và roboco: siêu cấp đa vũ trụ' ||
+        title == 'to va roboco: sieu cap da vu tru') {
+      page = const RobocoDetailPage();
+    } else if (title == 'vận may' || title == 'van may') {
+      page = const VanMayDetailPage();
     }
 
     if (page != null) {
@@ -127,13 +217,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     const categories = [
-      'Lãng mạn',
+      'Tình cảm',
       'Hài',
       'Kinh dị',
       'Tâm lý',
       'Hành động',
-      'Giả tưởng',
-      'Hoạt hình'
+      'Hoạt hình',
     ];
     final filteredMovies = _selectedCategory == null
         ? movies
