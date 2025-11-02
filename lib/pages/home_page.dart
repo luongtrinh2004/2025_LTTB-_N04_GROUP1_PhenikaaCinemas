@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
+import 'package:flutter_cinema_booking_ui/pages/all_movies_page.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
 
 // IMPORT các trang chi tiết phim
@@ -197,7 +198,18 @@ class _HomePageState extends State<HomePage> {
             _SectionHeader(
               title: 'Đang chiếu',
               action: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AllMoviesPage(
+                        allMovies: movies,
+                        initialCategory: _selectedCategory,
+                        onOpenDetail: (m) => _openDetail(m),
+                      ),
+                    ),
+                  );
+                },
                 child: const Text('Xem tất cả'),
               ),
             ),
@@ -285,7 +297,18 @@ class _HomePageState extends State<HomePage> {
             _SectionHeader(
               title: 'Sắp chiếu',
               action: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AllMoviesPage(
+                        allMovies: movies,
+                        initialCategory: _selectedCategory,
+                        onOpenDetail: (m) => _openDetail(m),
+                      ),
+                    ),
+                  );
+                },
                 child: const Text('Xem tất cả'),
               ),
             ),
