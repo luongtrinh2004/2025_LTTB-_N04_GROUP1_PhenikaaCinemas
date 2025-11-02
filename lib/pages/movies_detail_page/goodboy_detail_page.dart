@@ -7,7 +7,7 @@ class GoodBoyDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const poster = 'img/goodboy.jpeg';
+    const poster = 'img/goodboy.jpg';
     const stills = [
       'img/mai.webp', // bạn có thể thêm các ảnh khác nếu có
       'img/mai.webp',

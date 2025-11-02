@@ -7,7 +7,7 @@ class CaiMaDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const poster = 'img/caima.jpeg';
+    const poster = 'img/caima.jpg';
     const stills = [
       'img/mai.webp', // bạn có thể thêm các ảnh khác nếu có
       'img/mai.webp',

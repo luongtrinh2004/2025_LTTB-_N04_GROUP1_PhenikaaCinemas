@@ -8,7 +8,7 @@ class NamCuaAnhNgayCuaEmDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const poster = 'img/namcuanh_ngaycuaem.jpg';
+    const poster = 'img/namcuaanh_ngaycuaem.jpg';
     const stills = [
       'img/mai.webp', // bạn có thể thêm các ảnh khác nếu có
       'img/mai.webp',
