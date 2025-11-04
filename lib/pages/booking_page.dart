@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
+import 'package:flutter_cinema_booking_ui/utils/utils.dart';
 
 class BookingPage extends StatefulWidget {
   final String movieTitle;
@@ -21,32 +22,37 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   // Cấu hình ghế
   final List<String> rows = const ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-  final int seatsPerRow = 9;
-  static const double seatPrice = 70000;
+  final int seatsPerRow = 10; // <-- 1..10
 
-  // Ghế đã chọn
+  // Giá
+  static const double priceStandard = 70000;
+  static const double priceCouple = priceStandard * 2; // <-- 2x ghế thường
+
+  // Quy ước: cả hàng H là ghế đôi (couple)
+  final Set<String> _coupleRows = {'H'};
+
+  // Ghế đã chọn (id: "A1" hoặc "H1-2" cho ghế đôi)
   final Set<String> _selected = {};
 
   // Giả lập một số ghế đã có người đặt (không click được)
+  // Lưu ý: hàng đôi dùng ID theo cặp "H1-2", "H3-4", ...
   final Set<String> _booked = {
-    'A4',
-    'A5',
-    'B3',
-    'B4',
+    'A4', 'A5',
+    'B3', 'B4',
     'C5',
     'D6',
-    'E2',
-    'E5',
-    'E6',
-    'F4',
-    'F5',
-    'F7',
+    'E2', 'E5', 'E6',
+    'F4', 'F5', 'F7',
     'G1',
-    'H9'
+    'H9-10', // cặp cuối đã đặt
   };
 
+  bool _isCoupleSeatId(String id) => id.contains('-'); // ghế đôi có dấu '-'
+
+  double _priceOf(String id) => _isCoupleSeatId(id) ? priceCouple : priceStandard;
+
   void _toggle(String id) {
-    if (_booked.contains(id)) return; // đã đặt thì thôi
+    if (_booked.contains(id)) return;
     setState(() {
       if (_selected.contains(id)) {
         _selected.remove(id);
@@ -57,12 +63,21 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   int get _count => _selected.length;
-  double get _total => _count * seatPrice;
+  int get _countStandard => _selected.where((s) => !_isCoupleSeatId(s)).length;
+  int get _countCouple => _selected.where((s) => _isCoupleSeatId(s)).length;
+
+  double get _total {
+    double sum = 0;
+    for (final id in _selected) {
+      sum += _priceOf(id);
+    }
+    return sum;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // nền trắng
+      backgroundColor: Colors.white,
       appBar: AppHeader(
         right: TextButton(
           onPressed: () => Navigator.pop(context),
@@ -71,15 +86,13 @@ class _BookingPageState extends State<BookingPage> {
       ),
       body: Column(
         children: [
-          // Thông tin cụm rạp / suất chiếuWWWWWW
+          // Thông tin suất chiếu
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border(
-                bottom: BorderSide(color: Colors.grey.shade300),
-              ),
+              border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
             ),
             child: Row(
               children: [
@@ -128,11 +141,7 @@ class _BookingPageState extends State<BookingPage> {
                   height: 4,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [
-                        Colors.transparent,
-                        Colors.grey.shade300,
-                        Colors.transparent
-                      ],
+                      colors: [Colors.transparent, Colors.grey, Colors.transparent],
                     ),
                   ),
                 ),
@@ -148,6 +157,7 @@ class _BookingPageState extends State<BookingPage> {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Column(
                 children: rows.map((r) {
+                  final isCoupleRow = _coupleRows.contains(r);
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Row(
@@ -167,64 +177,73 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                         const SizedBox(width: 4),
 
-                        // Ghế 1..9
-                        ...List.generate(seatsPerRow, (i) {
-                          final id = '$r${i + 1}';
-                          final isBooked = _booked.contains(id);
-                          final isSelected = _selected.contains(id);
+                        if (!isCoupleRow)
+                          ...List.generate(seatsPerRow, (i) {
+                            final id = '$r${i + 1}';
+                            final isBooked = _booked.contains(id);
+                            final isSelected = _selected.contains(id);
 
-                          Color bg;
-                          Color border = Colors.grey.shade300;
-                          Widget child;
+                            Color bg;
+                            Color border = Colors.grey.shade300;
+                            Color textColor = Colors.black87;
+                            Widget child;
 
-                          if (isBooked) {
-                            bg = Colors.grey.shade200; // đã đặt
-                            child = Icon(Icons.close,
-                                size: 16, color: Colors.grey.shade600);
-                          } else if (isSelected) {
-                            bg = kOrange; // đang chọn
-                            border = kOrange.withOpacity(.8);
-                            child = const Text(
-                              '✓',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w800),
-                            );
-                          } else {
-                            bg = Colors.white; // trống
-                            child = Text(
-                              (i + 1).toString(),
-                              style: const TextStyle(
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w600,
+                            if (isBooked) {
+                              bg = Colors.grey.shade200;
+                              child = Icon(Icons.close, size: 16, color: Colors.grey.shade600);
+                            } else if (isSelected) {
+                              bg = kOrange;
+                              border = kOrange.withOpacity(.85);
+                              child = const Text(
+                                '✓',
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
+                              );
+                            } else {
+                              bg = Colors.white;
+                              child = Text(
+                                (i + 1).toString(),
+                                style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+                              );
+                            }
+
+                            return GestureDetector(
+                              onTap: isBooked ? null : () => _toggle(id),
+                              child: Container(
+                                margin: const EdgeInsets.all(4),
+                                width: 34,
+                                height: 34,
+                                decoration: BoxDecoration(
+                                  color: bg,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: border),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.03),
+                                      blurRadius: 2,
+                                      offset: const Offset(0, 1),
+                                    )
+                                  ],
+                                ),
+                                child: Center(child: child),
                               ),
                             );
-                          }
-
-                          return GestureDetector(
-                            onTap: isBooked ? null : () => _toggle(id),
-                            child: Container(
-                              margin: const EdgeInsets.all(4),
-                              width: 34,
-                              height: 34,
-                              decoration: BoxDecoration(
-                                color: bg,
-                                borderRadius: BorderRadius.circular(6),
-                                border: Border.all(color: border),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.03),
-                                    blurRadius: 2,
-                                    offset: const Offset(0, 1),
-                                  )
-                                ],
+                          })
+                        else
+                          // Hàng ghế đôi: đi theo cặp (1-2, 3-4, ..., 9-10)
+                          ...[
+                            for (int col = 1; col <= seatsPerRow; col += 2)
+                              _CoupleSeatBlock(
+                                row: r,
+                                from: col,
+                                to: col + 1,
+                                isBooked: _booked.contains('$r$col-${col + 1}'),
+                                isSelected: _selected.contains('$r$col-${col + 1}'),
+                                onTap: () => _toggle('$r$col-${col + 1}'),
                               ),
-                              child: Center(child: child),
-                            ),
-                          );
-                        }),
+                          ],
 
                         const SizedBox(width: 4),
+
                         // Nhãn hàng bên phải
                         SizedBox(
                           width: 26,
@@ -245,34 +264,53 @@ class _BookingPageState extends State<BookingPage> {
             ),
           ),
 
-          // Chú thích + giá
+          // Chú thích + giá (căn ngang đều)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _Legend(
+                  children: const [
+                    Expanded(
+                      child: _LegendFancy(
+                        label: 'Ghế thường',
                         color: Colors.white,
-                        borderColor: Colors.grey.shade300,
-                        label: 'Trống'),
-                    const SizedBox(width: 16),
-                    _Legend(
-                        color: kOrange,
+                        borderColor: Color(0xFFDADDE1),
+                        textColor: Colors.black87,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: _LegendFancy(
+                        label: 'Ghế đôi',
+                        color: Colors.white,
+                        borderColor: Color(0xFFCEB7F4),
+                        textColor: Color(0xFF7E57C2),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: _LegendFancy(
                         label: 'Đang chọn',
-                        foreground: Colors.white),
-                    const SizedBox(width: 16),
-                    _Legend(
-                        color: Colors.grey.shade200,
-                        borderColor: Colors.grey.shade300,
+                        color: kOrange,
+                        textOnBox: '✓',
+                        textColor: kOrange,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: _LegendFancy(
                         label: 'Đã đặt',
-                        icon: Icons.close),
+                        color: Color(0xFFE6E9ED),
+                        icon: Icons.close,
+                        textColor: Colors.black54,
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
-                  'Giá: ${seatPrice.toStringAsFixed(0)} đ / ghế',
+                  'Giá: Ghế thường ${fmtCurrency(priceStandard)} • Ghế đôi ${fmtCurrency(priceCouple)}',
                   style: const TextStyle(color: Colors.black54),
                 ),
               ],
@@ -284,9 +322,7 @@ class _BookingPageState extends State<BookingPage> {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border(
-                top: BorderSide(color: Colors.grey.shade300),
-              ),
+              border: Border(top: BorderSide(color: Colors.grey.shade300)),
             ),
             child: Row(
               children: [
@@ -295,16 +331,14 @@ class _BookingPageState extends State<BookingPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _selected.isEmpty
-                            ? 'Chưa chọn ghế'
-                            : 'Ghế: ${_selected.join(', ')}',
+                        _selected.isEmpty ? 'Chưa chọn ghế' : 'Ghế: ${_selected.join(', ')}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(color: Colors.black54),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${_total.toStringAsFixed(0)} đ',
+                        fmtCurrency(_total),
                         style: const TextStyle(
                           color: kOrange,
                           fontSize: 20,
@@ -322,27 +356,12 @@ class _BookingPageState extends State<BookingPage> {
                       backgroundColor: kOrange,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 22),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
-                    onPressed: _selected.isEmpty
-                        ? null
-                        : () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Đặt ${_count} ghế: ${_selected.join(', ')} • ${_total.toStringAsFixed(0)} đ',
-                                ),
-                              ),
-                            );
-                          },
+                    onPressed: _selected.isEmpty ? null : () => _confirmAndShowDialog(context),
                     child: const Text(
                       'ĐẶT VÉ',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: .5,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: .5),
                     ),
                   ),
                 ),
@@ -353,44 +372,181 @@ class _BookingPageState extends State<BookingPage> {
       ),
     );
   }
+
+  Future<void> _confirmAndShowDialog(BuildContext context) async {
+    final seats = _selected.toList()..sort();
+    final std = _countStandard;
+    final cpl = _countCouple;
+    final total = _total;
+
+    final textTier = <String>[];
+    if (std > 0) textTier.add('Ghế thường x$std (${fmtCurrency(priceStandard)}/ghế)');
+    if (cpl > 0) textTier.add('Ghế đôi x$cpl (${fmtCurrency(priceCouple)}/block)');
+
+    await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Đặt vé thành công 🎉'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _kv('Phim', widget.movieTitle),
+            _kv('Suất', '${widget.showTime} • ${widget.showDate}'),
+            _kv('Ghế', seats.join(', ')),
+            _kv('Mức vé', textTier.join(' • ')),
+            const SizedBox(height: 8),
+            Text(
+              'Tổng: ${fmtCurrency(total)}',
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 16,
+                color: kOrange,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text('Chúc bạn có một buổi xem phim thật vui! 🍿'),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Đóng')),
+        ],
+      ),
+    );
+    // Nếu muốn reset sau khi đặt xong:
+    // setState(() => _selected.clear());
+  }
+
+  Widget _kv(String k, String v) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(width: 80, child: Text('$k: ', style: const TextStyle(fontWeight: FontWeight.w600))),
+          Expanded(child: Text(v)),
+        ],
+      ),
+    );
+  }
 }
 
-class _Legend extends StatelessWidget {
-  final Color color;
-  final Color? borderColor;
-  final String label;
-  final IconData? icon;
-  final Color? foreground;
+class _CoupleSeatBlock extends StatelessWidget {
+  final String row;
+  final int from;
+  final int to;
+  final bool isBooked;
+  final bool isSelected;
+  final VoidCallback onTap;
 
-  const _Legend({
-    required this.color,
-    this.borderColor,
-    required this.label,
-    this.icon,
-    this.foreground,
+  const _CoupleSeatBlock({
+    required this.row,
+    required this.from,
+    required this.to,
+    required this.isBooked,
+    required this.isSelected,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 18,
-          height: 18,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: borderColor ?? color),
-          ),
-          child: icon == null
-              ? null
-              : Icon(icon, size: 14, color: Colors.grey.shade600),
+    final idText = '$from-$to';
+    final id = '$row$idText';
+
+    Color bg;
+    Color border;
+    Widget child;
+
+    if (isBooked) {
+      bg = Colors.grey.shade200;
+      border = Colors.grey.shade300;
+      child = Icon(Icons.close, size: 16, color: Colors.grey.shade600);
+    } else if (isSelected) {
+      bg = Colors.purple;
+      border = Colors.purple.withOpacity(.85);
+      child = const Text('✓', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800));
+    } else {
+      bg = Colors.white;
+      border = Colors.purple.withOpacity(.35);
+      child = Text(
+        idText,
+        style: TextStyle(color: Colors.purple.shade400, fontWeight: FontWeight.w600),
+      );
+    }
+
+    return GestureDetector(
+      onTap: isBooked ? null : onTap,
+      child: Container(
+        margin: const EdgeInsets.all(4),
+        width: 72, // ~ 2 ghế (34*2) + khoảng trống
+        height: 34,
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 2,
+              offset: const Offset(0, 1),
+            )
+          ],
         ),
-        const SizedBox(width: 6),
+        child: Center(child: child),
+      ),
+    );
+  }
+}
+
+class _LegendFancy extends StatelessWidget {
+  final String label;
+  final Color color;
+  final Color? borderColor;
+  final IconData? icon;
+  final String? textOnBox;
+  final Color? textColor;
+
+  const _LegendFancy({
+    required this.label,
+    required this.color,
+    this.borderColor,
+    this.icon,
+    this.textOnBox,
+    this.textColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final box = Container(
+      width: 22,
+      height: 22,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: borderColor ?? Colors.transparent),
+      ),
+      child: Center(
+        child: icon != null
+            ? Icon(icon, size: 14, color: Colors.grey.shade700)
+            : (textOnBox != null
+                ? Text(
+                    textOnBox!,
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900),
+                  )
+                : null),
+      ),
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        box,
+        const SizedBox(height: 6),
         Text(
           label,
+          textAlign: TextAlign.center,
           style: TextStyle(
-            color: foreground ?? Colors.black54,
+            color: textColor ?? Colors.black87,
             fontWeight: FontWeight.w500,
           ),
         ),
