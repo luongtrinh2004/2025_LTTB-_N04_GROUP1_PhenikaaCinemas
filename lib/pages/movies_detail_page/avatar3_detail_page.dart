@@ -1,21 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
+import 'package:flutter_cinema_booking_ui/pages/booking_page.dart';
 
-class Avatar3DetailPage extends StatelessWidget {
+class Avatar3DetailPage extends StatefulWidget {
   const Avatar3DetailPage({super.key});
 
   @override
+  State<Avatar3DetailPage> createState() => _Avatar3DetailPageState();
+}
+
+class _Avatar3DetailPageState extends State<Avatar3DetailPage> {
+  // dữ liệu demo
+  static const poster = 'img/avatar3.jpg';
+  static const stills = ['img/avatar3.jpg', 'img/avatar3.jpg', 'img/avatar3.jpg'];
+
+  // chip ngày/giờ
+  final List<String> _dates = const ['Hôm nay', 'Ngày mai', 'Thứ 7'];
+  final List<String> _times = const ['09:00', '14:30', '18:45', '22:15'];
+
+  int _dateIndex = 0;
+  int _timeIndex = 0;
+
+  // tổng ghế phòng và tồn ghế theo ngày-giờ (demo)
+  final int _roomCapacity = 120;
+  final Map<String, Map<String, int>> _remainingByDateTime = {
+    'Hôm nay': {'09:00': 64, '14:30': 28, '18:45': 12, '22:15': 80},
+    'Ngày mai': {'09:00': 72, '14:30': 46, '18:45': 20, '22:15': 95},
+    'Thứ 7': {'09:00': 35, '14:30': 18, '18:45': 8, '22:15': 22},
+  };
+
+  String get _selectedDate => _dates[_dateIndex];
+  String get _selectedTime => _times[_timeIndex];
+
+  int get _seatsLeft =>
+      _remainingByDateTime[_selectedDate]?[_selectedTime] ?? _roomCapacity;
+
+  @override
   Widget build(BuildContext context) {
-    const poster = 'img/avatar3.jpg';
-    const stills = [
-      'img/avatar3.jpg', // bạn có thể thêm các ảnh khác nếu có
-      'img/avatar3.jpg',
-      'img/avatar3.jpg',
-    ];
+    final subtle = Theme.of(context).colorScheme.onSurface.withOpacity(.7);
 
     return Scaffold(
-      appBar: const AppHeader(),
+      appBar: const AppHeader(), // không avatar
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
@@ -35,31 +61,24 @@ class Avatar3DetailPage extends StatelessWidget {
                     height: 195,
                     color: const Color(0xFFF1F3F6),
                     alignment: Alignment.center,
-                    child: const Icon(
-                        Icons.broken_image_outlined),
+                    child: const Icon(Icons.broken_image_outlined),
                   ),
                 ),
               ),
               const SizedBox(width: 16),
-              const Expanded(
-                child: _MovieInfo(),
-              ),
+              const Expanded(child: _MovieInfo()),
             ],
           ),
 
           const SizedBox(height: 18),
 
-          // Chips thể loại
+          // Thể loại
           const _SectionTitle('Thể loại'),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: const [
-              _Tag('Hành động'),
-              _Tag('Giả tưởng'),
-              _Tag('16+'),
-            ],
+            children: const [_Tag('Hành động'), _Tag('Giả tưởng'), _Tag('16+')],
           ),
 
           const SizedBox(height: 18),
@@ -68,9 +87,9 @@ class Avatar3DetailPage extends StatelessWidget {
           const _SectionTitle('Nội dung'),
           const SizedBox(height: 8),
           const Text(
-            'Avatar 3: Lửa và Tro tàn sẽ tiếp tục hành trình của gia đình Jake Sully sau những sự kiện trong Avatar:'
-            'Dòng chảy của nước, nhưng lần này họ phải đối mặt với mâu thuẫn nội tâm do cái chết của Neteyam và'
-            'sự xuất hiện của một bộ tộc Na vi mới: Bộ tộc Lửa (Ash People).',
+            'Avatar 3: Lửa và Tro tàn sẽ tiếp tục hành trình của gia đình Jake Sully sau những sự kiện trong Avatar: '
+            'Dòng chảy của nước, nhưng lần này họ phải đối mặt với mâu thuẫn nội tâm do cái chết của Neteyam và '
+            'sự xuất hiện của một bộ tộc Na\'vi mới: Bộ tộc Lửa (Ash People).',
           ),
 
           const SizedBox(height: 18),
@@ -83,8 +102,7 @@ class Avatar3DetailPage extends StatelessWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: stills.length,
-              separatorBuilder: (_, __) =>
-                  const SizedBox(width: 12),
+              separatorBuilder: (_, __) => const SizedBox(width: 12),
               itemBuilder: (_, i) => ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: AspectRatio(
@@ -95,8 +113,7 @@ class Avatar3DetailPage extends StatelessWidget {
                     errorBuilder: (_, __, ___) => Container(
                       color: const Color(0xFFF1F3F6),
                       alignment: Alignment.center,
-                      child: const Icon(
-                          Icons.broken_image_outlined),
+                      child: const Icon(Icons.broken_image_outlined),
                     ),
                   ),
                 ),
@@ -106,48 +123,65 @@ class Avatar3DetailPage extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-          // Suất chiếu (UI)
+          // Suất chiếu
           const _SectionTitle('Suất chiếu'),
           const SizedBox(height: 10),
+
+          // chọn ngày
           SizedBox(
             height: 38,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: _dates.length,
-              separatorBuilder: (_, __) =>
-                  const SizedBox(width: 10),
+              separatorBuilder: (_, __) => const SizedBox(width: 10),
               itemBuilder: (_, i) => ChoiceChip(
                 label: Text(_dates[i]),
-                selected: i == 0,
-                onSelected: (_) {},
+                selected: i == _dateIndex,
+                onSelected: (_) => setState(() => _dateIndex = i),
               ),
             ),
           ),
+
           const SizedBox(height: 12),
+
+          // chọn giờ
           Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: _times.map((t) {
+            children: List.generate(_times.length, (i) {
+              final sel = i == _timeIndex;
               return InputChip(
-                label: Text(t),
-                selected: t == _times.first,
-                onSelected: (_) {},
+                label: Text(_times[i]),
+                selected: sel,
+                onSelected: (_) => setState(() => _timeIndex = i),
               );
-            }).toList(),
+            }),
           ),
+
+          // ======= DÒNG "CÒN X / Y GHẾ" NGAY DƯỚI DÃY GIỜ =======
+          const SizedBox(height: 8),
+          Text(
+            'Còn $_seatsLeft / $_roomCapacity ghế cho suất ${_selectedTime.toString()} • ${_selectedDate.toString()}',
+            style: TextStyle(fontWeight: FontWeight.w600, color: subtle),
+          ),
+          // =======================================================
 
           const SizedBox(height: 24),
 
-          // Nút đặt vé
+          // Nút đặt vé -> BookingPage với date/time đã chọn
           SizedBox(
             width: double.infinity,
             child: FilledButton(
               onPressed: () {
-                // UI demo: bạn có thể điều hướng sang trang chọn suất / ghế sau
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content:
-                          Text('Đi đến đặt vé (UI demo)')),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BookingPage(
+                      movieTitle: 'Avatar 3',
+                      showDate: _selectedDate,
+                      showTime: _selectedTime,
+                    ),
+                  ),
                 );
               },
               child: const Text('Đặt vé phim'),
@@ -159,9 +193,6 @@ class Avatar3DetailPage extends StatelessWidget {
   }
 }
 
-const _times = ['09:00', '14:30', '18:45', '22:15'];
-const _dates = ['Hôm nay', 'Ngày mai', 'Thứ 7'];
-
 class _MovieInfo extends StatelessWidget {
   const _MovieInfo();
 
@@ -172,17 +203,14 @@ class _MovieInfo extends StatelessWidget {
       children: [
         Text(
           'AVATAR 3',
-          style: TextStyle(
-              fontSize: 22, fontWeight: FontWeight.w800),
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
         ),
         SizedBox(height: 6),
         Row(
           children: [
             Icon(Icons.star_rounded, color: kOrange),
             SizedBox(width: 6),
-            Text('7.1 / 10',
-                style:
-                    TextStyle(fontWeight: FontWeight.w600)),
+            Text('7.1 / 10', style: TextStyle(fontWeight: FontWeight.w600)),
             SizedBox(width: 12),
             Icon(Icons.access_time, size: 18),
             SizedBox(width: 6),
@@ -203,9 +231,7 @@ class _MovieInfo extends StatelessWidget {
           children: [
             Icon(Icons.language_outlined, size: 18),
             SizedBox(width: 6),
-            Expanded(
-                child: Text(
-                    'Ngôn ngữ: Tiếng Anh, phụ đề tiếng Việt')),
+            Expanded(child: Text('Ngôn ngữ: Tiếng Anh, phụ đề tiếng Việt')),
           ],
         ),
       ],
@@ -221,8 +247,7 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(
-          fontWeight: FontWeight.w700, fontSize: 16),
+      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
     );
   }
 }
@@ -237,8 +262,7 @@ class _Tag extends StatelessWidget {
       label: Text(text),
       backgroundColor: const Color(0xFFF1F3F6),
       side: BorderSide.none,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
 }
