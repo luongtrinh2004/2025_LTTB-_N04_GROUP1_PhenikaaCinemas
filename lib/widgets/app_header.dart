@@ -9,6 +9,7 @@ class AppHeader extends StatelessWidget
     this.backgroundColor = Colors.white,
     this.elevation = 4,
     this.logoHeight = 44, // tăng kích thước logo
+    this.title,
   }) : super(key: key);
 
   /// Widget hiển thị bên phải (VD: account button)
@@ -16,6 +17,8 @@ class AppHeader extends StatelessWidget
   final Color backgroundColor;
   final double elevation;
   final double logoHeight;
+  /// Optional title shown instead of the logo when non-null.
+  final String? title;
 
   static const _brandBlue = Color(0xFF0C2D5A);
 
@@ -43,13 +46,23 @@ class AppHeader extends StatelessWidget
             )
           : null,
       titleSpacing: 0,
+      // If a title string is provided, show it. Otherwise show the logo image.
       title: Padding(
         padding: const EdgeInsets.only(left: 8),
-        child: Image.asset(
-          'img/logo.png',
-          height: logoHeight, // kích thước logo bạn muốn
-          fit: BoxFit.contain,
-        ),
+        child: title != null
+            ? Text(
+                title!,
+                style: const TextStyle(
+                  color: _brandBlue,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                ),
+              )
+            : Image.asset(
+                'img/logo.png',
+                height: logoHeight, // kích thước logo bạn muốn
+                fit: BoxFit.contain,
+              ),
       ),
       actions: [
         Padding(

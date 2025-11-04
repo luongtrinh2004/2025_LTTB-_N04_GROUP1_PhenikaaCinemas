@@ -240,7 +240,7 @@ class _HomePageState extends State<HomePage> {
             // --- Search ---
             TextField(
               decoration: InputDecoration(
-                hintText: 'Tìm phim, rạp, thể loại…',
+                hintText: 'Tìm phim, thể loại…',
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: IconButton(
                   onPressed: () {},
