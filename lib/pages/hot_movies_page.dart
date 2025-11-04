@@ -100,8 +100,7 @@ class _HotMoviesPageState extends State<HotMoviesPage> {
     final items = _sorted();
 
     return Scaffold(
-      appBar: const AppHeader(right: _AccountButton()),
-      body: SafeArea(
+      appBar: const AppHeader(),      body: SafeArea(
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(

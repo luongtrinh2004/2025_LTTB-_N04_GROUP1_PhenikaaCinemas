@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> {
           }).toList();
 
     return Scaffold(
-      appBar: const AppHeader(right: _AccountButton()),
+      appBar: const AppHeader(),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(20),

@@ -7,9 +7,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppHeader(
-        right: _AccountButton(),
-      ),
+      appBar: const AppHeader(),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: const [

@@ -43,8 +43,7 @@ class TicketsPage extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: const AppHeader(right: _AccountButton()),
-      body: SafeArea(
+      appBar: const AppHeader(),      body: SafeArea(
         child: ListView.separated(
           padding: const EdgeInsets.all(20),
           itemCount: tickets.length,
