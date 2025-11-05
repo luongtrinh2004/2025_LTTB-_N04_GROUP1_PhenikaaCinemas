@@ -1,643 +1,732 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
-import 'package:flutter_cinema_booking_ui/pages/all_movies_page.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
+import 'package:flutter_cinema_booking_ui/utils/utils.dart';
 
-// IMPORT các trang chi tiết phim
-import 'movies_detail_page/mai_detail_page.dart';
-import 'movies_detail_page/tay_anh_giu_mot_vi_sao_detail_page.dart';
-import 'movies_detail_page/tee_yod_detail_page.dart';
-import 'movies_detail_page/tu_chien_tren_khong_detail_page.dart';
+class BookingPage extends StatefulWidget {
+  final String movieTitle;
+  final String showDate; // ví dụ: "Hôm nay"
+  final String showTime; // ví dụ: "13:30"
 
-import 'movies_detail_page/avatar3_detail_page.dart';
-import 'movies_detail_page/shin_detail_page.dart';
-import 'movies_detail_page/nam_cua_anh_ngay_cua_em_detail_page.dart';
-import 'movies_detail_page/gio_van_thoi_detail_page.dart';
-import 'movies_detail_page/roboco_detail_page.dart';
-import 'movies_detail_page/cai_ma_detail_page.dart';
-import 'movies_detail_page/goodboy_detail_page.dart';
-import 'movies_detail_page/cuc_vang_cua_ngoai_detail_page.dart';
-import 'movies_detail_page/van_may_detail_page.dart';
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const BookingPage({
+    Key? key,
+    required this.movieTitle,
+    required this.showDate,
+    required this.showTime,
+  }) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<BookingPage> createState() => _BookingPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  static const _orange = Color(0xFFFF7A00);
+class _BookingPageState extends State<BookingPage> {
+  // Cấu hình ghế
+  final List<String> rows = const ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+  final int seatsPerRow = 10; // <-- 1..10
 
-  final List<Map<String, dynamic>> movies = const [
-    {
-      'title': 'MAI',
-      'poster': 'img/mai.webp',
-      'rating': 8.7,
-      'duration': '120 phút',
-      'genres': ['Tâm lý', 'Tình cảm'],
-    },
-    {
-      'title': 'Tay Anh Giữ Một Vì Sao',
-      'poster': 'img/tay_anh_giu_mot_vi_sao.jpg',
-      'rating': 8.3,
-      'duration': '115 phút',
-      'genres': ['Tình cảm', 'Hài'],
-    },
-    {
-      'title': 'Tee Yod',
-      'poster': 'img/tee_yod.jpeg',
-      'rating': 7.5,
-      'duration': '110 phút',
-      'genres': ['Kinh dị'],
-    },
-    {
-      'title': 'Tử Chiến Trên Không',
-      'poster': 'img/tu_chien_tren_khong.jpg',
-      'rating': 7.9,
-      'duration': '118 phút',
-      'genres': ['Hành động'],
-    },
-    {
-      'title': 'Avatar 3',
-      'poster': 'img/avatar3.jpg',
-      'rating': 7.1,
-      'duration': '157 phút',
-      'genres': ['Hành động'],
-    },
-    {
-      'title':
-          'Shin Cậu Bé Bút Chì: Nóng Bỏng Tay! Những Vũ Công Siêu Cay Kasukabe',
-      'poster': 'img/shin.jpg',
-      'rating': 9.0,
-      'duration': '105 phút',
-      'genres': ['Hài', 'Hoạt hình'],
-    },
-    {
-      'title': 'Năm Của Anh, Ngày Của Em',
-      'poster': 'img/namcuaanh_ngaycuaem.jpg',
-      'rating': 7.0,
-      'duration': '112 phút',
-      'genres': ['Tình cảm'],
-    },
-    {
-      'title': 'Gió Vẫn Thổi',
-      'poster': 'img/giovanthoi.jpg',
-      'rating': 8.6,
-      'duration': '127 phút',
-      'genres': ['Hoạt hình', 'Tâm lý'],
-    },
-    {
-      'title': 'Cải Mả',
-      'poster': 'img/caima.jpg',
-      'rating': 7.5,
-      'duration': '115 phút',
-      'genres': ['Kinh dị'],
-    },
-    {
-      'title': 'Cục Vàng Của Ngoại',
-      'poster': 'img/cucvangcuangoai.jpg',
-      'rating': 8.7,
-      'duration': '119 phút',
-      'genres': ['Tâm lý'],
-    },
-    {
-      'title': 'Good Boy - Chó Cưng Đừng Sợ',
-      'poster': 'img/goodboy.jpg',
-      'rating': 7.5,
-      'duration': '73 phút',
-      'genres': ['Kinh dị'],
-    },
-    {
-      'title': 'Tớ Và Roboco: Siêu Cấp Đa Vũ Trụ',
-      'poster': 'img/roboco.jpg',
-      'rating': 7.2,
-      'duration': '64 phút',
-      'genres': ['Hoạt hình', 'Hài'],
-    },
-    {
-      'title': 'Vận May',
-      'poster': 'img/vanmay.jpg',
-      'rating': 7.9,
-      'duration': '98 phút',
-      'genres': ['Hành động', 'Hài'],
-    },
-  ];
+  // Giá
+  static const double priceStandard = 70000;
+  static const double priceCouple = priceStandard * 2; // <-- 2x ghế thường
 
-  late final PageController _page;
-  Timer? _auto;
-  String? _selectedCategory; // null = Tất cả
+  // Quy ước: cả hàng H là ghế đôi (couple)
+  final Set<String> _coupleRows = {'H'};
 
-  @override
-  void initState() {
-    super.initState();
-    _page = PageController(
-      initialPage: movies.length * 1000,
-      viewportFraction: .62,
-    );
+  // Ghế đã chọn (id: "A1" hoặc "H1-2" cho ghế đôi)
+  final Set<String> _selected = {};
 
-    _auto = Timer.periodic(const Duration(seconds: 5), (_) {
-      if (!mounted) return;
-      final next =
-          (_page.page ?? _page.initialPage.toDouble())
-                  .round() +
-              1;
-      _page.animateToPage(
-        next,
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeInOut,
-      );
+  // Giả lập một số ghế đã có người đặt (không click được)
+  // Lưu ý: hàng đôi dùng ID theo cặp "H1-2", "H3-4", ...
+  final Set<String> _booked = {
+    'A4', 'A5',
+    'B3', 'B4',
+    'C5',
+    'D6',
+    'E2', 'E5', 'E6',
+    'F4', 'F5', 'F7',
+    'G1',
+    'H9-10', // cặp cuối đã đặt
+  };
+
+  bool _isCoupleSeatId(String id) => id.contains('-'); // ghế đôi có dấu '-'
+  double _priceOf(String id) =>
+      _isCoupleSeatId(id) ? priceCouple : priceStandard;
+
+  void _toggle(String id) {
+    if (_booked.contains(id)) return;
+    setState(() {
+      if (_selected.contains(id)) {
+        _selected.remove(id);
+      } else {
+        _selected.add(id);
+      }
     });
   }
 
-  @override
-  void dispose() {
-    _auto?.cancel();
-    _page.dispose();
-    super.dispose();
-  }
+  int get _count => _selected.length;
+  int get _countStandard => _selected.where((s) => !_isCoupleSeatId(s)).length;
+  int get _countCouple => _selected.where((s) => _isCoupleSeatId(s)).length;
 
-  void _openDetail(Map<String, dynamic> movie) {
-    final title =
-        (movie['title'] as String).trim().toLowerCase();
-    Widget? page;
-
-    if (title == 'mai') {
-      page = const MaiDetailPage();
-    } else if (title == 'tay anh giữ một vì sao' ||
-        title == 'tay anh giu mot vi sao') {
-      page = const TayAnhGiuMotViSaoDetailPage();
-    } else if (title == 'tee yod') {
-      page = const TeeYodDetailPage();
-    } else if (title == 'tử chiến trên không' ||
-        title == 'tu chien tren khong') {
-      page = const TuChienTrenKhongDetailPage();
-    } else if (title == 'avatar 3' || title == 'avatar3') {
-      page = const Avatar3DetailPage();
-    } else if (title ==
-            'shin cậu bé bút chì: nóng bỏng tay! những vũ công siêu cay kasukabe' ||
-        title ==
-            'shin cau be but chi: nong bong tay! nhung vu cong sieu cay kasukabe') {
-      page = const ShinDetailPage();
-    } else if (title == 'năm của anh, ngày của em' ||
-        title == 'nam cua anh, ngay cua em') {
-      page = const NamCuaAnhNgayCuaEmDetailPage();
-    } else if (title == 'gió vẫn thổi' ||
-        title == 'gio van thoi') {
-      page = const GioVanThoiDetailPage();
-    } else if (title == 'cải mả' || title == 'cai ma') {
-      page = const CaiMaDetailPage();
-    } else if (title == 'cục vàng của ngoại' ||
-        title == 'cuc vang cua ngoai') {
-      page = const CucVangCuaNgoaiDetailPage();
-    } else if (title == 'good boy - chó cưng đừng sợ' ||
-        title == 'good boy - cho cung dung so') {
-      page = const GoodBoyDetailPage();
-    } else if (title ==
-            'tớ và roboco: siêu cấp đa vũ trụ' ||
-        title == 'to va roboco: sieu cap da vu tru') {
-      page = const RobocoDetailPage();
-    } else if (title == 'vận may' || title == 'van may') {
-      page = const VanMayDetailPage();
+  double get _total {
+    double sum = 0;
+    for (final id in _selected) {
+      sum += _priceOf(id);
     }
-
-    if (page != null) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (_) => page!));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-                'Chưa có trang chi tiết cho phim này.')),
-      );
-    }
+    return sum;
   }
 
   @override
   Widget build(BuildContext context) {
-    const categories = [
-      'Tình cảm',
-      'Hài',
-      'Kinh dị',
-      'Tâm lý',
-      'Hành động',
-      'Hoạt hình',
-    ];
-    final filteredMovies = _selectedCategory == null
-        ? movies
-        : movies.where((m) {
-            final gs = (m['genres'] as List).cast<String>();
-            return gs.contains(_selectedCategory);
-          }).toList();
-
     return Scaffold(
-      appBar: const AppHeader(),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(20),
+      backgroundColor: Colors.white,
+      appBar: AppHeader(
+        right: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            // --- Search ---
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Tìm phim, thể loại…',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.tune),
-                ),
-              ),
+            // Nút đổi ngôn ngữ: VIE / ENG (nhỏ gọn, cam/cam nhạt)
+            LanguageSwitcherMini(
+              isEnglish: false, // đây là trang VI
+              width: 56, // khung nhỏ
+              height: 24, // khung nhỏ
+              fontSize: 12, // chữ nhỏ cân đối khung
+              onTapVI: () {
+                // Đang ở VI -> không làm gì
+              },
+              onTapEN: () {
+                // TODO: điều hướng sang trang ENG nếu có
+                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const BookingPageEn(...)));
+              },
             ),
-            const SizedBox(height: 18),
-
-            // --- Categories ---
-            const Text('Thể loại',
-                style:
-                    TextStyle(fontWeight: FontWeight.w700)),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 44,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: categories.length,
-                separatorBuilder: (_, __) =>
-                    const SizedBox(width: 10),
-                itemBuilder: (_, i) {
-                  final label = categories[i];
-                  final selected =
-                      _selectedCategory == label;
-                  return ChoiceChip(
-                    label: Text(label),
-                    selected: selected,
-                    onSelected: (_) {
-                      setState(() {
-                        _selectedCategory = selected
-                            ? null
-                            : label; // bấm lần nữa để bỏ lọc
-                      });
-                    },
-                  );
-                },
-              ),
+            const SizedBox(width: 8),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Đóng'),
             ),
-
-            const SizedBox(height: 22),
-
-            // --- Now Playing ---
-            _SectionHeader(
-              title: 'Đang chiếu',
-              action: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => AllMoviesPage(
-                        allMovies: movies,
-                        initialCategory: _selectedCategory,
-                        onOpenDetail: (m) => _openDetail(m),
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Xem tất cả'),
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            // --- Carousel ---
-            SizedBox(
-              height: 330,
-              child: PageView.builder(
-                controller: _page,
-                padEnds: false,
-                itemBuilder: (context, index) {
-                  if (filteredMovies.isEmpty) {
-                    return const Center(
-                        child: Text(
-                            'Không có phim thuộc thể loại này'));
-                  }
-                  final movie = filteredMovies[
-                      index % filteredMovies.length];
-                  return AnimatedBuilder(
-                    animation: _page,
-                    builder: (context, child) {
-                      double currentPage = 0;
-                      try {
-                        currentPage = _page.page ??
-                            _page.initialPage.toDouble();
-                      } catch (_) {}
-                      final diff =
-                          (index - currentPage).abs();
-                      final scale = 1 -
-                          (diff * 0.12).clamp(0.0, 0.12);
-                      return Transform.scale(
-                          scale: scale, child: child);
-                    },
-                    child: _MoviePosterCard(
-                      movie: movie,
-                      onTap: () => _openDetail(movie),
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // --- Indicator ---
-            Center(
-              child: AnimatedBuilder(
-                animation: _page,
-                builder: (_, __) {
-                  final len = filteredMovies.length;
-                  if (len == 0)
-                    return const SizedBox
-                        .shrink(); // thêm: tránh chia/mod 0
-                  final cur = ((_page.page ??
-                              _page.initialPage.toDouble())
-                          .round()) %
-                      len;
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(len, (i) {
-                      final active = cur == i;
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 4),
-                        width: active ? 10 : 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: active
-                              ? _orange
-                              : Colors.black
-                                  .withOpacity(.2),
-                          borderRadius:
-                              BorderRadius.circular(6),
-                        ),
-                      );
-                    }),
-                  );
-                },
-              ),
-            ),
-
-            const SizedBox(height: 22),
-
-            // --- Coming Soon ---
-            _SectionHeader(
-              title: 'Sắp chiếu',
-              action: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => AllMoviesPage(
-                        allMovies: movies,
-                        initialCategory: _selectedCategory,
-                        onOpenDetail: (m) => _openDetail(m),
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Xem tất cả'),
-              ),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 160,
-              child: filteredMovies.isEmpty
-                  ? const Center(
-                      child: Text('Không có phim'))
-                  : ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: filteredMovies.length,
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(width: 14),
-                      itemBuilder: (_, i) =>
-                          _SmallMovieTile(
-                        movie: filteredMovies[(i + 1) %
-                            filteredMovies.length],
-                        onTap: () => _openDetail(
-                          filteredMovies[(i + 1) %
-                              filteredMovies.length],
-                        ),
-                      ),
-                    ),
-            ),
-
-            const SizedBox(height: 16),
           ],
         ),
       ),
-    );
-  }
-}
-
-//
-// ────────────────────────────────────────────────────────────
-//   ACCOUNT BUTTON
-// ────────────────────────────────────────────────────────────
-//
-class _AccountButton extends StatelessWidget {
-  const _AccountButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      onSelected: (v) {
-        if (v == 'logout') {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              '/login', (r) => false);
-        } else if (v == 'profile') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Đi đến Hồ sơ')),
-          );
-        } else if (v == 'tickets') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Đi đến Vé của tôi')),
-          );
-        }
-      },
-      itemBuilder: (context) => const [
-        PopupMenuItem(
-            value: 'profile', child: Text('Hồ sơ')),
-        PopupMenuItem(
-            value: 'tickets', child: Text('Vé của tôi')),
-        PopupMenuItem(
-            value: 'logout', child: Text('Đăng xuất')),
-      ],
-      offset: const Offset(0, kToolbarHeight),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          CircleAvatar(
-              radius: 18,
-              child: Icon(Icons.person, size: 20)),
-          SizedBox(width: 4),
-          Icon(Icons.keyboard_arrow_down),
-        ],
-      ),
-    );
-  }
-}
-
-//
-// ────────────────────────────────────────────────────────────
-//   SUB WIDGETS
-// ────────────────────────────────────────────────────────────
-//
-
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final Widget? action;
-  const _SectionHeader({required this.title, this.action});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(title,
-            style: const TextStyle(
-                fontWeight: FontWeight.w700)),
-        action ?? const SizedBox.shrink(),
-      ],
-    );
-  }
-}
-
-class _MoviePosterCard extends StatelessWidget {
-  final Map<String, dynamic> movie;
-  final VoidCallback? onTap;
-
-  const _MoviePosterCard({
-    required this.movie,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const radius = Radius.circular(16);
-    return Padding(
-      padding: const EdgeInsets.only(right: 14),
-      child: SizedBox(
-        width: 190,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Ảnh poster có thể bấm
-            Expanded(
-              child: ClipRRect(
-                borderRadius:
-                    const BorderRadius.all(radius),
-                child: Material(
-                  color: Colors.transparent,
-                  child: Ink.image(
-                    image: AssetImage(
-                        movie['poster'] as String),
-                    fit: BoxFit.cover,
-                    child: InkWell(onTap: onTap),
-                    // fallback nếu lỗi asset
-                    onImageError: (_, __) {},
+      body: Column(
+        children: [
+          // Thông tin suất chiếu
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.location_city, color: Colors.black54),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '${widget.movieTitle} • ${widget.showDate} • ${widget.showTime}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black87,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              movie['title'] as String,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                  fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 6),
-            Row(
-              children: [
-                const Icon(Icons.star_rounded,
-                    color: kOrange, size: 18),
-                const SizedBox(width: 4),
-                Text('${movie['rating']}'),
               ],
             ),
+          ),
+
+          const SizedBox(height: 10),
+
+          // "MÀN HÌNH"
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              children: [
+                Container(
+                  height: 32,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: const Text(
+                    'MÀN HÌNH',
+                    style: TextStyle(
+                      color: Colors.black54,
+                      letterSpacing: 1.5,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  height: 4,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        Colors.grey,
+                        Colors.transparent
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          // Sơ đồ ghế
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                children: rows.map((r) {
+                  final isCoupleRow = _coupleRows.contains(r);
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Nhãn hàng bên trái
+                        SizedBox(
+                          width: 26,
+                          child: Text(
+                            r,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+
+                        if (!isCoupleRow)
+                          ...List.generate(seatsPerRow, (i) {
+                            final id = '$r${i + 1}';
+                            final isBooked = _booked.contains(id);
+                            final isSelected = _selected.contains(id);
+
+                            Color bg;
+                            Color border = Colors.grey.shade300;
+                            Color textColor = Colors.black87;
+                            Widget child;
+
+                            if (isBooked) {
+                              bg = Colors.grey.shade200;
+                              child = Icon(Icons.close,
+                                  size: 16, color: Colors.grey.shade600);
+                            } else if (isSelected) {
+                              bg = kOrange;
+                              border = kOrange.withOpacity(.85);
+                              child = const Text(
+                                '✓',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800),
+                              );
+                            } else {
+                              bg = Colors.white;
+                              child = Text(
+                                (i + 1).toString(),
+                                style: TextStyle(
+                                    color: textColor,
+                                    fontWeight: FontWeight.w600),
+                              );
+                            }
+
+                            return GestureDetector(
+                              onTap: isBooked ? null : () => _toggle(id),
+                              child: Container(
+                                margin: const EdgeInsets.all(4),
+                                width: 34,
+                                height: 34,
+                                decoration: BoxDecoration(
+                                  color: bg,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: border),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.03),
+                                      blurRadius: 2,
+                                      offset: const Offset(0, 1),
+                                    )
+                                  ],
+                                ),
+                                child: Center(child: child),
+                              ),
+                            );
+                          })
+                        else
+                          // Hàng ghế đôi: đi theo cặp (1-2, 3-4, ..., 9-10)
+                          ...[
+                          for (int col = 1; col <= seatsPerRow; col += 2)
+                            _CoupleSeatBlock(
+                              row: r,
+                              from: col,
+                              to: col + 1,
+                              isBooked: _booked.contains('$r$col-${col + 1}'),
+                              isSelected:
+                                  _selected.contains('$r$col-${col + 1}'),
+                              onTap: () => _toggle('$r$col-${col + 1}'),
+                            ),
+                        ],
+
+                        const SizedBox(width: 4),
+
+                        // Nhãn hàng bên phải
+                        SizedBox(
+                          width: 26,
+                          child: Text(
+                            r,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+
+          // Chú thích + giá (căn ngang đều)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+            child: Column(
+              children: [
+                Row(
+                  children: const [
+                    Expanded(
+                      child: _LegendFancy(
+                        label: 'Ghế thường',
+                        color: Colors.white,
+                        borderColor: Color(0xFFDADDE1),
+                        textColor: Colors.black87,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: _LegendFancy(
+                        label: 'Ghế đôi',
+                        color: Colors.white,
+                        borderColor: Color(0xFFCEB7F4),
+                        textColor: Color(0xFF7E57C2),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: _LegendFancy(
+                        label: 'Đang chọn',
+                        color: kOrange,
+                        textOnBox: '✓',
+                        textColor: kOrange,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: _LegendFancy(
+                        label: 'Đã đặt',
+                        color: Color(0xFFE6E9ED),
+                        icon: Icons.close,
+                        textColor: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Giá: Ghế thường ${fmtCurrency(priceStandard)} • Ghế đôi ${fmtCurrency(priceCouple)}',
+                  style: const TextStyle(color: Colors.black54),
+                ),
+              ],
+            ),
+          ),
+
+          // Tổng tiền + nút ĐẶT VÉ
+          Container(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: Colors.grey.shade300)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _selected.isEmpty
+                            ? 'Chưa chọn ghế'
+                            : 'Ghế: ${_selected.join(', ')}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: Colors.black54),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        fmtCurrency(_total),
+                        style: const TextStyle(
+                          color: kOrange,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                SizedBox(
+                  height: 46,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kOrange,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 22),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    onPressed: _selected.isEmpty
+                        ? null
+                        : () => _confirmAndShowDialog(context),
+                    child: const Text(
+                      'ĐẶT VÉ',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w800, letterSpacing: .5),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _confirmAndShowDialog(BuildContext context) async {
+    final seats = _selected.toList()..sort();
+    final std = _countStandard;
+    final cpl = _countCouple;
+    final total = _total;
+
+    final textTier = <String>[];
+    if (std > 0)
+      textTier.add('Ghế thường x$std (${fmtCurrency(priceStandard)}/ghế)');
+    if (cpl > 0)
+      textTier.add('Ghế đôi x$cpl (${fmtCurrency(priceCouple)}/block)');
+
+    await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Đặt vé thành công 🎉'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _kv('Phim', widget.movieTitle),
+            _kv('Suất', '${widget.showTime} • ${widget.showDate}'),
+            _kv('Ghế', seats.join(', ')),
+            _kv('Mức vé', textTier.join(' • ')),
+            const SizedBox(height: 8),
+            Text(
+              'Tổng: ${fmtCurrency(total)}',
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 16,
+                color: kOrange,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text('Chúc bạn có một buổi xem phim thật vui! 🍿'),
           ],
         ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Đóng')),
+        ],
+      ),
+    );
+    // Nếu muốn reset sau khi đặt xong:
+    // setState(() => _selected.clear());
+  }
+
+  Widget _kv(String k, String v) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+              width: 80,
+              child: Text('$k: ',
+                  style: const TextStyle(fontWeight: FontWeight.w600))),
+          Expanded(child: Text(v)),
+        ],
       ),
     );
   }
 }
 
-class _SmallMovieTile extends StatelessWidget {
-  final Map<String, dynamic> movie;
-  final VoidCallback? onTap;
+class _CoupleSeatBlock extends StatelessWidget {
+  final String row;
+  final int from;
+  final int to;
+  final bool isBooked;
+  final bool isSelected;
+  final VoidCallback onTap;
 
-  const _SmallMovieTile({
-    required this.movie,
-    this.onTap,
+  const _CoupleSeatBlock({
+    required this.row,
+    required this.from,
+    required this.to,
+    required this.isBooked,
+    required this.isSelected,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 280,
+    final idText = '$from-$to';
+    final id = '$row$idText';
+
+    Color bg;
+    Color border;
+    Widget child;
+
+    if (isBooked) {
+      bg = Colors.grey.shade200;
+      border = Colors.grey.shade300;
+      child = Icon(Icons.close, size: 16, color: Colors.grey.shade600);
+    } else if (isSelected) {
+      bg = Colors.purple;
+      border = Colors.purple.withOpacity(.85);
+      child = const Text('✓',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800));
+    } else {
+      bg = Colors.white;
+      border = Colors.purple.withOpacity(.35);
+      child = Text(
+        idText,
+        style: TextStyle(
+            color: Colors.purple.shade400, fontWeight: FontWeight.w600),
+      );
+    }
+
+    return GestureDetector(
+      onTap: isBooked ? null : onTap,
+      child: Container(
+        margin: const EdgeInsets.all(4),
+        width: 72, // ~ 2 ghế (34*2) + khoảng trống
+        height: 34,
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 2,
+              offset: const Offset(0, 1),
+            )
+          ],
+        ),
+        child: Center(child: child),
+      ),
+    );
+  }
+}
+
+class _LegendFancy extends StatelessWidget {
+  final String label;
+  final Color color;
+  final Color? borderColor;
+  final IconData? icon;
+  final String? textOnBox;
+  final Color? textColor;
+
+  const _LegendFancy({
+    required this.label,
+    required this.color,
+    this.borderColor,
+    this.icon,
+    this.textOnBox,
+    this.textColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final box = Container(
+      width: 22,
+      height: 22,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: borderColor ?? Colors.transparent),
+      ),
+      child: Center(
+        child: icon != null
+            ? Icon(icon, size: 14, color: Colors.grey.shade700)
+            : (textOnBox != null
+                ? Text(
+                    textOnBox!,
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w900),
+                  )
+                : null),
+      ),
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        box,
+        const SizedBox(height: 6),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: textColor ?? Colors.black87,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// ─────────────────── MINIMAL LANGUAGE SWITCHER (VIE / ENG) ───────────────────
+/// - Cam (#FF7A00) / Cam nhạt
+/// - Khung nhỏ: width/height tùy chỉnh
+/// - Chữ VIE / ENG tự co vừa khung nhờ FittedBox
+class LanguageSwitcherMini extends StatelessWidget {
+  final bool isEnglish; // true: ENG, false: VIE
+  final double width; // ví dụ: 56
+  final double height; // ví dụ: 24
+  final double fontSize; // ví dụ: 12
+  final VoidCallback? onTapVI;
+  final VoidCallback? onTapEN;
+
+  const LanguageSwitcherMini({
+    super.key,
+    required this.isEnglish,
+    required this.width,
+    required this.height,
+    required this.fontSize,
+    this.onTapVI,
+    this.onTapEN,
+  });
+
+  static const Color _orange = Color(0xFFFF7A00);
+  static const Color _orangeLight = Color(0xFFFFE9D6);
+
+  @override
+  Widget build(BuildContext context) {
+    final Radius r = const Radius.circular(999);
+    return Container(
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(r),
+        border: Border.all(color: _orange.withOpacity(.35)),
+      ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          GestureDetector(
-            onTap: onTap,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                movie['poster'] as String,
-                height: 150,
-                width: 100,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  height: 150,
-                  width: 100,
-                  color: const Color(0xFFF1F3F6),
-                  alignment: Alignment.center,
-                  child: const Icon(
-                      Icons.broken_image_outlined),
+          _MiniPill(
+            label: 'VIE',
+            selected: !isEnglish,
+            width: width,
+            height: height,
+            fontSize: fontSize,
+            selectedBg: _orange,
+            unselectedBg: _orangeLight,
+            selectedFg: Colors.white,
+            unselectedFg: _orange,
+            onTap: onTapVI,
+          ),
+          _MiniPill(
+            label: 'ENG',
+            selected: isEnglish,
+            width: width,
+            height: height,
+            fontSize: fontSize,
+            selectedBg: _orange,
+            unselectedBg: _orangeLight,
+            selectedFg: Colors.white,
+            unselectedFg: _orange,
+            onTap: onTapEN,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MiniPill extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final double width;
+  final double height;
+  final double fontSize;
+  final Color selectedBg;
+  final Color unselectedBg;
+  final Color selectedFg;
+  final Color unselectedFg;
+  final VoidCallback? onTap;
+
+  const _MiniPill({
+    required this.label,
+    required this.selected,
+    required this.width,
+    required this.height,
+    required this.fontSize,
+    required this.selectedBg,
+    required this.unselectedBg,
+    required this.selectedFg,
+    required this.unselectedFg,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 120),
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: selected ? selectedBg : unselectedBg,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(999),
+          onTap: onTap,
+          child: Center(
+            // FittedBox để chữ tự co vừa khung nhỏ
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                label,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.w800,
+                  color: selected ? selectedFg : unselectedFg,
+                  letterSpacing: 0.5,
+                  height: 1.0,
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: GestureDetector(
-              onTap: onTap,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    movie['title'] as String,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(Icons.access_time,
-                          size: 16),
-                      const SizedBox(width: 6),
-                      Text((movie['duration'] as String?) ??
-                          ''),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  FilledButton.tonal(
-                    onPressed: onTap,
-                    child: const Text('Nhắc tôi'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

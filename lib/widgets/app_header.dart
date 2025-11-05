@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-/// AppHeader: logo lệch trái nhẹ. Nếu `right` null thì KHÔNG hiện gì bên phải.
+/// AppHeader: logo/tiêu đề ở giữa thật sự.
+/// - Nếu có nút back (canPop) mà KHÔNG truyền `right`, ta thêm 1 SizedBox
+///   có bề rộng ~ kToolbarHeight vào `actions` để cân đối với `leading`.
+/// - Nếu `right` != null thì hiển thị `right` bình thường.
+/// - Nếu `title` != null thì hiển thị text; ngược lại hiển thị logo.
+/// - Nếu `right` == null thì KHÔNG render gì bên phải (trừ khi cần spacer để cân đối).
 class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   const AppHeader({
     Key? key,
@@ -32,7 +37,11 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: backgroundColor,
       elevation: elevation,
+
+      // Không tự thêm leading mặc định
       automaticallyImplyLeading: false,
+
+      // Nút back nếu có thể pop
       leading: canPop
           ? IconButton(
               tooltip: 'Quay lại',
@@ -41,34 +50,40 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
               onPressed: () => Navigator.of(context).maybePop(),
             )
           : null,
-      titleSpacing: 0,
-      title: Padding(
-        padding: const EdgeInsets.only(left: 8),
-        child: title != null
-            ? Text(
-                title!,
-                style: const TextStyle(
-                  color: _brandBlue,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                ),
-              )
-            : Image.asset(
-                'img/logo.png',
-                height: logoHeight,
-                fit: BoxFit.contain,
-              ),
-      ),
 
-      // ❗ Chỉ render nếu có truyền `right`
-      actions: right != null
+      // Đặt tiêu đề giữa vùng AppBar (tính đến leading & actions)
+      centerTitle: true,
+
+      // KHÔNG padding trái cho title để không bị lệch
+      // titleSpacing: 0, // có thể bỏ hẳn để AppBar tự tính spacing hợp lý
+
+      // Hiển thị title text hoặc logo
+      title: (title != null)
+          ? Text(
+              title!,
+              style: const TextStyle(
+                color: _brandBlue,
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+              ),
+            )
+          : Image.asset(
+              'img/logo.png',
+              height: logoHeight,
+              fit: BoxFit.contain,
+            ),
+
+      // ❗ Chỉ render nếu có truyền `right`.
+      // Trường hợp có leading (back) nhưng KHÔNG có `right`,
+      // ta thêm 1 spacer để cân đối với leading, giúp title thực sự giữa.
+      actions: (right != null)
           ? [
               Padding(
                 padding: const EdgeInsets.only(right: 12),
                 child: right!,
               ),
             ]
-          : null,
+          : (canPop ? const [SizedBox(width: kToolbarHeight)] : null),
     );
   }
 }
