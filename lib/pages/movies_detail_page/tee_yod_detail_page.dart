@@ -1,24 +1,84 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
+import 'package:flutter_cinema_booking_ui/pages/booking_page.dart';
 
-class TeeYodDetailPage extends StatelessWidget {
+class TeeYodDetailPage extends StatefulWidget {
   const TeeYodDetailPage({super.key});
 
   @override
+  State<TeeYodDetailPage> createState() =>
+      _TeeYodDetailPageState();
+}
+
+class _TeeYodDetailPageState
+    extends State<TeeYodDetailPage> {
+  // Ảnh (giữ đúng đuôi như HomePage đang dùng)
+  static const poster = 'img/tee_yod.jpeg';
+  static const stills = [
+    'img/tee_yod.jpeg',
+    'img/tee_yod.jpeg',
+    'img/tee_yod.jpeg',
+  ];
+
+  // Ngày/giờ chiếu
+  final List<String> _dates = const [
+    'Hôm nay',
+    'Ngày mai',
+    'Thứ 7'
+  ];
+  final List<String> _times = const [
+    '11:00',
+    '14:15',
+    '17:40',
+    '21:00'
+  ];
+  int _dateIndex = 0;
+  int _timeIndex = 0;
+
+  // Ghế còn (demo)
+  final int _roomCapacity = 120;
+  final Map<String, Map<String, int>> _remainingByDateTime =
+      const {
+    'Hôm nay': {
+      '11:00': 64,
+      '14:15': 28,
+      '17:40': 12,
+      '21:00': 80
+    },
+    'Ngày mai': {
+      '11:00': 72,
+      '14:15': 46,
+      '17:40': 20,
+      '21:00': 95
+    },
+    'Thứ 7': {
+      '11:00': 35,
+      '14:15': 18,
+      '17:40': 8,
+      '21:00': 22
+    },
+  };
+
+  String get _selectedDate => _dates[_dateIndex];
+  String get _selectedTime => _times[_timeIndex];
+  int get _seatsLeft =>
+      _remainingByDateTime[_selectedDate]?[_selectedTime] ??
+      _roomCapacity;
+
+  @override
   Widget build(BuildContext context) {
-    const poster = 'img/tee_yod.jpeg';
-    const stills = [
-      'img/mai.webp', // bạn có thể thêm các ảnh khác nếu có
-      'img/mai.webp',
-      'img/mai.webp',
-    ];
+    final subtle = Theme.of(context)
+        .colorScheme
+        .onSurface
+        .withOpacity(.7);
 
     return Scaffold(
       appBar: const AppHeader(),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
+          // Poster + info
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -43,26 +103,35 @@ class TeeYodDetailPage extends StatelessWidget {
               const Expanded(child: _MovieInfo()),
             ],
           ),
+
           const SizedBox(height: 18),
+
+          // Thể loại
           const _SectionTitle('Thể loại'),
           const SizedBox(height: 8),
-          Wrap(
+          const Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: const [
+            children: [
               _Tag('Kinh dị'),
               _Tag('Sinh tồn'),
               _Tag('18+'),
             ],
           ),
+
           const SizedBox(height: 18),
+
+          // Nội dung
           const _SectionTitle('Nội dung'),
           const SizedBox(height: 8),
           const Text(
             'Một truyền thuyết rùng rợn được đánh thức. Nhóm bạn vô tình chạm mặt “Tee Yod” '
             'và phải tìm cách thoát thân trước khi quá muộn.',
           ),
+
           const SizedBox(height: 18),
+
+          // Hình ảnh
           const _SectionTitle('Hình ảnh'),
           const SizedBox(height: 10),
           SizedBox(
@@ -90,9 +159,14 @@ class TeeYodDetailPage extends StatelessWidget {
               ),
             ),
           ),
+
           const SizedBox(height: 18),
+
+          // Suất chiếu
           const _SectionTitle('Suất chiếu'),
           const SizedBox(height: 10),
+
+          // chọn ngày
           SizedBox(
             height: 38,
             child: ListView.separated(
@@ -102,32 +176,53 @@ class TeeYodDetailPage extends StatelessWidget {
                   const SizedBox(width: 10),
               itemBuilder: (_, i) => ChoiceChip(
                 label: Text(_dates[i]),
-                selected: i == 0,
-                onSelected: (_) {},
+                selected: i == _dateIndex,
+                onSelected: (_) =>
+                    setState(() => _dateIndex = i),
               ),
             ),
           ),
+
           const SizedBox(height: 12),
+
+          // chọn giờ
           Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: _times
-                .map((t) => InputChip(
-                      label: Text(t),
-                      selected: t == _times.first,
-                      onSelected: (_) {},
-                    ))
-                .toList(),
+            children: List.generate(_times.length, (i) {
+              final sel = i == _timeIndex;
+              return InputChip(
+                label: Text(_times[i]),
+                selected: sel,
+                onSelected: (_) =>
+                    setState(() => _timeIndex = i),
+              );
+            }),
           ),
+
+          const SizedBox(height: 8),
+          Text(
+            'Còn $_seatsLeft / $_roomCapacity ghế cho suất $_selectedTime • $_selectedDate',
+            style: TextStyle(
+                fontWeight: FontWeight.w600, color: subtle),
+          ),
+
           const SizedBox(height: 24),
+
+          // Nút đặt vé -> BookingPage
           SizedBox(
             width: double.infinity,
             child: FilledButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content:
-                          Text('Đi đến đặt vé (UI demo)')),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BookingPage(
+                      movieTitle: 'Tee Yod',
+                      showDate: _selectedDate,
+                      showTime: _selectedTime,
+                    ),
+                  ),
                 );
               },
               child: const Text('Đặt vé phim'),
@@ -139,9 +234,6 @@ class TeeYodDetailPage extends StatelessWidget {
   }
 }
 
-const _times = ['11:00', '14:15', '17:40', '21:00'];
-const _dates = ['Hôm nay', 'Ngày mai', 'Thứ 7'];
-
 class _MovieInfo extends StatelessWidget {
   const _MovieInfo();
 
@@ -150,9 +242,11 @@ class _MovieInfo extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Tee Yod',
-            style: TextStyle(
-                fontSize: 22, fontWeight: FontWeight.w800)),
+        Text(
+          'TEE YOD',
+          style: TextStyle(
+              fontSize: 22, fontWeight: FontWeight.w800),
+        ),
         SizedBox(height: 6),
         Row(
           children: [
@@ -183,7 +277,7 @@ class _MovieInfo extends StatelessWidget {
             SizedBox(width: 6),
             Expanded(
                 child: Text(
-                    'Ngôn ngữ: Thái, phụ đề tiếng Việt')),
+                    'Ngôn ngữ: Tiếng Thái, phụ đề Tiếng Việt')),
           ],
         ),
       ],
@@ -195,9 +289,11 @@ class _SectionTitle extends StatelessWidget {
   final String text;
   const _SectionTitle(this.text);
   @override
-  Widget build(BuildContext context) => Text(text,
-      style: const TextStyle(
-          fontWeight: FontWeight.w700, fontSize: 16));
+  Widget build(BuildContext context) => Text(
+        text,
+        style: const TextStyle(
+            fontWeight: FontWeight.w700, fontSize: 16),
+      );
 }
 
 class _Tag extends StatelessWidget {

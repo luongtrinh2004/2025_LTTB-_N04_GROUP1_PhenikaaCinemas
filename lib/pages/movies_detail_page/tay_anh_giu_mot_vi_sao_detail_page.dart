@@ -1,24 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
+import 'package:flutter_cinema_booking_ui/pages/booking_page.dart';
 
-class TayAnhGiuMotViSaoDetailPage extends StatelessWidget {
+class TayAnhGiuMotViSaoDetailPage extends StatefulWidget {
   const TayAnhGiuMotViSaoDetailPage({super.key});
 
   @override
+  State<TayAnhGiuMotViSaoDetailPage> createState() =>
+      _TayAnhGiuMotViSaoDetailPageState();
+}
+
+class _TayAnhGiuMotViSaoDetailPageState
+    extends State<TayAnhGiuMotViSaoDetailPage> {
+  // Ảnh
+  static const poster = 'img/tay_anh_giu_mot_vi_sao.jpg';
+  static const stills = [
+    'img/tay_anh_giu_mot_vi_sao.jpg',
+    'img/tay_anh_giu_mot_vi_sao.jpg',
+    'img/tay_anh_giu_mot_vi_sao.jpg',
+  ];
+
+  // Ngày/giờ chiếu (đồng bộ UI)
+  final List<String> _dates = const [
+    'Hôm nay',
+    'Ngày mai',
+    'Chủ nhật'
+  ];
+  final List<String> _times = const [
+    '09:45',
+    '13:00',
+    '15:20',
+    '18:30',
+    '20:45'
+  ];
+  int _dateIndex = 0;
+  int _timeIndex = 0;
+
+  // Ghế còn (demo)
+  final int _roomCapacity = 120;
+  final Map<String, Map<String, int>> _remainingByDateTime =
+      const {
+    'Hôm nay': {
+      '09:45': 72,
+      '13:00': 54,
+      '15:20': 20,
+      '18:30': 14,
+      '20:45': 88
+    },
+    'Ngày mai': {
+      '09:45': 80,
+      '13:00': 60,
+      '15:20': 22,
+      '18:30': 18,
+      '20:45': 95
+    },
+    'Chủ nhật': {
+      '09:45': 40,
+      '13:00': 28,
+      '15:20': 12,
+      '18:30': 10,
+      '20:45': 30
+    },
+  };
+
+  String get _selectedDate => _dates[_dateIndex];
+  String get _selectedTime => _times[_timeIndex];
+  int get _seatsLeft =>
+      _remainingByDateTime[_selectedDate]?[_selectedTime] ??
+      _roomCapacity;
+
+  @override
   Widget build(BuildContext context) {
-    const poster = 'img/tay_anh_giu_mot_vi_sao.jpg';
-    const stills = [
-      'img/mai.webp', // bạn có thể thêm các ảnh khác nếu có
-      'img/mai.webp',
-      'img/mai.webp',
-    ];
+    final subtle = Theme.of(context)
+        .colorScheme
+        .onSurface
+        .withOpacity(.7);
 
     return Scaffold(
       appBar: const AppHeader(),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
+          // Poster + info
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -43,27 +107,36 @@ class TayAnhGiuMotViSaoDetailPage extends StatelessWidget {
               const Expanded(child: _MovieInfo()),
             ],
           ),
+
           const SizedBox(height: 18),
+
+          // Thể loại
           const _SectionTitle('Thể loại'),
           const SizedBox(height: 8),
-          Wrap(
+          const Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: const [
+            children: [
               _Tag('Tình cảm'),
               _Tag('Hài'),
               _Tag('Tuổi trẻ'),
               _Tag('P'),
             ],
           ),
+
           const SizedBox(height: 18),
+
+          // Nội dung
           const _SectionTitle('Nội dung'),
           const SizedBox(height: 8),
           const Text(
-            'Một câu chuyện tình dịu dàng giữa những người trẻ đeo đuổi ước mơ. '
-            'Họ vừa nắm giữ hoài bão của mình, vừa học cách giữ lấy “vì sao” trong lòng nhau.',
+            'Một câu chuyện tình dịu dàng giữa những người trẻ theo đuổi ước mơ. '
+            'Họ vừa giữ hoài bão của mình, vừa học cách giữ lấy “vì sao” trong lòng nhau.',
           ),
+
           const SizedBox(height: 18),
+
+          // Hình ảnh
           const _SectionTitle('Hình ảnh'),
           const SizedBox(height: 10),
           SizedBox(
@@ -91,9 +164,14 @@ class TayAnhGiuMotViSaoDetailPage extends StatelessWidget {
               ),
             ),
           ),
+
           const SizedBox(height: 18),
+
+          // Suất chiếu
           const _SectionTitle('Suất chiếu'),
           const SizedBox(height: 10),
+
+          // Chọn ngày
           SizedBox(
             height: 38,
             child: ListView.separated(
@@ -103,32 +181,53 @@ class TayAnhGiuMotViSaoDetailPage extends StatelessWidget {
                   const SizedBox(width: 10),
               itemBuilder: (_, i) => ChoiceChip(
                 label: Text(_dates[i]),
-                selected: i == 0,
-                onSelected: (_) {},
+                selected: i == _dateIndex,
+                onSelected: (_) =>
+                    setState(() => _dateIndex = i),
               ),
             ),
           ),
+
           const SizedBox(height: 12),
+
+          // Chọn giờ
           Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: _times
-                .map((t) => InputChip(
-                      label: Text(t),
-                      selected: t == _times.first,
-                      onSelected: (_) {},
-                    ))
-                .toList(),
+            children: List.generate(_times.length, (i) {
+              final sel = i == _timeIndex;
+              return InputChip(
+                label: Text(_times[i]),
+                selected: sel,
+                onSelected: (_) =>
+                    setState(() => _timeIndex = i),
+              );
+            }),
           ),
+
+          const SizedBox(height: 8),
+          Text(
+            'Còn $_seatsLeft / $_roomCapacity ghế cho suất $_selectedTime • $_selectedDate',
+            style: TextStyle(
+                fontWeight: FontWeight.w600, color: subtle),
+          ),
+
           const SizedBox(height: 24),
+
+          // Đặt vé -> BookingPage
           SizedBox(
             width: double.infinity,
             child: FilledButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content:
-                          Text('Đi đến đặt vé (UI demo)')),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BookingPage(
+                      movieTitle: 'Tay Anh Giữ Một Vì Sao',
+                      showDate: _selectedDate,
+                      showTime: _selectedTime,
+                    ),
+                  ),
                 );
               },
               child: const Text('Đặt vé phim'),
@@ -140,15 +239,6 @@ class TayAnhGiuMotViSaoDetailPage extends StatelessWidget {
   }
 }
 
-const _times = [
-  '09:45',
-  '13:00',
-  '15:20',
-  '18:30',
-  '20:45'
-];
-const _dates = ['Hôm nay', 'Ngày mai', 'Chủ nhật'];
-
 class _MovieInfo extends StatelessWidget {
   const _MovieInfo();
 
@@ -157,9 +247,11 @@ class _MovieInfo extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Tay Anh Giữ Một Vì Sao',
-            style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.w800)),
+        Text(
+          'TAY ANH GIỮ MỘT VÌ SAO',
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.w800),
+        ),
         SizedBox(height: 6),
         Row(
           children: [
@@ -171,7 +263,7 @@ class _MovieInfo extends StatelessWidget {
             SizedBox(width: 12),
             Icon(Icons.access_time, size: 18),
             SizedBox(width: 6),
-            Text('118 phút'),
+            Text('115 phút'),
           ],
         ),
         SizedBox(height: 10),
@@ -202,9 +294,11 @@ class _SectionTitle extends StatelessWidget {
   final String text;
   const _SectionTitle(this.text);
   @override
-  Widget build(BuildContext context) => Text(text,
-      style: const TextStyle(
-          fontWeight: FontWeight.w700, fontSize: 16));
+  Widget build(BuildContext context) => Text(
+        text,
+        style: const TextStyle(
+            fontWeight: FontWeight.w700, fontSize: 16),
+      );
 }
 
 class _Tag extends StatelessWidget {
