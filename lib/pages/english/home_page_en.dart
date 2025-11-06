@@ -31,97 +31,111 @@ class _HomePageEnState extends State<HomePageEn> {
   static const _orange = Color(0xFFFF7A00);
 
   // Keep movie titles as original (to match existing detail mapping)
-  final List<Map<String, dynamic>> movies = const [
+  final List<Map<String, dynamic>> movies = [
     {
       'title': 'MAI',
       'poster': 'img/mai.webp',
       'rating': 8.7,
       'duration': '120 phút',
-      'genres': ['Tâm lý', 'Tình cảm'],
+      'genres': ['Romance', 'Drama'],
+      'detail': const MaiDetailPageEn(),
     },
     {
       'title': 'Hold A Star For Me',
       'poster': 'img/tay_anh_giu_mot_vi_sao.jpg',
       'rating': 8.3,
       'duration': '115 phút',
-      'genres': ['Tình cảm', 'Hài'],
+      'genres': ['Romance', 'Comedy'],
+      'detail': const TayAnhGiuMotViSaoDetailPageEn(),
     },
     {
       'title': 'Tee Yod',
       'poster': 'img/tee_yod.jpeg',
       'rating': 7.5,
       'duration': '110 phút',
-      'genres': ['Kinh dị'],
+      'genres': ['Horror'],
+      'detail': const TeeYodDetailPageEn(),
     },
     {
       'title': 'Air Battle',
       'poster': 'img/tu_chien_tren_khong.jpg',
       'rating': 7.9,
       'duration': '118 phút',
-      'genres': ['Hành động'],
+      'genres': ['Action'],
+      'detail': const TuChienTrenKhongDetailPageEn(),
     },
     {
       'title': 'Avatar 3',
       'poster': 'img/avatar3.jpg',
       'rating': 7.1,
       'duration': '157 phút',
-      'genres': ['Hành động'],
+      'genres': ['Action', 'Fantasy'],
+      'detail': const Avatar3DetailPageEn(),
     },
     {
-      'title': 'Crayon Shin-chan: Super Spicy Kasukabe Dancers',
+      'title':
+          'Crayon Shin-chan: Super Spicy Kasukabe Dancers',
       'poster': 'img/shin.jpg',
       'rating': 9.0,
       'duration': '105 phút',
-      'genres': ['Hài', 'Hoạt hình'],
+      'genres': ['Comedy', 'Animation'],
+      'detail': const ShinDetailPageEn(),
     },
     {
       'title': 'Your Year, My Day',
       'poster': 'img/namcuaanh_ngaycuaem.jpg',
       'rating': 7.0,
       'duration': '112 phút',
-      'genres': ['Tình cảm'],
+      'genres': ['Romance', 'Drama'],
+      'detail': const NamCuaAnhNgayCuaEmDetailPageEn(),
     },
     {
       'title': 'The Wind Rises (2025)',
       'poster': 'img/giovanthoi.jpg',
       'rating': 8.6,
       'duration': '127 phút',
-      'genres': ['Hoạt hình', 'Tâm lý'],
+      'genres': ['Animation', 'Drama'],
+      'detail': const GioVanThoiDetailPageEn(),
     },
     {
       'title': 'Grave Relocation',
       'poster': 'img/caima.jpg',
       'rating': 7.5,
       'duration': '115 phút',
-      'genres': ['Kinh dị'],
+      'genres': ['Horror'],
+      'detail': const CaiMaDetailPageEn(),
     },
     {
-      'title': 'Grandma\'s Little Treasure',
+      'title': "Grandma's Little Treasure",
       'poster': 'img/cucvangcuangoai.jpg',
       'rating': 8.7,
       'duration': '119 phút',
-      'genres': ['Tâm lý'],
+      'genres': ['Drama', 'Family'],
+      'detail': const CucVangCuaNgoaiDetailPageEn(),
     },
     {
       'title': 'Good Boy',
       'poster': 'img/goodboy.jpg',
       'rating': 7.5,
       'duration': '73 phút',
-      'genres': ['Kinh dị'],
+      'genres': ['Horror'],
+      'detail': const GoodBoyDetailPageEn(),
     },
     {
       'title': 'Me & Roboco: Multiverse Mayhem',
       'poster': 'img/roboco.jpg',
       'rating': 7.2,
       'duration': '64 phút',
-      'genres': ['Hoạt hình', 'Hài'],
+      'genres': ['Animation', 'Comedy'],
+      'detail': const RobocoDetailPageEn(),
     },
     {
       'title': 'Lucky Day',
       'poster': 'img/vanmay.jpg',
       'rating': 7.9,
       'duration': '98 phút',
-      'genres': ['Hành động', 'Hài'],
+      'genres': ['Action', 'Comedy'],
+      'detail': const VanMayDetailPageEn(),
     },
   ];
 
@@ -139,7 +153,10 @@ class _HomePageEnState extends State<HomePageEn> {
 
     _auto = Timer.periodic(const Duration(seconds: 5), (_) {
       if (!mounted) return;
-      final next = (_page.page ?? _page.initialPage.toDouble()).round() + 1;
+      final next =
+          (_page.page ?? _page.initialPage.toDouble())
+                  .round() +
+              1;
       _page.animateToPage(
         next,
         duration: const Duration(milliseconds: 600),
@@ -156,51 +173,15 @@ class _HomePageEnState extends State<HomePageEn> {
   }
 
   void _openDetail(Map<String, dynamic> movie) {
-    final title = (movie['title'] as String).trim().toLowerCase();
-    Widget? page;
-
-    if (title == 'mai') {
-      page = const MaiDetailPageEn();
-    } else if (title == 'tay anh giữ một vì sao' ||
-        title == 'tay anh giu mot vi sao') {
-      page = const TayAnhGiuMotViSaoDetailPageEn();
-    } else if (title == 'tee yod') {
-      page = const TeeYodDetailPageEn();
-    } else if (title == 'tử chiến trên không' ||
-        title == 'tu chien tren khong') {
-      page = const TuChienTrenKhongDetailPageEn();
-    } else if (title == 'avatar 3' || title == 'avatar3') {
-      page = const Avatar3DetailPageEn();
-    } else if (title ==
-            'shin cậu bé bút chì: nóng bỏng tay! những vũ công siêu cay kasukabe' ||
-        title ==
-            'shin cau be but chi: nong bong tay! nhung vu cong sieu cay kasukabe') {
-      page = const ShinDetailPageEn();
-    } else if (title == 'năm của anh, ngày của em' ||
-        title == 'nam cua anh, ngay cua em') {
-      page = const NamCuaAnhNgayCuaEmDetailPageEn();
-    } else if (title == 'gió vẫn thổi' || title == 'gio van thoi') {
-      page = const GioVanThoiDetailPageEn();
-    } else if (title == 'cải mả' || title == 'cai ma') {
-      page = const CaiMaDetailPageEn();
-    } else if (title == 'cục vàng của ngoại' || title == 'cuc vang cua ngoai') {
-      page = const CucVangCuaNgoaiDetailPageEn();
-    } else if (title == 'good boy - chó cưng đừng sợ' ||
-        title == 'good boy - cho cung dung so') {
-      page = const GoodBoyDetailPageEn();
-    } else if (title == 'tớ và roboco: siêu cấp đa vũ trụ' ||
-        title == 'to va roboco: sieu cap da vu tru') {
-      page = const RobocoDetailPageEn();
-    } else if (title == 'vận may' || title == 'van may') {
-      page = const VanMayDetailPageEn();
-    }
-
+    final page = movie['detail'] as Widget?;
     if (page != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => page!));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (_) => page));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('No detail page available for this movie yet.')),
+            content: Text(
+                'No detail page available for this movie yet.')),
       );
     }
   }
@@ -243,24 +224,29 @@ class _HomePageEnState extends State<HomePageEn> {
             const SizedBox(height: 18),
 
             // --- Categories ---
-            const Text('Genres', style: TextStyle(fontWeight: FontWeight.w700)),
+            const Text('Genres',
+                style:
+                    TextStyle(fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
             SizedBox(
               height: 44,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 10),
+                separatorBuilder: (_, __) =>
+                    const SizedBox(width: 10),
                 itemBuilder: (_, i) {
                   final label = categories[i];
-                  final selected = _selectedCategory == label;
+                  final selected =
+                      _selectedCategory == label;
                   return ChoiceChip(
                     label: Text(label),
                     selected: selected,
                     onSelected: (_) {
                       setState(() {
-                        _selectedCategory =
-                            selected ? null : label; // toggle off on second tap
+                        _selectedCategory = selected
+                            ? null
+                            : label; // toggle off on second tap
                       });
                     },
                   );
@@ -299,20 +285,26 @@ class _HomePageEnState extends State<HomePageEn> {
                 padEnds: false,
                 itemBuilder: (context, index) {
                   if (filteredMovies.isEmpty) {
-                    return const Center(child: Text('No movies in this genre'));
+                    return const Center(
+                        child: Text(
+                            'No movies in this genre'));
                   }
-                  final movie = filteredMovies[index % filteredMovies.length];
+                  final movie = filteredMovies[
+                      index % filteredMovies.length];
                   return AnimatedBuilder(
                     animation: _page,
                     builder: (context, child) {
                       double currentPage = 0;
                       try {
-                        currentPage =
-                            _page.page ?? _page.initialPage.toDouble();
+                        currentPage = _page.page ??
+                            _page.initialPage.toDouble();
                       } catch (_) {}
-                      final diff = (index - currentPage).abs();
-                      final scale = 1 - (diff * 0.12).clamp(0.0, 0.12);
-                      return Transform.scale(scale: scale, child: child);
+                      final diff =
+                          (index - currentPage).abs();
+                      final scale = 1 -
+                          (diff * 0.12).clamp(0.0, 0.12);
+                      return Transform.scale(
+                          scale: scale, child: child);
                     },
                     child: _MoviePosterCard(
                       movie: movie,
@@ -330,22 +322,28 @@ class _HomePageEnState extends State<HomePageEn> {
                 animation: _page,
                 builder: (_, __) {
                   final len = filteredMovies.length;
-                  if (len == 0) return const SizedBox.shrink();
-                  final cur =
-                      ((_page.page ?? _page.initialPage.toDouble()).round()) %
-                          len;
+                  if (len == 0)
+                    return const SizedBox.shrink();
+                  final cur = ((_page.page ??
+                              _page.initialPage.toDouble())
+                          .round()) %
+                      len;
                   return Row(
                     mainAxisSize: MainAxisSize.min,
                     children: List.generate(len, (i) {
                       final active = cur == i;
                       return Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 4),
                         width: active ? 10 : 6,
                         height: 6,
                         decoration: BoxDecoration(
-                          color:
-                              active ? _orange : Colors.black.withOpacity(.2),
-                          borderRadius: BorderRadius.circular(6),
+                          color: active
+                              ? _orange
+                              : Colors.black
+                                  .withOpacity(.2),
+                          borderRadius:
+                              BorderRadius.circular(6),
                         ),
                       );
                     }),
@@ -384,11 +382,15 @@ class _HomePageEnState extends State<HomePageEn> {
                   : ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: filteredMovies.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 14),
-                      itemBuilder: (_, i) => _SmallMovieTile(
-                        movie: filteredMovies[(i + 1) % filteredMovies.length],
+                      separatorBuilder: (_, __) =>
+                          const SizedBox(width: 14),
+                      itemBuilder: (_, i) =>
+                          _SmallMovieTile(
+                        movie: filteredMovies[(i + 1) %
+                            filteredMovies.length],
                         onTap: () => _openDetail(
-                          filteredMovies[(i + 1) % filteredMovies.length],
+                          filteredMovies[(i + 1) %
+                              filteredMovies.length],
                         ),
                       ),
                     ),
@@ -415,27 +417,34 @@ class _AccountButton extends StatelessWidget {
     return PopupMenuButton<String>(
       onSelected: (v) {
         if (v == 'logout') {
-          Navigator.of(context).pushNamedAndRemoveUntil('/login', (r) => false);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              '/login', (r) => false);
         } else if (v == 'profile') {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Go to Profile')),
           );
         } else if (v == 'tickets') {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Go to My tickets')),
+            const SnackBar(
+                content: Text('Go to My tickets')),
           );
         }
       },
       itemBuilder: (context) => const [
-        PopupMenuItem(value: 'profile', child: Text('Profile')),
-        PopupMenuItem(value: 'tickets', child: Text('My tickets')),
-        PopupMenuItem(value: 'logout', child: Text('Log out')),
+        PopupMenuItem(
+            value: 'profile', child: Text('Profile')),
+        PopupMenuItem(
+            value: 'tickets', child: Text('My tickets')),
+        PopupMenuItem(
+            value: 'logout', child: Text('Log out')),
       ],
       offset: const Offset(0, kToolbarHeight),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: const [
-          CircleAvatar(radius: 18, child: Icon(Icons.person, size: 20)),
+          CircleAvatar(
+              radius: 18,
+              child: Icon(Icons.person, size: 20)),
           SizedBox(width: 4),
           Icon(Icons.keyboard_arrow_down),
         ],
@@ -460,7 +469,9 @@ class _SectionHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+        Text(title,
+            style: const TextStyle(
+                fontWeight: FontWeight.w700)),
         action ?? const SizedBox.shrink(),
       ],
     );
@@ -489,11 +500,13 @@ class _MoviePosterCard extends StatelessWidget {
             // Tappable poster
             Expanded(
               child: ClipRRect(
-                borderRadius: const BorderRadius.all(radius),
+                borderRadius:
+                    const BorderRadius.all(radius),
                 child: Material(
                   color: Colors.transparent,
                   child: Ink.image(
-                    image: AssetImage(movie['poster'] as String),
+                    image: AssetImage(
+                        movie['poster'] as String),
                     fit: BoxFit.cover,
                     child: InkWell(onTap: onTap),
                     onImageError: (_, __) {},
@@ -506,12 +519,14 @@ class _MoviePosterCard extends StatelessWidget {
               movie['title'] as String,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontWeight: FontWeight.w700),
+              style: const TextStyle(
+                  fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 6),
             Row(
               children: [
-                const Icon(Icons.star_rounded, color: kOrange, size: 18),
+                const Icon(Icons.star_rounded,
+                    color: kOrange, size: 18),
                 const SizedBox(width: 4),
                 Text('${movie['rating']}'),
               ],
@@ -552,7 +567,8 @@ class _SmallMovieTile extends StatelessWidget {
                   width: 100,
                   color: const Color(0xFFF1F3F6),
                   alignment: Alignment.center,
-                  child: const Icon(Icons.broken_image_outlined),
+                  child: const Icon(
+                      Icons.broken_image_outlined),
                 ),
               ),
             ),
@@ -563,20 +579,24 @@ class _SmallMovieTile extends StatelessWidget {
               onTap: onTap,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
                   Text(
                     movie['title'] as String,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.access_time, size: 16),
+                      const Icon(Icons.access_time,
+                          size: 16),
                       const SizedBox(width: 6),
-                      Text((movie['duration'] as String?) ?? ''),
+                      Text((movie['duration'] as String?) ??
+                          ''),
                     ],
                   ),
                   const SizedBox(height: 8),
