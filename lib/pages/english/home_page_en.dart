@@ -1,31 +1,28 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
+import 'package:flutter_cinema_booking_ui/pages/all_movies_page.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
 
-// Back to Vietnamese home when toggling language
-import 'package:flutter_cinema_booking_ui/pages/home_page.dart';
+// Import detail pages (reuse the same ones)
+import '../movies_detail_page/mai_detail_page.dart';
+import '../movies_detail_page/tay_anh_giu_mot_vi_sao_detail_page.dart';
+import '../movies_detail_page/tee_yod_detail_page.dart';
+import '../movies_detail_page/tu_chien_tren_khong_detail_page.dart';
 
-// Reuse the existing AllMoviesPage (neutral enough)
-import 'package:flutter_cinema_booking_ui/pages/all_movies_page.dart';
-
-// Reuse VI detail pages (to avoid creating EN duplicates)
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/mai_detail_page.dart';
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/tay_anh_giu_mot_vi_sao_detail_page.dart';
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/tee_yod_detail_page.dart';
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/tu_chien_tren_khong_detail_page.dart';
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/avatar3_detail_page.dart';
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/shin_detail_page.dart';
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/nam_cua_anh_ngay_cua_em_detail_page.dart';
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/gio_van_thoi_detail_page.dart';
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/roboco_detail_page.dart';
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/cai_ma_detail_page.dart';
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/goodboy_detail_page.dart';
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/cuc_vang_cua_ngoai_detail_page.dart';
-import 'package:flutter_cinema_booking_ui/pages/movies_detail_page/van_may_detail_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/avatar3_detail_page_en.dart';
+import '../movies_detail_page/shin_detail_page.dart';
+import '../movies_detail_page/nam_cua_anh_ngay_cua_em_detail_page.dart';
+import '../movies_detail_page/gio_van_thoi_detail_page.dart';
+import '../movies_detail_page/roboco_detail_page.dart';
+import '../movies_detail_page/cai_ma_detail_page.dart';
+import '../movies_detail_page/goodboy_detail_page.dart';
+import '../movies_detail_page/cuc_vang_cua_ngoai_detail_page.dart';
+import '../movies_detail_page/van_may_detail_page.dart';
 
 class HomePageEn extends StatefulWidget {
   const HomePageEn({super.key});
+
   @override
   State<HomePageEn> createState() => _HomePageEnState();
 }
@@ -33,10 +30,9 @@ class HomePageEn extends StatefulWidget {
 class _HomePageEnState extends State<HomePageEn> {
   static const _orange = Color(0xFFFF7A00);
 
-  /// Same routeKey so we can navigate to existing VI detail pages safely
+  // Keep movie titles as original (to match existing detail mapping)
   final List<Map<String, dynamic>> movies = const [
     {
-      'routeKey': 'mai',
       'title': 'MAI',
       'poster': 'img/mai.webp',
       'rating': 8.7,
@@ -44,15 +40,13 @@ class _HomePageEnState extends State<HomePageEn> {
       'genres': ['Drama', 'Romance'],
     },
     {
-      'routeKey': 'tay_anh_giu_mot_vi_sao',
-      'title': 'Hold A Star For Me',
+      'title': 'Tay Anh Giữ Một Vì Sao',
       'poster': 'img/tay_anh_giu_mot_vi_sao.jpg',
       'rating': 8.3,
       'duration': '115 min',
       'genres': ['Romance', 'Comedy'],
     },
     {
-      'routeKey': 'tee_yod',
       'title': 'Tee Yod',
       'poster': 'img/tee_yod.jpeg',
       'rating': 7.5,
@@ -60,15 +54,13 @@ class _HomePageEnState extends State<HomePageEn> {
       'genres': ['Horror'],
     },
     {
-      'routeKey': 'tu_chien_tren_khong',
-      'title': 'Air Battle',
+      'title': 'Tử Chiến Trên Không',
       'poster': 'img/tu_chien_tren_khong.jpg',
       'rating': 7.9,
       'duration': '118 min',
       'genres': ['Action'],
     },
     {
-      'routeKey': 'avatar3',
       'title': 'Avatar 3',
       'poster': 'img/avatar3.jpg',
       'rating': 7.1,
@@ -76,64 +68,57 @@ class _HomePageEnState extends State<HomePageEn> {
       'genres': ['Action'],
     },
     {
-      'routeKey': 'shin',
-      'title': 'Crayon Shin-chan: Super Spicy Kasukabe Dancers',
+      'title':
+          'Shin Cậu Bé Bút Chì: Nóng Bỏng Tay! Những Vũ Công Siêu Cay Kasukabe',
       'poster': 'img/shin.jpg',
       'rating': 9.0,
       'duration': '105 min',
       'genres': ['Comedy', 'Animation'],
     },
     {
-      'routeKey': 'nam_cua_anh_ngay_cua_em',
-      'title': 'Your Year, My Day',
+      'title': 'Năm Của Anh, Ngày Của Em',
       'poster': 'img/namcuaanh_ngaycuaem.jpg',
       'rating': 7.0,
       'duration': '112 min',
       'genres': ['Romance'],
     },
     {
-      'routeKey': 'gio_van_thoi',
-      'title': 'The Wind Rises (2025)',
+      'title': 'Gió Vẫn Thổi',
       'poster': 'img/giovanthoi.jpg',
       'rating': 8.6,
       'duration': '127 min',
       'genres': ['Animation', 'Drama'],
     },
     {
-      'routeKey': 'cai_ma',
-      'title': 'Grave Relocation',
+      'title': 'Cải Mả',
       'poster': 'img/caima.jpg',
       'rating': 7.5,
       'duration': '115 min',
       'genres': ['Horror'],
     },
     {
-      'routeKey': 'cuc_vang_cua_ngoai',
-      'title': 'Grandma’s Little Treasure',
+      'title': 'Cục Vàng Của Ngoại',
       'poster': 'img/cucvangcuangoai.jpg',
       'rating': 8.7,
       'duration': '119 min',
       'genres': ['Drama'],
     },
     {
-      'routeKey': 'goodboy',
-      'title': 'Good Boy',
+      'title': 'Good Boy - Chó Cưng Đừng Sợ',
       'poster': 'img/goodboy.jpg',
       'rating': 7.5,
       'duration': '73 min',
       'genres': ['Horror'],
     },
     {
-      'routeKey': 'roboco',
-      'title': 'Me & Roboco: Multiverse Mayhem',
+      'title': 'Tớ Và Roboco: Siêu Cấp Đa Vũ Trụ',
       'poster': 'img/roboco.jpg',
       'rating': 7.2,
       'duration': '64 min',
       'genres': ['Animation', 'Comedy'],
     },
     {
-      'routeKey': 'van_may',
-      'title': 'Lucky Day',
+      'title': 'Vận May',
       'poster': 'img/vanmay.jpg',
       'rating': 7.9,
       'duration': '98 min',
@@ -171,47 +156,45 @@ class _HomePageEnState extends State<HomePageEn> {
     super.dispose();
   }
 
-  Widget? _routeFor(String routeKey) {
-    switch (routeKey) {
-      case 'mai':
-        return const MaiDetailPage();
-      case 'tay_anh_giu_mot_vi_sao':
-        return const TayAnhGiuMotViSaoDetailPage();
-      case 'tee_yod':
-        return const TeeYodDetailPage();
-      case 'tu_chien_tren_khong':
-        return const TuChienTrenKhongDetailPage();
-      case 'avatar3':
-        return const Avatar3DetailPage();
-      case 'shin':
-        return const ShinDetailPage();
-      case 'nam_cua_anh_ngay_cua_em':
-        return const NamCuaAnhNgayCuaEmDetailPage();
-      case 'gio_van_thoi':
-        return const GioVanThoiDetailPage();
-      case 'cai_ma':
-        return const CaiMaDetailPage();
-      case 'cuc_vang_cua_ngoai':
-        return const CucVangCuaNgoaiDetailPage();
-      case 'goodboy':
-        return const GoodBoyDetailPage();
-      case 'roboco':
-        return const RobocoDetailPage();
-      case 'van_may':
-        return const VanMayDetailPage();
-      default:
-        return null;
-    }
-  }
-
   void _openDetail(Map<String, dynamic> movie) {
-    final key = (movie['routeKey'] as String?) ?? '';
-    final page = _routeFor(key);
+    final title = (movie['title'] as String).trim().toLowerCase();
+    Widget? page;
+
+    if (title == 'mai') {
+      page = const MaiDetailPage();
+    } else if (title == 'tay anh giữ một vì sao' || title == 'tay anh giu mot vi sao') {
+      page = const TayAnhGiuMotViSaoDetailPage();
+    } else if (title == 'tee yod') {
+      page = const TeeYodDetailPage();
+    } else if (title == 'tử chiến trên không' || title == 'tu chien tren khong') {
+      page = const TuChienTrenKhongDetailPage();
+    } else if (title == 'avatar 3' || title == 'avatar3') {
+      page = const Avatar3DetailPageEn();
+    } else if (title ==
+            'shin cậu bé bút chì: nóng bỏng tay! những vũ công siêu cay kasukabe' ||
+        title == 'shin cau be but chi: nong bong tay! nhung vu cong sieu cay kasukabe') {
+      page = const ShinDetailPage();
+    } else if (title == 'năm của anh, ngày của em' || title == 'nam cua anh, ngay cua em') {
+      page = const NamCuaAnhNgayCuaEmDetailPage();
+    } else if (title == 'gió vẫn thổi' || title == 'gio van thoi') {
+      page = const GioVanThoiDetailPage();
+    } else if (title == 'cải mả' || title == 'cai ma') {
+      page = const CaiMaDetailPage();
+    } else if (title == 'cục vàng của ngoại' || title == 'cuc vang cua ngoai') {
+      page = const CucVangCuaNgoaiDetailPage();
+    } else if (title == 'good boy - chó cưng đừng sợ' || title == 'good boy - cho cung dung so') {
+      page = const GoodBoyDetailPage();
+    } else if (title == 'tớ và roboco: siêu cấp đa vũ trụ' || title == 'to va roboco: sieu cap da vu tru') {
+      page = const RobocoDetailPage();
+    } else if (title == 'vận may' || title == 'van may') {
+      page = const VanMayDetailPage();
+    }
+
     if (page != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+      Navigator.push(context, MaterialPageRoute(builder: (_) => page!));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Detail page not available yet.')),
+        const SnackBar(content: Text('No detail page available for this movie yet.')),
       );
     }
   }
@@ -226,6 +209,7 @@ class _HomePageEnState extends State<HomePageEn> {
       'Action',
       'Animation',
     ];
+
     final filteredMovies = _selectedCategory == null
         ? movies
         : movies.where((m) {
@@ -239,10 +223,6 @@ class _HomePageEnState extends State<HomePageEn> {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            // --- Language Switcher (VI / EN) ---
-            const LanguageSwitcherEn(isEnglish: true),
-            const SizedBox(height: 16),
-
             // --- Search ---
             TextField(
               decoration: InputDecoration(
@@ -273,7 +253,7 @@ class _HomePageEnState extends State<HomePageEn> {
                     selected: selected,
                     onSelected: (_) {
                       setState(() {
-                        _selectedCategory = selected ? null : label;
+                        _selectedCategory = selected ? null : label; // toggle off on second tap
                       });
                     },
                   );
@@ -285,7 +265,7 @@ class _HomePageEnState extends State<HomePageEn> {
 
             // --- Now Playing ---
             _SectionHeader(
-              title: 'Now Playing',
+              title: 'Now Showing',
               action: TextButton(
                 onPressed: () {
                   Navigator.push(
@@ -320,8 +300,7 @@ class _HomePageEnState extends State<HomePageEn> {
                     builder: (context, child) {
                       double currentPage = 0;
                       try {
-                        currentPage =
-                            _page.page ?? _page.initialPage.toDouble();
+                        currentPage = _page.page ?? _page.initialPage.toDouble();
                       } catch (_) {}
                       final diff = (index - currentPage).abs();
                       final scale = 1 - (diff * 0.12).clamp(0.0, 0.12);
@@ -344,9 +323,7 @@ class _HomePageEnState extends State<HomePageEn> {
                 builder: (_, __) {
                   final len = filteredMovies.length;
                   if (len == 0) return const SizedBox.shrink();
-                  final cur =
-                      ((_page.page ?? _page.initialPage.toDouble()).round()) %
-                          len;
+                  final cur = ((_page.page ?? _page.initialPage.toDouble()).round()) % len;
                   return Row(
                     mainAxisSize: MainAxisSize.min,
                     children: List.generate(len, (i) {
@@ -356,8 +333,7 @@ class _HomePageEnState extends State<HomePageEn> {
                         width: active ? 10 : 6,
                         height: 6,
                         decoration: BoxDecoration(
-                          color:
-                              active ? _orange : Colors.black.withOpacity(.2),
+                          color: active ? _orange : Colors.black.withOpacity(.2),
                           borderRadius: BorderRadius.circular(6),
                         ),
                       );
@@ -389,6 +365,7 @@ class _HomePageEnState extends State<HomePageEn> {
               ),
             ),
             const SizedBox(height: 12),
+
             SizedBox(
               height: 160,
               child: filteredMovies.isEmpty
@@ -415,100 +392,53 @@ class _HomePageEnState extends State<HomePageEn> {
 }
 
 //
-// ───────────── LANGUAGE SWITCHER (EN page) ─────────────
+// ────────────────────────────────────────────────────────────
+//   ACCOUNT BUTTON (English)
+// ────────────────────────────────────────────────────────────
 //
-class LanguageSwitcherEn extends StatelessWidget {
-  final bool isEnglish;
-  const LanguageSwitcherEn({super.key, required this.isEnglish});
+class _AccountButton extends StatelessWidget {
+  const _AccountButton();
 
   @override
   Widget build(BuildContext context) {
-    final selectedStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-        );
-    final unselectedStyle = Theme.of(context).textTheme.labelLarge;
-
-    return Container(
-      padding: const EdgeInsets.all(2),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF4F6FA),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.black12),
-      ),
+    return PopupMenuButton<String>(
+      onSelected: (v) {
+        if (v == 'logout') {
+          Navigator.of(context).pushNamedAndRemoveUntil('/login', (r) => false);
+        } else if (v == 'profile') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Go to Profile')),
+          );
+        } else if (v == 'tickets') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Go to My tickets')),
+          );
+        }
+      },
+      itemBuilder: (context) => const [
+        PopupMenuItem(value: 'profile', child: Text('Profile')),
+        PopupMenuItem(value: 'tickets', child: Text('My tickets')),
+        PopupMenuItem(value: 'logout', child: Text('Log out')),
+      ],
+      offset: const Offset(0, kToolbarHeight),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          _LangChip(
-            label: 'Vietnamese',
-            selected: !isEnglish,
-            onTap: () {
-              // switch back to VI
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => HomePage()),
-              );
-            },
-            selectedStyle: selectedStyle,
-            unselectedStyle: unselectedStyle,
-          ),
-          _LangChip(
-            label: 'English',
-            selected: isEnglish,
-            onTap: () {},
-            selectedStyle: selectedStyle,
-            unselectedStyle: unselectedStyle,
-          ),
+        children: const [
+          CircleAvatar(radius: 18, child: Icon(Icons.person, size: 20)),
+          SizedBox(width: 4),
+          Icon(Icons.keyboard_arrow_down),
         ],
       ),
     );
   }
 }
 
-class _LangChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-  final TextStyle? selectedStyle;
-  final TextStyle? unselectedStyle;
-
-  const _LangChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-    required this.selectedStyle,
-    required this.unselectedStyle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
-      curve: Curves.easeOut,
-      margin: const EdgeInsets.all(1),
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-      decoration: BoxDecoration(
-        color: selected ? Colors.white : Colors.transparent,
-        borderRadius: BorderRadius.circular(999),
-        boxShadow: selected
-            ? [
-                BoxShadow(
-                    color: Colors.black.withOpacity(.06),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4))
-              ]
-            : null,
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(999),
-        onTap: onTap,
-        child: Text(label, style: selected ? selectedStyle : unselectedStyle),
-      ),
-    );
-  }
-}
-
 //
-// ────────────────── SUB WIDGETS ──────────────────
+// ────────────────────────────────────────────────────────────
+//   SUB WIDGETS
+// ────────────────────────────────────────────────────────────
 //
+
 class _SectionHeader extends StatelessWidget {
   final String title;
   final Widget? action;
@@ -545,7 +475,7 @@ class _MoviePosterCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Poster (tappable)
+            // Tappable poster
             Expanded(
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(radius),

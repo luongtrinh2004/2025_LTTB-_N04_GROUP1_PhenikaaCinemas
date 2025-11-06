@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_cinema_booking_ui/pages/english/home_page_en.dart';
 import '../pages/home_page.dart';
 import '../pages/tickets_page.dart';
 import '../pages/profile_page.dart';
@@ -17,12 +16,12 @@ class _AppShellState extends State<AppShell> {
   int _index = 0;
 
   // Đặt Hot ở CUỐI CÙNG
-  final _pages =  [
+  final _pages = const [
     HomePage(),
-    HomePageEn(),
-    HotMoviesPage(),
+    HotMoviesPage(), 
     TicketsPage(),
     ProfilePage(),
+   
   ];
 
   @override
@@ -31,22 +30,19 @@ class _AppShellState extends State<AppShell> {
       body: _pages[_index],
       bottomNavigationBar: NavigationBar(
         backgroundColor: Colors.white,
-        indicatorColor:
-            const Color(0xFFFF7A00).withOpacity(.12),
+        indicatorColor: const Color(0xFFFF7A00).withOpacity(.12),
         selectedIndex: _index,
-        onDestinationSelected: (i) =>
-            setState(() => _index = i),
+        onDestinationSelected: (i) => setState(() => _index = i),
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
             label: 'Trang Chủ',
           ),
-          NavigationDestination(
-            icon:
-                Icon(Icons.local_fire_department_outlined),
+           NavigationDestination(
+            icon: Icon(Icons.local_fire_department_outlined),
             selectedIcon: Icon(Icons.local_fire_department),
-            label: 'Hot', // <-- cuối
+            label: 'Phim Hot', 
           ),
           NavigationDestination(
             icon: Icon(Icons.confirmation_number_outlined),
@@ -56,8 +52,9 @@ class _AppShellState extends State<AppShell> {
           NavigationDestination(
             icon: Icon(Icons.person_outline),
             selectedIcon: Icon(Icons.person),
-            label: 'Profile',
+            label: 'Thông Tin',
           ),
+         
         ],
       ),
     );
