@@ -1,18 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
+import 'package:flutter_cinema_booking_ui/pages/booking_page.dart';
 
-class ShinDetailPage extends StatelessWidget {
+class ShinDetailPage extends StatefulWidget {
   const ShinDetailPage({super.key});
 
   @override
+  State<ShinDetailPage> createState() =>
+      _ShinDetailPageState();
+}
+
+class _ShinDetailPageState extends State<ShinDetailPage> {
+  // Ảnh
+  static const poster = 'img/shin.jpg';
+  static const stills = [
+    'img/shin.jpg',
+    'img/shin.jpg',
+    'img/shin.jpg'
+  ];
+
+  // Ngày/giờ chiếu
+  final List<String> _dates = const [
+    'Hôm nay',
+    'Ngày mai',
+    'Thứ 7'
+  ];
+  final List<String> _times = const [
+    '10:00',
+    '13:30',
+    '16:45',
+    '20:15'
+  ];
+  int _dateIndex = 0;
+  int _timeIndex = 0;
+
+  // Ghế còn (demo)
+  final int _roomCapacity = 100;
+  final Map<String, Map<String, int>> _remainingByDateTime =
+      const {
+    'Hôm nay': {
+      '10:00': 62,
+      '13:30': 41,
+      '16:45': 15,
+      '20:15': 80
+    },
+    'Ngày mai': {
+      '10:00': 70,
+      '13:30': 50,
+      '16:45': 22,
+      '20:15': 88
+    },
+    'Thứ 7': {
+      '10:00': 30,
+      '13:30': 24,
+      '16:45': 10,
+      '20:15': 18
+    },
+  };
+
+  String get _selectedDate => _dates[_dateIndex];
+  String get _selectedTime => _times[_timeIndex];
+  int get _seatsLeft =>
+      _remainingByDateTime[_selectedDate]?[_selectedTime] ??
+      _roomCapacity;
+
+  @override
   Widget build(BuildContext context) {
-    const poster = 'img/shin.jpg';
-    const stills = [
-      'img/shin.jpg', // bạn có thể thêm các ảnh khác nếu có
-      'img/shin.jpg',
-      'img/shin.jpg',
-    ];
+    final subtle = Theme.of(context)
+        .colorScheme
+        .onSurface
+        .withOpacity(.7);
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -41,9 +99,7 @@ class ShinDetailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              const Expanded(
-                child: _MovieInfo(),
-              ),
+              const Expanded(child: _MovieInfo()),
             ],
           ),
 
@@ -52,13 +108,13 @@ class ShinDetailPage extends StatelessWidget {
           // Chips thể loại
           const _SectionTitle('Thể loại'),
           const SizedBox(height: 8),
-          Wrap(
+          const Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: const [
-              _Tag('Tâm lý'),
-              _Tag('Hài'),
+            children: [
               _Tag('Hoạt hình'),
+              _Tag('Hài'),
+              _Tag('Tâm lý'),
               _Tag('P'),
             ],
           ),
@@ -69,14 +125,11 @@ class ShinDetailPage extends StatelessWidget {
           const _SectionTitle('Nội dung'),
           const SizedBox(height: 8),
           const Text(
-            'Để thiết lập mối quan hệ giữa một thành phố ở Ấn Độ và Kasukabe, Lễ hội Giải trí Thiếu nhi Kasukabe chính thức được tổ chức.'
-            'Và bất ngờ chưa, ban tổ chức thông báo rằng đội chiến thắng trong cuộc thi nhảy của lễ hội sẽ được mời sang Ấn Độ biểu diễn ngay trên sân khấu bản địa!'
-            'Nghe vậy, Shin và Đội đặc nhiệm Kasukabe lập tức lên kế hoạch chinh phục giải thưởng và khởi hành sang Ấn Độ để “quẩy banh nóc”!'
-            'Chuyến du lịch tưởng chừng chỉ có vui chơi ca hát lại rẽ hướng 180 độ khi Shin và Bo tình cờ lạc vào một tiệm tạp hóa bí ẩn giữa lòng Ấn Độ.'
-            'Tại đây, cả hai bắt gặp một chiếc balo có hình dáng giống... cái mũi và cả hai quyết định mua về. Nhưng không ngờ, chiếc balo lại ẩn chứa một bí mật kỳ lạ.'
-            'rong lúc tò mò nghịch ngợm, Bo lỡ tay nhét một mảnh giấy kỳ lạ từ balo lên... mũi mình. Và thế là thảm họa bắt đầu!'
-            'Một thế lực tà ác trỗi dậy, biến Bo trở thành “Bạo Chúa Bo” – phiên bản siêu tăng động, cực kỳ hung hãn và sở hữu sức mạnh đủ để... làm rung chuyển cả thế giới.'
-            'Liệu Shin và những người bạn có thể ngăn chặn Bo phiên bản Bạo Chúa trước khi cậu ấy khiến Ấn Độ (và cả thế giới) chìm trong hỗn loạn?',
+            'Để thiết lập mối quan hệ giữa một thành phố ở Ấn Độ và Kasukabe, Lễ hội Giải trí Thiếu nhi Kasukabe được tổ chức. '
+            'Đội chiến thắng cuộc thi nhảy sẽ được mời sang Ấn Độ biểu diễn! Nghe vậy, Shin và Đội đặc nhiệm Kasukabe lập tức lên đường. '
+            'Chuyến đi bất ngờ rẽ hướng khi Shin và Bo lạc vào một tiệm tạp hóa bí ẩn và mua về chiếc balo có hình thù kỳ lạ. '
+            'Bo vô tình dính mảnh giấy bí ẩn từ balo lên… mũi, kích hoạt một thế lực tà ác và biến cậu thành “Bạo Chúa Bo”. '
+            'Shin cùng bạn bè phải tìm cách ngăn chặn Bo trước khi cậu khiến Ấn Độ — và cả thế giới — chìm trong hỗn loạn.',
           ),
 
           const SizedBox(height: 18),
@@ -112,9 +165,11 @@ class ShinDetailPage extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-          // Suất chiếu (UI)
+          // Suất chiếu
           const _SectionTitle('Suất chiếu'),
           const SizedBox(height: 10),
+
+          // Chọn ngày
           SizedBox(
             height: 38,
             child: ListView.separated(
@@ -124,36 +179,54 @@ class ShinDetailPage extends StatelessWidget {
                   const SizedBox(width: 10),
               itemBuilder: (_, i) => ChoiceChip(
                 label: Text(_dates[i]),
-                selected: i == 0,
-                onSelected: (_) {},
+                selected: i == _dateIndex,
+                onSelected: (_) =>
+                    setState(() => _dateIndex = i),
               ),
             ),
           ),
+
           const SizedBox(height: 12),
+
+          // Chọn giờ
           Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: _times.map((t) {
+            children: List.generate(_times.length, (i) {
+              final sel = i == _timeIndex;
               return InputChip(
-                label: Text(t),
-                selected: t == _times.first,
-                onSelected: (_) {},
+                label: Text(_times[i]),
+                selected: sel,
+                onSelected: (_) =>
+                    setState(() => _timeIndex = i),
               );
-            }).toList(),
+            }),
+          ),
+
+          const SizedBox(height: 8),
+          Text(
+            'Còn $_seatsLeft / $_roomCapacity ghế cho suất $_selectedTime • $_selectedDate',
+            style: TextStyle(
+                fontWeight: FontWeight.w600, color: subtle),
           ),
 
           const SizedBox(height: 24),
 
-          // Nút đặt vé
+          // Đặt vé -> BookingPage
           SizedBox(
             width: double.infinity,
             child: FilledButton(
               onPressed: () {
-                // UI demo: bạn có thể điều hướng sang trang chọn suất / ghế sau
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content:
-                          Text('Đi đến đặt vé (UI demo)')),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BookingPage(
+                      movieTitle:
+                          'Shin Cậu Bé Bút Chì: Nóng Bỏng Tay! Những Vũ Công Siêu Cay Kasukabe',
+                      showDate: _selectedDate,
+                      showTime: _selectedTime,
+                    ),
+                  ),
                 );
               },
               child: const Text('Đặt vé phim'),
@@ -164,9 +237,6 @@ class ShinDetailPage extends StatelessWidget {
     );
   }
 }
-
-const _times = ['10:00', '13:30', '16:45', '20:15'];
-const _dates = ['Hôm nay', 'Ngày mai', 'Thứ 7'];
 
 class _MovieInfo extends StatelessWidget {
   const _MovieInfo();
