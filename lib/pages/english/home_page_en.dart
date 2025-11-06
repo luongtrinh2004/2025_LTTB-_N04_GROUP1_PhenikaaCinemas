@@ -444,7 +444,7 @@ class LanguageSwitcherEn extends StatelessWidget {
             onTap: () {
               // switch back to VI
               Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const HomePage()),
+                MaterialPageRoute(builder: (_) => HomePage()),
               );
             },
             selectedStyle: selectedStyle,

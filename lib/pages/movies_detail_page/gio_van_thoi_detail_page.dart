@@ -1,18 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
+import 'package:flutter_cinema_booking_ui/pages/booking_page.dart';
 
-class GioVanThoiDetailPage extends StatelessWidget {
+class GioVanThoiDetailPage extends StatefulWidget {
   const GioVanThoiDetailPage({super.key});
 
   @override
+  State<GioVanThoiDetailPage> createState() =>
+      _GioVanThoiDetailPageState();
+}
+
+class _GioVanThoiDetailPageState
+    extends State<GioVanThoiDetailPage> {
+  // Ảnh
+  static const poster = 'img/giovanthoi.jpg';
+  static const stills = [
+    'img/giovanthoi.jpg',
+    'img/giovanthoi.jpg',
+    'img/giovanthoi.jpg',
+  ];
+
+  // Chọn ngày/giờ
+  final List<String> _dates = const [
+    'Hôm nay',
+    'Ngày mai',
+    'Thứ 7'
+  ];
+  final List<String> _times = const [
+    '09:00',
+    '14:30',
+    '18:45',
+    '22:15'
+  ];
+  int _dateIndex = 0;
+  int _timeIndex = 0;
+
+  // Ghế còn (demo)
+  final int _roomCapacity = 120;
+  final Map<String, Map<String, int>> _remainingByDateTime =
+      const {
+    'Hôm nay': {
+      '09:00': 70,
+      '14:30': 36,
+      '18:45': 12,
+      '22:15': 60
+    },
+    'Ngày mai': {
+      '09:00': 64,
+      '14:30': 28,
+      '18:45': 20,
+      '22:15': 84
+    },
+    'Thứ 7': {
+      '09:00': 30,
+      '14:30': 18,
+      '18:45': 10,
+      '22:15': 22
+    },
+  };
+
+  String get _selectedDate => _dates[_dateIndex];
+  String get _selectedTime => _times[_timeIndex];
+  int get _seatsLeft =>
+      _remainingByDateTime[_selectedDate]?[_selectedTime] ??
+      _roomCapacity;
+
+  @override
   Widget build(BuildContext context) {
-    const poster = 'img/giovanthoi.jpg';
-    const stills = [
-      'img/avatar3.jpg', // bạn có thể thêm các ảnh khác nếu có
-      'img/avatar3.jpg',
-      'img/avatar3.jpg',
-    ];
+    final subtle = Theme.of(context)
+        .colorScheme
+        .onSurface
+        .withOpacity(.7);
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -41,15 +100,13 @@ class GioVanThoiDetailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              const Expanded(
-                child: _MovieInfo(),
-              ),
+              const Expanded(child: _MovieInfo()),
             ],
           ),
 
           const SizedBox(height: 18),
 
-          // Chips thể loại
+          // Thể loại
           const _SectionTitle('Thể loại'),
           const SizedBox(height: 8),
           Wrap(
@@ -68,11 +125,10 @@ class GioVanThoiDetailPage extends StatelessWidget {
           const _SectionTitle('Nội dung'),
           const SizedBox(height: 8),
           const Text(
-            'Lấy bối cảnh Nhật Bản trong thời kỳ Taishō và Shōwa, The Wind Rises kể về Jirō Horikoshi – chàng trai mang ước mơ bay lượn giữa bầu trời, dù đôi mắt cận không cho phép.'
-            'Trong những giấc mơ, anh được nhà thiết kế máy bay Caproni truyền cảm hứng, và ngoài đời, Jirō trở thành kỹ sư hàng không tài năng.'
-            'Sau trận đại động đất Kantō, anh gặp Nahoko – cô gái dịu dàng và lạc quan. Tình yêu chớm nở giữa khung cảnh bình yên của Karuizawa, rồi kết trái bằng một cuộc hôn nhân đầy hy vọng.'
-            'Nhưng bệnh lao phổi của Nahoko ngày cảng trở nặng ...'
-            'Trong khi đất nước dấn sâu vào chiến tranh, Jirō lao vào thiết kế mẫu tiêm kích thử nghiệm với tất cả đam mê – giằng xé giữa lý tưởng bay cao và hiện thực cay nghiệt của thời đại.',
+            'Lấy bối cảnh Nhật Bản trong thời kỳ Taishō và Shōwa, “Gió Vẫn Thổi” kể về Jirō Horikoshi – chàng trai mang ước mơ bay lượn giữa bầu trời, dù đôi mắt cận không cho phép. '
+            'Trong những giấc mơ, anh được nhà thiết kế máy bay Caproni truyền cảm hứng; ngoài đời, Jirō trở thành kỹ sư hàng không tài năng. '
+            'Sau trận đại động đất Kantō, anh gặp Nahoko – cô gái dịu dàng và lạc quan. Tình yêu nảy nở rồi kết trái, nhưng bệnh lao của Nahoko ngày càng trở nặng... '
+            'Khi đất nước dấn sâu vào chiến tranh, Jirō lao vào thiết kế mẫu tiêm kích, giằng xé giữa lý tưởng bay cao và hiện thực cay nghiệt của thời đại.',
           ),
 
           const SizedBox(height: 18),
@@ -108,9 +164,11 @@ class GioVanThoiDetailPage extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-          // Suất chiếu (UI)
+          // Suất chiếu
           const _SectionTitle('Suất chiếu'),
           const SizedBox(height: 10),
+
+          // chọn ngày
           SizedBox(
             height: 38,
             child: ListView.separated(
@@ -120,36 +178,53 @@ class GioVanThoiDetailPage extends StatelessWidget {
                   const SizedBox(width: 10),
               itemBuilder: (_, i) => ChoiceChip(
                 label: Text(_dates[i]),
-                selected: i == 0,
-                onSelected: (_) {},
+                selected: i == _dateIndex,
+                onSelected: (_) =>
+                    setState(() => _dateIndex = i),
               ),
             ),
           ),
+
           const SizedBox(height: 12),
+
+          // chọn giờ
           Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: _times.map((t) {
+            children: List.generate(_times.length, (i) {
+              final sel = i == _timeIndex;
               return InputChip(
-                label: Text(t),
-                selected: t == _times.first,
-                onSelected: (_) {},
+                label: Text(_times[i]),
+                selected: sel,
+                onSelected: (_) =>
+                    setState(() => _timeIndex = i),
               );
-            }).toList(),
+            }),
+          ),
+
+          const SizedBox(height: 8),
+          Text(
+            'Còn $_seatsLeft / $_roomCapacity ghế cho suất $_selectedTime • $_selectedDate',
+            style: TextStyle(
+                fontWeight: FontWeight.w600, color: subtle),
           ),
 
           const SizedBox(height: 24),
 
-          // Nút đặt vé
+          // Nút đặt vé -> BookingPage
           SizedBox(
             width: double.infinity,
             child: FilledButton(
               onPressed: () {
-                // UI demo: bạn có thể điều hướng sang trang chọn suất / ghế sau
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content:
-                          Text('Đi đến đặt vé (UI demo)')),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BookingPage(
+                      movieTitle: 'Gió Vẫn Thổi',
+                      showDate: _selectedDate,
+                      showTime: _selectedTime,
+                    ),
+                  ),
                 );
               },
               child: const Text('Đặt vé phim'),
@@ -160,9 +235,6 @@ class GioVanThoiDetailPage extends StatelessWidget {
     );
   }
 }
-
-const _times = ['09:00', '14:30', '18:45', '22:15'];
-const _dates = ['Hôm nay', 'Ngày mai', 'Thứ 7'];
 
 class _MovieInfo extends StatelessWidget {
   const _MovieInfo();
@@ -207,7 +279,7 @@ class _MovieInfo extends StatelessWidget {
             SizedBox(width: 6),
             Expanded(
                 child: Text(
-                    'Ngôn ngữ: Tiếng Nhật, Phụ Đề/Lồng Tiếng Tiếng Việt')),
+                    'Ngôn ngữ: Tiếng Nhật, Phụ đề/Lồng tiếng Tiếng Việt')),
           ],
         ),
       ],

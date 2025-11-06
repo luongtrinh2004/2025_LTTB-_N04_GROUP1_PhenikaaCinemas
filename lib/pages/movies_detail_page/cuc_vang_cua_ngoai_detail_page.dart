@@ -1,18 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
+import 'package:flutter_cinema_booking_ui/pages/booking_page.dart';
 
-class CucVangCuaNgoaiDetailPage extends StatelessWidget {
+class CucVangCuaNgoaiDetailPage extends StatefulWidget {
   const CucVangCuaNgoaiDetailPage({super.key});
 
   @override
+  State<CucVangCuaNgoaiDetailPage> createState() =>
+      _CucVangCuaNgoaiDetailPageState();
+}
+
+class _CucVangCuaNgoaiDetailPageState
+    extends State<CucVangCuaNgoaiDetailPage> {
+  // Ảnh
+  static const poster = 'img/cucvangcuangoai.jpg';
+  // TODO: thay bằng ảnh hậu trường đúng nếu có
+  static const stills = [
+    'img/cucvangcuangoai.jpg',
+    'img/cucvangcuangoai.jpg',
+    'img/cucvangcuangoai.jpg',
+  ];
+
+  // Chọn ngày/giờ
+  final List<String> _dates = const [
+    'Hôm nay',
+    'Ngày mai',
+    'Thứ 7'
+  ];
+  final List<String> _times = const [
+    '10:00',
+    '13:30',
+    '16:45',
+    '20:15'
+  ];
+  int _dateIndex = 0;
+  int _timeIndex = 0;
+
+  // Ghế còn (demo)
+  final int _roomCapacity = 120;
+  final Map<String, Map<String, int>> _remainingByDateTime =
+      const {
+    'Hôm nay': {
+      '10:00': 70,
+      '13:30': 42,
+      '16:45': 16,
+      '20:15': 60
+    },
+    'Ngày mai': {
+      '10:00': 64,
+      '13:30': 38,
+      '16:45': 25,
+      '20:15': 82
+    },
+    'Thứ 7': {
+      '10:00': 30,
+      '13:30': 20,
+      '16:45': 10,
+      '20:15': 18
+    },
+  };
+
+  String get _selectedDate => _dates[_dateIndex];
+  String get _selectedTime => _times[_timeIndex];
+  int get _seatsLeft =>
+      _remainingByDateTime[_selectedDate]?[_selectedTime] ??
+      _roomCapacity;
+
+  @override
   Widget build(BuildContext context) {
-    const poster = 'img/cucvangcuangoai.jpg';
-    const stills = [
-      'img/mai.webp', // bạn có thể thêm các ảnh khác nếu có
-      'img/mai.webp',
-      'img/mai.webp',
-    ];
+    final subtle = Theme.of(context)
+        .colorScheme
+        .onSurface
+        .withOpacity(.7);
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -41,15 +101,13 @@ class CucVangCuaNgoaiDetailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              const Expanded(
-                child: _MovieInfo(),
-              ),
+              const Expanded(child: _MovieInfo()),
             ],
           ),
 
           const SizedBox(height: 18),
 
-          // Chips thể loại
+          // Thể loại
           const _SectionTitle('Thể loại'),
           const SizedBox(height: 8),
           Wrap(
@@ -68,11 +126,11 @@ class CucVangCuaNgoaiDetailPage extends StatelessWidget {
           const _SectionTitle('Nội dung'),
           const SizedBox(height: 8),
           const Text(
-            'Lấy cảm hứng từ những ký ức tuổi thơ ngọt ngào, “Cục Vàng Của Ngoại” mang đến câu chuyện ấm áp về tình bà cháu trong một xóm nhỏ chan chứa nghĩa tình.'
-            'Bà Hậu – người phụ nữ cả đời tần tảo, nay trở thành chỗ dựa duy nhất của cháu ngoại khi con gái bỏ đi.'
-            'Dẫu cuộc sống còn nhiều nhọc nhằn, tình thương bà dành cho cháu vẫn luôn trọn vẹn.'
-            'Với bà, cháu là “cục vàng” – niềm vui, niềm an ủi và cũng là lẽ sống của đời mình.'
-            'Bộ phim nhẹ nhàng dẫn khán giả trở lại những khoảnh khắc quen thuộc nơi xóm nhỏ: nụ cười hồn nhiên của cháu, vòng tay chở che của bà và sự đùm bọc từ hàng xóm láng giềng.'
+            'Lấy cảm hứng từ những ký ức tuổi thơ ngọt ngào, “Cục Vàng Của Ngoại” mang đến câu chuyện ấm áp về tình bà cháu trong một xóm nhỏ chan chứa nghĩa tình. '
+            'Bà Hậu – người phụ nữ cả đời tần tảo, nay trở thành chỗ dựa duy nhất của cháu ngoại khi con gái bỏ đi. '
+            'Dẫu cuộc sống còn nhiều nhọc nhằn, tình thương bà dành cho cháu vẫn luôn trọn vẹn. '
+            'Với bà, cháu là “cục vàng” – niềm vui, niềm an ủi và cũng là lẽ sống của đời mình. '
+            'Bộ phim nhẹ nhàng dẫn khán giả trở lại những khoảnh khắc quen thuộc nơi xóm nhỏ: nụ cười hồn nhiên của cháu, vòng tay chở che của bà và sự đùm bọc từ hàng xóm láng giềng. '
             'Tất cả cùng hòa thành một bức tranh đời thường ấm áp, gợi nhắc về tuổi thơ bình yên và tình người mộc mạc, chân thành.',
           ),
 
@@ -109,9 +167,11 @@ class CucVangCuaNgoaiDetailPage extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-          // Suất chiếu (UI)
+          // Suất chiếu
           const _SectionTitle('Suất chiếu'),
           const SizedBox(height: 10),
+
+          // chọn ngày
           SizedBox(
             height: 38,
             child: ListView.separated(
@@ -121,36 +181,53 @@ class CucVangCuaNgoaiDetailPage extends StatelessWidget {
                   const SizedBox(width: 10),
               itemBuilder: (_, i) => ChoiceChip(
                 label: Text(_dates[i]),
-                selected: i == 0,
-                onSelected: (_) {},
+                selected: i == _dateIndex,
+                onSelected: (_) =>
+                    setState(() => _dateIndex = i),
               ),
             ),
           ),
+
           const SizedBox(height: 12),
+
+          // chọn giờ
           Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: _times.map((t) {
+            children: List.generate(_times.length, (i) {
+              final sel = i == _timeIndex;
               return InputChip(
-                label: Text(t),
-                selected: t == _times.first,
-                onSelected: (_) {},
+                label: Text(_times[i]),
+                selected: sel,
+                onSelected: (_) =>
+                    setState(() => _timeIndex = i),
               );
-            }).toList(),
+            }),
+          ),
+
+          const SizedBox(height: 8),
+          Text(
+            'Còn $_seatsLeft / $_roomCapacity ghế cho suất $_selectedTime • $_selectedDate',
+            style: TextStyle(
+                fontWeight: FontWeight.w600, color: subtle),
           ),
 
           const SizedBox(height: 24),
 
-          // Nút đặt vé
+          // Nút đặt vé -> BookingPage
           SizedBox(
             width: double.infinity,
             child: FilledButton(
               onPressed: () {
-                // UI demo: bạn có thể điều hướng sang trang chọn suất / ghế sau
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content:
-                          Text('Đi đến đặt vé (UI demo)')),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BookingPage(
+                      movieTitle: 'Cục Vàng Của Ngoại',
+                      showDate: _selectedDate,
+                      showTime: _selectedTime,
+                    ),
+                  ),
                 );
               },
               child: const Text('Đặt vé phim'),
@@ -161,9 +238,6 @@ class CucVangCuaNgoaiDetailPage extends StatelessWidget {
     );
   }
 }
-
-const _times = ['10:00', '13:30', '16:45', '20:15'];
-const _dates = ['Hôm nay', 'Ngày mai', 'Thứ 7'];
 
 class _MovieInfo extends StatelessWidget {
   const _MovieInfo();
