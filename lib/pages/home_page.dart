@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
       'genres': ['Tâm lý', 'Tình cảm'],
     },
     {
-      'title': 'Tay Anh Giữ Một Vì Sao',
+      'title': 'Hold A Star For Me',
       'poster': 'img/tay_anh_giu_mot_vi_sao.jpg',
       'rating': 8.3,
       'duration': '115 phút',
@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
       'genres': ['Kinh dị'],
     },
     {
-      'title': 'Tử Chiến Trên Không',
+      'title': 'Air Battle',
       'poster': 'img/tu_chien_tren_khong.jpg',
       'rating': 7.9,
       'duration': '118 phút',
@@ -67,57 +67,56 @@ class _HomePageState extends State<HomePage> {
       'genres': ['Hành động'],
     },
     {
-      'title':
-          'Shin Cậu Bé Bút Chì: Nóng Bỏng Tay! Những Vũ Công Siêu Cay Kasukabe',
+      'title': 'Crayon Shin-chan: Super Spicy Kasukabe Dancers',
       'poster': 'img/shin.jpg',
       'rating': 9.0,
       'duration': '105 phút',
       'genres': ['Hài', 'Hoạt hình'],
     },
     {
-      'title': 'Năm Của Anh, Ngày Của Em',
+      'title': 'Your Year, My Day',
       'poster': 'img/namcuaanh_ngaycuaem.jpg',
       'rating': 7.0,
       'duration': '112 phút',
       'genres': ['Tình cảm'],
     },
     {
-      'title': 'Gió Vẫn Thổi',
+      'title': 'The Wind Rises (2025)',
       'poster': 'img/giovanthoi.jpg',
       'rating': 8.6,
       'duration': '127 phút',
       'genres': ['Hoạt hình', 'Tâm lý'],
     },
     {
-      'title': 'Cải Mả',
+      'title': 'Grave Relocation',
       'poster': 'img/caima.jpg',
       'rating': 7.5,
       'duration': '115 phút',
       'genres': ['Kinh dị'],
     },
     {
-      'title': 'Cục Vàng Của Ngoại',
+      'title': 'Grandma\'s Little Treasure',
       'poster': 'img/cucvangcuangoai.jpg',
       'rating': 8.7,
       'duration': '119 phút',
       'genres': ['Tâm lý'],
     },
     {
-      'title': 'Good Boy - Chó Cưng Đừng Sợ',
+      'title': 'Good Boy',
       'poster': 'img/goodboy.jpg',
       'rating': 7.5,
       'duration': '73 phút',
       'genres': ['Kinh dị'],
     },
     {
-      'title': 'Tớ Và Roboco: Siêu Cấp Đa Vũ Trụ',
+      'title': 'Me & Roboco: Multiverse Mayhem',
       'poster': 'img/roboco.jpg',
       'rating': 7.2,
       'duration': '64 phút',
       'genres': ['Hoạt hình', 'Hài'],
     },
     {
-      'title': 'Vận May',
+      'title': 'Lucky Day',
       'poster': 'img/vanmay.jpg',
       'rating': 7.9,
       'duration': '98 phút',
@@ -139,10 +138,7 @@ class _HomePageState extends State<HomePage> {
 
     _auto = Timer.periodic(const Duration(seconds: 5), (_) {
       if (!mounted) return;
-      final next =
-          (_page.page ?? _page.initialPage.toDouble())
-                  .round() +
-              1;
+      final next = (_page.page ?? _page.initialPage.toDouble()).round() + 1;
       _page.animateToPage(
         next,
         duration: const Duration(milliseconds: 600),
@@ -159,8 +155,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _openDetail(Map<String, dynamic> movie) {
-    final title =
-        (movie['title'] as String).trim().toLowerCase();
+    final title = (movie['title'] as String).trim().toLowerCase();
     Widget? page;
 
     if (title == 'mai') {
@@ -183,19 +178,16 @@ class _HomePageState extends State<HomePage> {
     } else if (title == 'năm của anh, ngày của em' ||
         title == 'nam cua anh, ngay cua em') {
       page = const NamCuaAnhNgayCuaEmDetailPage();
-    } else if (title == 'gió vẫn thổi' ||
-        title == 'gio van thoi') {
+    } else if (title == 'gió vẫn thổi' || title == 'gio van thoi') {
       page = const GioVanThoiDetailPage();
     } else if (title == 'cải mả' || title == 'cai ma') {
       page = const CaiMaDetailPage();
-    } else if (title == 'cục vàng của ngoại' ||
-        title == 'cuc vang cua ngoai') {
+    } else if (title == 'cục vàng của ngoại' || title == 'cuc vang cua ngoai') {
       page = const CucVangCuaNgoaiDetailPage();
     } else if (title == 'good boy - chó cưng đừng sợ' ||
         title == 'good boy - cho cung dung so') {
       page = const GoodBoyDetailPage();
-    } else if (title ==
-            'tớ và roboco: siêu cấp đa vũ trụ' ||
+    } else if (title == 'tớ và roboco: siêu cấp đa vũ trụ' ||
         title == 'to va roboco: sieu cap da vu tru') {
       page = const RobocoDetailPage();
     } else if (title == 'vận may' || title == 'van may') {
@@ -203,13 +195,10 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (page != null) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (_) => page!));
+      Navigator.push(context, MaterialPageRoute(builder: (_) => page!));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-                'Chưa có trang chi tiết cho phim này.')),
+        const SnackBar(content: Text('Chưa có trang chi tiết cho phim này.')),
       );
     }
   }
@@ -252,28 +241,24 @@ class _HomePageState extends State<HomePage> {
 
             // --- Categories ---
             const Text('Thể loại',
-                style:
-                    TextStyle(fontWeight: FontWeight.w700)),
+                style: TextStyle(fontWeight: FontWeight.w700)),
             const SizedBox(height: 12),
             SizedBox(
               height: 44,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length,
-                separatorBuilder: (_, __) =>
-                    const SizedBox(width: 10),
+                separatorBuilder: (_, __) => const SizedBox(width: 10),
                 itemBuilder: (_, i) {
                   final label = categories[i];
-                  final selected =
-                      _selectedCategory == label;
+                  final selected = _selectedCategory == label;
                   return ChoiceChip(
                     label: Text(label),
                     selected: selected,
                     onSelected: (_) {
                       setState(() {
-                        _selectedCategory = selected
-                            ? null
-                            : label; // bấm lần nữa để bỏ lọc
+                        _selectedCategory =
+                            selected ? null : label; // bấm lần nữa để bỏ lọc
                       });
                     },
                   );
@@ -313,25 +298,20 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) {
                   if (filteredMovies.isEmpty) {
                     return const Center(
-                        child: Text(
-                            'Không có phim thuộc thể loại này'));
+                        child: Text('Không có phim thuộc thể loại này'));
                   }
-                  final movie = filteredMovies[
-                      index % filteredMovies.length];
+                  final movie = filteredMovies[index % filteredMovies.length];
                   return AnimatedBuilder(
                     animation: _page,
                     builder: (context, child) {
                       double currentPage = 0;
                       try {
-                        currentPage = _page.page ??
-                            _page.initialPage.toDouble();
+                        currentPage =
+                            _page.page ?? _page.initialPage.toDouble();
                       } catch (_) {}
-                      final diff =
-                          (index - currentPage).abs();
-                      final scale = 1 -
-                          (diff * 0.12).clamp(0.0, 0.12);
-                      return Transform.scale(
-                          scale: scale, child: child);
+                      final diff = (index - currentPage).abs();
+                      final scale = 1 - (diff * 0.12).clamp(0.0, 0.12);
+                      return Transform.scale(scale: scale, child: child);
                     },
                     child: _MoviePosterCard(
                       movie: movie,
@@ -350,28 +330,22 @@ class _HomePageState extends State<HomePage> {
                 builder: (_, __) {
                   final len = filteredMovies.length;
                   if (len == 0)
-                    return const SizedBox
-                        .shrink(); // thêm: tránh chia/mod 0
-                  final cur = ((_page.page ??
-                              _page.initialPage.toDouble())
-                          .round()) %
-                      len;
+                    return const SizedBox.shrink(); // thêm: tránh chia/mod 0
+                  final cur =
+                      ((_page.page ?? _page.initialPage.toDouble()).round()) %
+                          len;
                   return Row(
                     mainAxisSize: MainAxisSize.min,
                     children: List.generate(len, (i) {
                       final active = cur == i;
                       return Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 4),
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
                         width: active ? 10 : 6,
                         height: 6,
                         decoration: BoxDecoration(
-                          color: active
-                              ? _orange
-                              : Colors.black
-                                  .withOpacity(.2),
-                          borderRadius:
-                              BorderRadius.circular(6),
+                          color:
+                              active ? _orange : Colors.black.withOpacity(.2),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                       );
                     }),
@@ -405,20 +379,15 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 160,
               child: filteredMovies.isEmpty
-                  ? const Center(
-                      child: Text('Không có phim'))
+                  ? const Center(child: Text('Không có phim'))
                   : ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: filteredMovies.length,
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(width: 14),
-                      itemBuilder: (_, i) =>
-                          _SmallMovieTile(
-                        movie: filteredMovies[(i + 1) %
-                            filteredMovies.length],
+                      separatorBuilder: (_, __) => const SizedBox(width: 14),
+                      itemBuilder: (_, i) => _SmallMovieTile(
+                        movie: filteredMovies[(i + 1) % filteredMovies.length],
                         onTap: () => _openDetail(
-                          filteredMovies[(i + 1) %
-                              filteredMovies.length],
+                          filteredMovies[(i + 1) % filteredMovies.length],
                         ),
                       ),
                     ),
@@ -445,34 +414,27 @@ class _AccountButton extends StatelessWidget {
     return PopupMenuButton<String>(
       onSelected: (v) {
         if (v == 'logout') {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              '/login', (r) => false);
+          Navigator.of(context).pushNamedAndRemoveUntil('/login', (r) => false);
         } else if (v == 'profile') {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Đi đến Hồ sơ')),
           );
         } else if (v == 'tickets') {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Đi đến Vé của tôi')),
+            const SnackBar(content: Text('Đi đến Vé của tôi')),
           );
         }
       },
       itemBuilder: (context) => const [
-        PopupMenuItem(
-            value: 'profile', child: Text('Hồ sơ')),
-        PopupMenuItem(
-            value: 'tickets', child: Text('Vé của tôi')),
-        PopupMenuItem(
-            value: 'logout', child: Text('Đăng xuất')),
+        PopupMenuItem(value: 'profile', child: Text('Hồ sơ')),
+        PopupMenuItem(value: 'tickets', child: Text('Vé của tôi')),
+        PopupMenuItem(value: 'logout', child: Text('Đăng xuất')),
       ],
       offset: const Offset(0, kToolbarHeight),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: const [
-          CircleAvatar(
-              radius: 18,
-              child: Icon(Icons.person, size: 20)),
+          CircleAvatar(radius: 18, child: Icon(Icons.person, size: 20)),
           SizedBox(width: 4),
           Icon(Icons.keyboard_arrow_down),
         ],
@@ -497,9 +459,7 @@ class _SectionHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title,
-            style: const TextStyle(
-                fontWeight: FontWeight.w700)),
+        Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
         action ?? const SizedBox.shrink(),
       ],
     );
@@ -528,13 +488,11 @@ class _MoviePosterCard extends StatelessWidget {
             // Ảnh poster có thể bấm
             Expanded(
               child: ClipRRect(
-                borderRadius:
-                    const BorderRadius.all(radius),
+                borderRadius: const BorderRadius.all(radius),
                 child: Material(
                   color: Colors.transparent,
                   child: Ink.image(
-                    image: AssetImage(
-                        movie['poster'] as String),
+                    image: AssetImage(movie['poster'] as String),
                     fit: BoxFit.cover,
                     child: InkWell(onTap: onTap),
                     // fallback nếu lỗi asset
@@ -548,14 +506,12 @@ class _MoviePosterCard extends StatelessWidget {
               movie['title'] as String,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                  fontWeight: FontWeight.w700),
+              style: const TextStyle(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 6),
             Row(
               children: [
-                const Icon(Icons.star_rounded,
-                    color: kOrange, size: 18),
+                const Icon(Icons.star_rounded, color: kOrange, size: 18),
                 const SizedBox(width: 4),
                 Text('${movie['rating']}'),
               ],
@@ -596,8 +552,7 @@ class _SmallMovieTile extends StatelessWidget {
                   width: 100,
                   color: const Color(0xFFF1F3F6),
                   alignment: Alignment.center,
-                  child: const Icon(
-                      Icons.broken_image_outlined),
+                  child: const Icon(Icons.broken_image_outlined),
                 ),
               ),
             ),
@@ -608,24 +563,20 @@ class _SmallMovieTile extends StatelessWidget {
               onTap: onTap,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     movie['title'] as String,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w700),
+                    style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.access_time,
-                          size: 16),
+                      const Icon(Icons.access_time, size: 16),
                       const SizedBox(width: 6),
-                      Text((movie['duration'] as String?) ??
-                          ''),
+                      Text((movie['duration'] as String?) ?? ''),
                     ],
                   ),
                   const SizedBox(height: 8),

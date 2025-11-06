@@ -1,24 +1,24 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
-import 'package:flutter_cinema_booking_ui/pages/all_movies_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/all_movies_page_en.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
 
 // Import detail pages (reuse the same ones)
-import '../movies_detail_page/mai_detail_page.dart';
-import '../movies_detail_page/tay_anh_giu_mot_vi_sao_detail_page.dart';
-import '../movies_detail_page/tee_yod_detail_page.dart';
-import '../movies_detail_page/tu_chien_tren_khong_detail_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/mai_detail_page_en.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/tay_anh_giu_mot_vi_sao_detail_page_en.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/tee_yod_detail_page_en.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/tu_chien_tren_khong_detail_page_en.dart';
 
 import 'package:flutter_cinema_booking_ui/pages/english/avatar3_detail_page_en.dart';
-import '../movies_detail_page/shin_detail_page.dart';
-import '../movies_detail_page/nam_cua_anh_ngay_cua_em_detail_page.dart';
-import '../movies_detail_page/gio_van_thoi_detail_page.dart';
-import '../movies_detail_page/roboco_detail_page.dart';
-import '../movies_detail_page/cai_ma_detail_page.dart';
-import '../movies_detail_page/goodboy_detail_page.dart';
-import '../movies_detail_page/cuc_vang_cua_ngoai_detail_page.dart';
-import '../movies_detail_page/van_may_detail_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/shin_detail_page_en.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/nam_cua_anh_ngay_cua_em_detail_page_en.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/gio_van_thoi_detail_page_en.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/roboco_detail_page_en.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/cai_ma_detail_page_en.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/goodboy_detail_page_en.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/cuc_vang_cua_ngoai_detail_page_en.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/van_may_detail_page_en.dart';
 
 class HomePageEn extends StatefulWidget {
   const HomePageEn({super.key});
@@ -161,40 +161,47 @@ class _HomePageEnState extends State<HomePageEn> {
     Widget? page;
 
     if (title == 'mai') {
-      page = const MaiDetailPage();
-    } else if (title == 'tay anh giữ một vì sao' || title == 'tay anh giu mot vi sao') {
-      page = const TayAnhGiuMotViSaoDetailPage();
+      page = const MaiDetailPageEn();
+    } else if (title == 'tay anh giữ một vì sao' ||
+        title == 'tay anh giu mot vi sao') {
+      page = const TayAnhGiuMotViSaoDetailPageEn();
     } else if (title == 'tee yod') {
-      page = const TeeYodDetailPage();
-    } else if (title == 'tử chiến trên không' || title == 'tu chien tren khong') {
-      page = const TuChienTrenKhongDetailPage();
+      page = const TeeYodDetailPageEn();
+    } else if (title == 'tử chiến trên không' ||
+        title == 'tu chien tren khong') {
+      page = const TuChienTrenKhongDetailPageEn();
     } else if (title == 'avatar 3' || title == 'avatar3') {
       page = const Avatar3DetailPageEn();
     } else if (title ==
             'shin cậu bé bút chì: nóng bỏng tay! những vũ công siêu cay kasukabe' ||
-        title == 'shin cau be but chi: nong bong tay! nhung vu cong sieu cay kasukabe') {
-      page = const ShinDetailPage();
-    } else if (title == 'năm của anh, ngày của em' || title == 'nam cua anh, ngay cua em') {
-      page = const NamCuaAnhNgayCuaEmDetailPage();
+        title ==
+            'shin cau be but chi: nong bong tay! nhung vu cong sieu cay kasukabe') {
+      page = const ShinDetailPageEn();
+    } else if (title == 'năm của anh, ngày của em' ||
+        title == 'nam cua anh, ngay cua em') {
+      page = const NamCuaAnhNgayCuaEmDetailPageEn();
     } else if (title == 'gió vẫn thổi' || title == 'gio van thoi') {
-      page = const GioVanThoiDetailPage();
+      page = const GioVanThoiDetailPageEn();
     } else if (title == 'cải mả' || title == 'cai ma') {
-      page = const CaiMaDetailPage();
+      page = const CaiMaDetailPageEn();
     } else if (title == 'cục vàng của ngoại' || title == 'cuc vang cua ngoai') {
-      page = const CucVangCuaNgoaiDetailPage();
-    } else if (title == 'good boy - chó cưng đừng sợ' || title == 'good boy - cho cung dung so') {
-      page = const GoodBoyDetailPage();
-    } else if (title == 'tớ và roboco: siêu cấp đa vũ trụ' || title == 'to va roboco: sieu cap da vu tru') {
-      page = const RobocoDetailPage();
+      page = const CucVangCuaNgoaiDetailPageEn();
+    } else if (title == 'good boy - chó cưng đừng sợ' ||
+        title == 'good boy - cho cung dung so') {
+      page = const GoodBoyDetailPageEn();
+    } else if (title == 'tớ và roboco: siêu cấp đa vũ trụ' ||
+        title == 'to va roboco: sieu cap da vu tru') {
+      page = const RobocoDetailPageEn();
     } else if (title == 'vận may' || title == 'van may') {
-      page = const VanMayDetailPage();
+      page = const VanMayDetailPageEn();
     }
 
     if (page != null) {
       Navigator.push(context, MaterialPageRoute(builder: (_) => page!));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No detail page available for this movie yet.')),
+        const SnackBar(
+            content: Text('No detail page available for this movie yet.')),
       );
     }
   }
@@ -253,7 +260,8 @@ class _HomePageEnState extends State<HomePageEn> {
                     selected: selected,
                     onSelected: (_) {
                       setState(() {
-                        _selectedCategory = selected ? null : label; // toggle off on second tap
+                        _selectedCategory =
+                            selected ? null : label; // toggle off on second tap
                       });
                     },
                   );
@@ -271,7 +279,7 @@ class _HomePageEnState extends State<HomePageEn> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => AllMoviesPage(
+                      builder: (_) => AllMoviesPageEn(
                         allMovies: movies,
                         initialCategory: _selectedCategory,
                         onOpenDetail: (m) => _openDetail(m),
@@ -300,7 +308,8 @@ class _HomePageEnState extends State<HomePageEn> {
                     builder: (context, child) {
                       double currentPage = 0;
                       try {
-                        currentPage = _page.page ?? _page.initialPage.toDouble();
+                        currentPage =
+                            _page.page ?? _page.initialPage.toDouble();
                       } catch (_) {}
                       final diff = (index - currentPage).abs();
                       final scale = 1 - (diff * 0.12).clamp(0.0, 0.12);
@@ -323,7 +332,9 @@ class _HomePageEnState extends State<HomePageEn> {
                 builder: (_, __) {
                   final len = filteredMovies.length;
                   if (len == 0) return const SizedBox.shrink();
-                  final cur = ((_page.page ?? _page.initialPage.toDouble()).round()) % len;
+                  final cur =
+                      ((_page.page ?? _page.initialPage.toDouble()).round()) %
+                          len;
                   return Row(
                     mainAxisSize: MainAxisSize.min,
                     children: List.generate(len, (i) {
@@ -333,7 +344,8 @@ class _HomePageEnState extends State<HomePageEn> {
                         width: active ? 10 : 6,
                         height: 6,
                         decoration: BoxDecoration(
-                          color: active ? _orange : Colors.black.withOpacity(.2),
+                          color:
+                              active ? _orange : Colors.black.withOpacity(.2),
                           borderRadius: BorderRadius.circular(6),
                         ),
                       );
@@ -353,7 +365,7 @@ class _HomePageEnState extends State<HomePageEn> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => AllMoviesPage(
+                      builder: (_) => AllMoviesPageEn(
                         allMovies: movies,
                         initialCategory: _selectedCategory,
                         onOpenDetail: (m) => _openDetail(m),

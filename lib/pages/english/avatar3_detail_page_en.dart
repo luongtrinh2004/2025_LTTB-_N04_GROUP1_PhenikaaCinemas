@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
-import 'package:flutter_cinema_booking_ui/pages/booking_page.dart';
+import 'package:flutter_cinema_booking_ui/pages/english/booking_page_en.dart';
 
 class Avatar3DetailPageEn extends StatefulWidget {
   const Avatar3DetailPageEn({super.key});
@@ -14,7 +14,11 @@ class Avatar3DetailPageEn extends StatefulWidget {
 class _Avatar3DetailPageEnState extends State<Avatar3DetailPageEn> {
   // demo data
   static const poster = 'img/avatar3.jpg';
-  static const stills = ['img/avatar3.jpg', 'img/avatar3.jpg', 'img/avatar3.jpg'];
+  static const stills = [
+    'img/avatar3.jpg',
+    'img/avatar3.jpg',
+    'img/avatar3.jpg'
+  ];
 
   // date/time chips (EN)
   final List<String> _dates = const ['Today', 'Tomorrow', 'Sat'];
@@ -178,7 +182,7 @@ class _Avatar3DetailPageEnState extends State<Avatar3DetailPageEn> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => BookingPage(
+                    builder: (_) => BookingPageEn(
                       movieTitle: 'Avatar 3',
                       showDate: _selectedDate,
                       showTime: _selectedTime,
