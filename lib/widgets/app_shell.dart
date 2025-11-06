@@ -6,7 +6,8 @@ import '../pages/hot_movies_page.dart'; // <-- trang Hot UI
 // import '../widgets/app_header.dart'; // unused
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key});
+  final int initialIndex;
+  const AppShell({super.key, this.initialIndex = 0});
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -18,11 +19,18 @@ class _AppShellState extends State<AppShell> {
   // Đặt Hot ở CUỐI CÙNG
   final _pages = const [
     HomePage(),
-    HotMoviesPage(), 
+    HotMoviesPage(),
     TicketsPage(),
     ProfilePage(),
-   
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // đảm bảo index hợp lệ
+    _index =
+        widget.initialIndex.clamp(0, _pages.length - 1);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,19 +38,22 @@ class _AppShellState extends State<AppShell> {
       body: _pages[_index],
       bottomNavigationBar: NavigationBar(
         backgroundColor: Colors.white,
-        indicatorColor: const Color(0xFFFF7A00).withOpacity(.12),
+        indicatorColor:
+            const Color(0xFFFF7A00).withOpacity(.12),
         selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() => _index = i),
+        onDestinationSelected: (i) =>
+            setState(() => _index = i),
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
             label: 'Trang Chủ',
           ),
-           NavigationDestination(
-            icon: Icon(Icons.local_fire_department_outlined),
+          NavigationDestination(
+            icon:
+                Icon(Icons.local_fire_department_outlined),
             selectedIcon: Icon(Icons.local_fire_department),
-            label: 'Phim Hot', 
+            label: 'Phim Hot',
           ),
           NavigationDestination(
             icon: Icon(Icons.confirmation_number_outlined),
@@ -54,7 +65,6 @@ class _AppShellState extends State<AppShell> {
             selectedIcon: Icon(Icons.person),
             label: 'Thông Tin',
           ),
-         
         ],
       ),
     );

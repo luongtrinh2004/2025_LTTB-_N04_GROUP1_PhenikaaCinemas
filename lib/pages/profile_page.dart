@@ -1,6 +1,7 @@
 // lib/pages/profile_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
+import 'package:flutter_cinema_booking_ui/pages/login_page.dart';
 
 // Dùng shell để chuyển ngôn ngữ toàn app
 import 'package:flutter_cinema_booking_ui/widgets/app_shell.dart';
@@ -113,17 +114,26 @@ class ProfilePage extends StatelessWidget {
           const Divider(),
 
           // ===== Khác =====
-          const ListTile(
-            leading: Icon(Icons.receipt_long),
-            title: Text('Lịch sử đặt vé'),
+          ListTile(
+            leading: const Icon(Icons.receipt_long),
+            title: const Text('Lịch sử đặt vé'),
+            onTap: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                    builder: (_) => const AppShell(
+                        initialIndex: 2)), // tab Vé
+                (route) => false,
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Đăng xuất'),
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Đăng xuất (demo)')),
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                    builder: (_) => const LoginPage()),
+                (route) => false,
               );
             },
           ),
