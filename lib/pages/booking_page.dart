@@ -49,7 +49,8 @@ class _BookingPageState extends State<BookingPage> {
 
   bool _isCoupleSeatId(String id) => id.contains('-'); // ghế đôi có dấu '-'
 
-  double _priceOf(String id) => _isCoupleSeatId(id) ? priceCouple : priceStandard;
+  double _priceOf(String id) =>
+      _isCoupleSeatId(id) ? priceCouple : priceStandard;
 
   void _toggle(String id) {
     if (_booked.contains(id)) return;
@@ -62,7 +63,6 @@ class _BookingPageState extends State<BookingPage> {
     });
   }
 
-  int get _count => _selected.length;
   int get _countStandard => _selected.where((s) => !_isCoupleSeatId(s)).length;
   int get _countCouple => _selected.where((s) => _isCoupleSeatId(s)).length;
 
@@ -141,7 +141,11 @@ class _BookingPageState extends State<BookingPage> {
                   height: 4,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.transparent, Colors.grey, Colors.transparent],
+                      colors: [
+                        Colors.transparent,
+                        Colors.grey,
+                        Colors.transparent
+                      ],
                     ),
                   ),
                 ),
@@ -190,19 +194,24 @@ class _BookingPageState extends State<BookingPage> {
 
                             if (isBooked) {
                               bg = Colors.grey.shade200;
-                              child = Icon(Icons.close, size: 16, color: Colors.grey.shade600);
+                              child = Icon(Icons.close,
+                                  size: 16, color: Colors.grey.shade600);
                             } else if (isSelected) {
                               bg = kOrange;
                               border = kOrange.withOpacity(.85);
                               child = const Text(
                                 '✓',
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800),
                               );
                             } else {
                               bg = Colors.white;
                               child = Text(
                                 (i + 1).toString(),
-                                style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                    color: textColor,
+                                    fontWeight: FontWeight.w600),
                               );
                             }
 
@@ -231,16 +240,17 @@ class _BookingPageState extends State<BookingPage> {
                         else
                           // Hàng ghế đôi: đi theo cặp (1-2, 3-4, ..., 9-10)
                           ...[
-                            for (int col = 1; col <= seatsPerRow; col += 2)
-                              _CoupleSeatBlock(
-                                row: r,
-                                from: col,
-                                to: col + 1,
-                                isBooked: _booked.contains('$r$col-${col + 1}'),
-                                isSelected: _selected.contains('$r$col-${col + 1}'),
-                                onTap: () => _toggle('$r$col-${col + 1}'),
-                              ),
-                          ],
+                          for (int col = 1; col <= seatsPerRow; col += 2)
+                            _CoupleSeatBlock(
+                              row: r,
+                              from: col,
+                              to: col + 1,
+                              isBooked: _booked.contains('$r$col-${col + 1}'),
+                              isSelected:
+                                  _selected.contains('$r$col-${col + 1}'),
+                              onTap: () => _toggle('$r$col-${col + 1}'),
+                            ),
+                        ],
 
                         const SizedBox(width: 4),
 
@@ -331,7 +341,9 @@ class _BookingPageState extends State<BookingPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _selected.isEmpty ? 'Chưa chọn ghế' : 'Ghế: ${_selected.join(', ')}',
+                        _selected.isEmpty
+                            ? 'Chưa chọn ghế'
+                            : 'Ghế: ${_selected.join(', ')}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(color: Colors.black54),
@@ -356,12 +368,16 @@ class _BookingPageState extends State<BookingPage> {
                       backgroundColor: kOrange,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 22),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                     ),
-                    onPressed: _selected.isEmpty ? null : () => _confirmAndShowDialog(context),
+                    onPressed: _selected.isEmpty
+                        ? null
+                        : () => _confirmAndShowDialog(context),
                     child: const Text(
                       'ĐẶT VÉ',
-                      style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: .5),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w800, letterSpacing: .5),
                     ),
                   ),
                 ),
@@ -380,8 +396,10 @@ class _BookingPageState extends State<BookingPage> {
     final total = _total;
 
     final textTier = <String>[];
-    if (std > 0) textTier.add('Ghế thường x$std (${fmtCurrency(priceStandard)}/ghế)');
-    if (cpl > 0) textTier.add('Ghế đôi x$cpl (${fmtCurrency(priceCouple)}/block)');
+    if (std > 0)
+      textTier.add('Ghế thường x$std (${fmtCurrency(priceStandard)}/ghế)');
+    if (cpl > 0)
+      textTier.add('Ghế đôi x$cpl (${fmtCurrency(priceCouple)}/block)');
 
     await showDialog(
       context: context,
@@ -409,7 +427,9 @@ class _BookingPageState extends State<BookingPage> {
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Đóng')),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Đóng')),
         ],
       ),
     );
@@ -423,7 +443,10 @@ class _BookingPageState extends State<BookingPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 80, child: Text('$k: ', style: const TextStyle(fontWeight: FontWeight.w600))),
+          SizedBox(
+              width: 80,
+              child: Text('$k: ',
+                  style: const TextStyle(fontWeight: FontWeight.w600))),
           Expanded(child: Text(v)),
         ],
       ),
@@ -451,7 +474,6 @@ class _CoupleSeatBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final idText = '$from-$to';
-    final id = '$row$idText';
 
     Color bg;
     Color border;
@@ -464,13 +486,15 @@ class _CoupleSeatBlock extends StatelessWidget {
     } else if (isSelected) {
       bg = Colors.purple;
       border = Colors.purple.withOpacity(.85);
-      child = const Text('✓', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800));
+      child = const Text('✓',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800));
     } else {
       bg = Colors.white;
       border = Colors.purple.withOpacity(.35);
       child = Text(
         idText,
-        style: TextStyle(color: Colors.purple.shade400, fontWeight: FontWeight.w600),
+        style: TextStyle(
+            color: Colors.purple.shade400, fontWeight: FontWeight.w600),
       );
     }
 
@@ -531,7 +555,8 @@ class _LegendFancy extends StatelessWidget {
             : (textOnBox != null
                 ? Text(
                     textOnBox!,
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900),
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w900),
                   )
                 : null),
       ),

@@ -64,7 +64,6 @@ class _BookingPageEnState extends State<BookingPageEn> {
     });
   }
 
-  int get _count => _selected.length;
   int get _countStandard => _selected.where((s) => !_isCoupleSeatId(s)).length;
   int get _countCouple => _selected.where((s) => _isCoupleSeatId(s)).length;
 
@@ -476,7 +475,6 @@ class _CoupleSeatBlockEn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final idText = '$from-$to';
-    final id = '$row$idText';
 
     Color bg;
     Color border;

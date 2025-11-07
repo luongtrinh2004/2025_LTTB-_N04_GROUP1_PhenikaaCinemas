@@ -8,6 +8,7 @@ import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
 import 'package:flutter_cinema_booking_ui/pages/english/mai_detail_page_en.dart';
 import 'package:flutter_cinema_booking_ui/pages/english/tay_anh_giu_mot_vi_sao_detail_page_en.dart';
 import 'package:flutter_cinema_booking_ui/pages/english/tee_yod_detail_page_en.dart';
+
 import 'package:flutter_cinema_booking_ui/pages/english/tu_chien_tren_khong_detail_page_en.dart';
 import 'package:flutter_cinema_booking_ui/pages/english/avatar3_detail_page_en.dart';
 import 'package:flutter_cinema_booking_ui/pages/english/shin_detail_page_en.dart';
@@ -24,8 +25,7 @@ enum _HotSortEn { hot, views, likes, rating }
 class HotMoviesPageEn extends StatefulWidget {
   const HotMoviesPageEn({super.key});
   @override
-  State<HotMoviesPageEn> createState() =>
-      _HotMoviesPageEnState();
+  State<HotMoviesPageEn> createState() => _HotMoviesPageEnState();
 }
 
 class _HotMoviesPageEnState extends State<HotMoviesPageEn> {
@@ -126,34 +126,22 @@ class _HotMoviesPageEnState extends State<HotMoviesPageEn> {
   _HotSortEn _sortBy = _HotSortEn.hot;
 
   double _recencyScoreEn(DateTime d) {
-    final days =
-        DateTime.now().difference(d).inDays.clamp(0, 365);
+    final days = DateTime.now().difference(d).inDays.clamp(0, 365);
     return 1.0 - (days / 365.0);
   }
 
   double _hotScoreEn(Map<String, dynamic> m) {
-    final maxViews = _topMovies
-        .map((e) => e['views'] as int)
-        .reduce(math.max)
-        .toDouble();
-    final maxLikes = _topMovies
-        .map((e) => e['likes'] as int)
-        .reduce(math.max)
-        .toDouble();
-    final viewsN = (math.log((m['views'] as int) + 1) /
-            math.log(maxViews + 1))
+    final maxViews =
+        _topMovies.map((e) => e['views'] as int).reduce(math.max).toDouble();
+    final maxLikes =
+        _topMovies.map((e) => e['likes'] as int).reduce(math.max).toDouble();
+    final viewsN = (math.log((m['views'] as int) + 1) / math.log(maxViews + 1))
         .clamp(0.0, 1.0);
-    final likesN = ((m['likes'] as int) /
-            (maxLikes == 0 ? 1 : maxLikes))
-        .clamp(0.0, 1.0);
-    final ratingN =
-        ((m['rating'] as num) / 10).clamp(0.0, 1.0);
-    final recencyN =
-        _recencyScoreEn(m['release'] as DateTime);
-    return 0.4 * viewsN +
-        0.3 * likesN +
-        0.2 * ratingN +
-        0.1 * recencyN;
+    final likesN =
+        ((m['likes'] as int) / (maxLikes == 0 ? 1 : maxLikes)).clamp(0.0, 1.0);
+    final ratingN = ((m['rating'] as num) / 10).clamp(0.0, 1.0);
+    final recencyN = _recencyScoreEn(m['release'] as DateTime);
+    return 0.4 * viewsN + 0.3 * likesN + 0.2 * ratingN + 0.1 * recencyN;
   }
 
   List<Map<String, dynamic>> _sortedEn() {
@@ -161,14 +149,11 @@ class _HotMoviesPageEnState extends State<HotMoviesPageEn> {
     list.sort((a, b) {
       switch (_sortBy) {
         case _HotSortEn.views:
-          return (b['views'] as int)
-              .compareTo(a['views'] as int);
+          return (b['views'] as int).compareTo(a['views'] as int);
         case _HotSortEn.likes:
-          return (b['likes'] as int)
-              .compareTo(a['likes'] as int);
+          return (b['likes'] as int).compareTo(a['likes'] as int);
         case _HotSortEn.rating:
-          return (b['rating'] as num)
-              .compareTo(a['rating'] as num);
+          return (b['rating'] as num).compareTo(a['rating'] as num);
         case _HotSortEn.hot:
         default:
           return _hotScoreEn(b).compareTo(_hotScoreEn(a));
@@ -180,13 +165,11 @@ class _HotMoviesPageEnState extends State<HotMoviesPageEn> {
   void _openDetailEn(Map<String, dynamic> movie) {
     final page = movie['detail'] as Widget?;
     if (page != null) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (_) => page));
+      Navigator.push(context, MaterialPageRoute(builder: (_) => page));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text(
-                'No detail page available for this movie yet.')),
+            content: Text('No detail page available for this movie yet.')),
       );
     }
   }
@@ -203,38 +186,30 @@ class _HotMoviesPageEnState extends State<HotMoviesPageEn> {
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                    20, 16, 20, 8),
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
                 child: Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     Text('Top Trending 🔥',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700)),
+                        style: TextStyle(fontWeight: FontWeight.w700)),
                   ],
                 ),
               ),
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: _SortRowEn(
                   value: _sortBy,
-                  onChanged: (v) =>
-                      setState(() => _sortBy = v),
+                  onChanged: (v) => setState(() => _sortBy = v),
                 ),
               ),
             ),
-            const SliverToBoxAdapter(
-                child: SizedBox(height: 12)),
+            const SliverToBoxAdapter(child: SizedBox(height: 12)),
             SliverPadding(
-              padding:
-                  const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               sliver: SliverGrid(
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 14,
                   crossAxisSpacing: 14,
@@ -255,9 +230,7 @@ class _HotMoviesPageEnState extends State<HotMoviesPageEn> {
               ),
             ),
             const SliverToBoxAdapter(
-                child: SizedBox(
-                    height:
-                        kBottomNavigationBarHeight + 8)),
+                child: SizedBox(height: kBottomNavigationBarHeight + 8)),
           ],
         ),
       ),
@@ -273,33 +246,25 @@ class _AccountButtonEn extends StatelessWidget {
     return PopupMenuButton<String>(
       onSelected: (v) {
         if (v == 'logout') {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              '/login', (r) => false);
+          Navigator.of(context).pushNamedAndRemoveUntil('/login', (r) => false);
         } else if (v == 'profile') {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text('Go to Profile')));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Go to Profile')));
         } else if (v == 'tickets') {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text('Go to My tickets')));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Go to My tickets')));
         }
       },
       itemBuilder: (context) => const [
-        PopupMenuItem(
-            value: 'profile', child: Text('Profile')),
-        PopupMenuItem(
-            value: 'tickets', child: Text('My tickets')),
-        PopupMenuItem(
-            value: 'logout', child: Text('Log out')),
+        PopupMenuItem(value: 'profile', child: Text('Profile')),
+        PopupMenuItem(value: 'tickets', child: Text('My tickets')),
+        PopupMenuItem(value: 'logout', child: Text('Log out')),
       ],
       offset: const Offset(0, kToolbarHeight),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: const [
-          CircleAvatar(
-              radius: 18,
-              child: Icon(Icons.person, size: 20)),
+          CircleAvatar(radius: 18, child: Icon(Icons.person, size: 20)),
           SizedBox(width: 4),
           Icon(Icons.keyboard_arrow_down),
         ],
@@ -311,8 +276,7 @@ class _AccountButtonEn extends StatelessWidget {
 class _SortRowEn extends StatelessWidget {
   final _HotSortEn value;
   final ValueChanged<_HotSortEn> onChanged;
-  const _SortRowEn(
-      {required this.value, required this.onChanged});
+  const _SortRowEn({required this.value, required this.onChanged});
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -350,35 +314,28 @@ class _SortChipEn extends StatelessWidget {
   final IconData icon;
   final _HotSortEn type;
   const _SortChipEn(
-      {required this.label,
-      required this.icon,
-      required this.type});
+      {required this.label, required this.icon, required this.type});
   @override
   Widget build(BuildContext context) {
-    final parent = context
-        .findAncestorStateOfType<_HotMoviesPageEnState>()!;
+    final parent = context.findAncestorStateOfType<_HotMoviesPageEnState>()!;
     final selected = parent._sortBy == type;
     final theme = Theme.of(context);
     return InkWell(
       borderRadius: BorderRadius.circular(20),
-      onTap: () =>
-          parent.setState(() => parent._sortBy = type),
+      onTap: () => parent.setState(() => parent._sortBy = type),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-            horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: selected
               ? theme.colorScheme.primary.withOpacity(.12)
-              : theme.colorScheme.surfaceVariant
-                  .withOpacity(.6),
+              : theme.colorScheme.surfaceVariant.withOpacity(.6),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
               color: selected
                   ? theme.colorScheme.primary
                   : theme.dividerColor.withOpacity(.4)),
         ),
-        child:
-            Row(mainAxisSize: MainAxisSize.min, children: [
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
           Icon(icon, size: 16),
           const SizedBox(width: 6),
           Text(label,
@@ -426,82 +383,65 @@ class _MovieCardEn extends StatelessWidget {
                   Positioned.fill(
                     child: ClipRRect(
                       borderRadius:
-                          const BorderRadius.vertical(
-                              top: Radius.circular(16)),
+                          const BorderRadius.vertical(top: Radius.circular(16)),
                       child: Image.asset(
                         movie['poster'] as String,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                            Container(
+                        errorBuilder: (_, __, ___) => Container(
                           color: const Color(0xFFF1F3F6),
                           child: const Center(
-                              child: Icon(
-                                  Icons
-                                      .movie_filter_outlined,
-                                  size: 40)),
+                              child:
+                                  Icon(Icons.movie_filter_outlined, size: 40)),
                         ),
                       ),
                     ),
                   ),
-                  Positioned(
-                      top: 8,
-                      left: 8,
-                      child: _RankBadgeEn(rank: rank)),
+                  Positioned(top: 8, left: 8, child: _RankBadgeEn(rank: rank)),
                   Positioned(
                       bottom: 8,
                       right: 8,
                       child: _RatingBadgeEn(
-                          rating: (movie['rating'] as num)
-                              .toDouble())),
+                          rating: (movie['rating'] as num).toDouble())),
                 ],
               ),
             ),
             SizedBox(
               height: 94,
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       movie['title'] as String,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14),
+                          fontWeight: FontWeight.w700, fontSize: 14),
                     ),
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        const Icon(
-                            Icons.visibility_outlined,
-                            size: 14),
+                        const Icon(Icons.visibility_outlined, size: 14),
                         const SizedBox(width: 4),
                         Text(_fmtEn(movie['views'] as int),
-                            style: const TextStyle(
-                                fontSize: 12)),
+                            style: const TextStyle(fontSize: 12)),
                         const SizedBox(width: 10),
-                        const Icon(Icons.favorite_border,
-                            size: 14),
+                        const Icon(Icons.favorite_border, size: 14),
                         const SizedBox(width: 4),
                         Text(_fmtEn(movie['likes'] as int),
-                            style: const TextStyle(
-                                fontSize: 12)),
+                            style: const TextStyle(fontSize: 12)),
                       ],
                     ),
                     const Spacer(),
                     ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(6),
                       child: LinearProgressIndicator(
                         value: hotScore.clamp(0.0, 1.0),
                         minHeight: 6,
-                        backgroundColor: theme
-                            .colorScheme.surfaceVariant
-                            .withOpacity(.6),
+                        backgroundColor:
+                            theme.colorScheme.surfaceVariant.withOpacity(.6),
                       ),
                     ),
                   ],
@@ -522,8 +462,7 @@ class _RankBadgeEn extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
           color: theme.colorScheme.primary,
           borderRadius: BorderRadius.circular(10)),
@@ -542,20 +481,17 @@ class _RatingBadgeEn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(.92),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.black12),
       ),
       child: Row(children: [
-        const Icon(Icons.star_rounded,
-            size: 14, color: kOrange),
+        const Icon(Icons.star_rounded, size: 14, color: kOrange),
         const SizedBox(width: 4),
         Text(rating.toStringAsFixed(1),
-            style: const TextStyle(
-                fontWeight: FontWeight.w700, fontSize: 12)),
+            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
       ]),
     );
   }
@@ -563,10 +499,8 @@ class _RatingBadgeEn extends StatelessWidget {
 
 /// Utils
 String _fmtEn(int n) {
-  if (n >= 1000000000)
-    return '${(n / 1e9).toStringAsFixed(1)}B';
-  if (n >= 1000000)
-    return '${(n / 1e6).toStringAsFixed(1)}M';
+  if (n >= 1000000000) return '${(n / 1e9).toStringAsFixed(1)}B';
+  if (n >= 1000000) return '${(n / 1e6).toStringAsFixed(1)}M';
   if (n >= 1000) return '${(n / 1e3).toStringAsFixed(1)}K';
   return '$n';
 }
