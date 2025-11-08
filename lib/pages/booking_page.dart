@@ -20,22 +20,15 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
-  // Cấu hình ghế
+  // ── Cấu hình sơ đồ ────────────────────────────────────────────
   final List<String> rows = const ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-  final int seatsPerRow = 10; // <-- 1..10
+  final int seatsPerRow = 10;
 
-  // Giá
-  static const double priceStandard = 70000;
-  static const double priceCouple = priceStandard * 2; // <-- 2x ghế thường
-
-  // Quy ước: cả hàng H là ghế đôi (couple)
+  // Hàng ghế đôi
   final Set<String> _coupleRows = {'H'};
 
-  // Ghế đã chọn (id: "A1" hoặc "H1-2" cho ghế đôi)
+  // Ghế đã chọn & đã đặt
   final Set<String> _selected = {};
-
-  // Giả lập một số ghế đã có người đặt (không click được)
-  // Lưu ý: hàng đôi dùng ID theo cặp "H1-2", "H3-4", ...
   final Set<String> _booked = {
     'A4', 'A5',
     'B3', 'B4',
@@ -47,8 +40,17 @@ class _BookingPageState extends State<BookingPage> {
     'H9-10', // cặp cuối đã đặt
   };
 
-  bool _isCoupleSeatId(String id) => id.contains('-'); // ghế đôi có dấu '-'
+  // ── Giá ───────────────────────────────────────────────────────
+  static const double priceStandard = 70000;
+  static const double priceCouple = priceStandard * 2;
 
+  // ── Responsive constants ──────────────────────────────────────
+  static const double _sideLabelWidth = 26; // A..H
+  static const double _sideLabelGap = 4; // khoảng cách nhãn ↔ ghế
+  static const double _rowOuterPadding = 8; // padding Horizontal của ListView
+  static const double _seatGap = 8; // khoảng cách giữa 2 ghế
+
+  bool _isCoupleSeatId(String id) => id.contains('-');
   double _priceOf(String id) =>
       _isCoupleSeatId(id) ? priceCouple : priceStandard;
 
@@ -66,24 +68,32 @@ class _BookingPageState extends State<BookingPage> {
   int get _countStandard => _selected.where((s) => !_isCoupleSeatId(s)).length;
   int get _countCouple => _selected.where((s) => _isCoupleSeatId(s)).length;
 
-  double get _total {
-    double sum = 0;
-    for (final id in _selected) {
-      sum += _priceOf(id);
-    }
-    return sum;
+  double get _total => _selected.fold(0.0, (p, id) => p + _priceOf(id));
+
+  /// Tính kích thước **một ghế** dựa theo bề rộng khả dụng của hàng
+  double _seatSizeFor(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+
+    // Bề rộng khả dụng = width màn hình
+    //   - padding ngoài của ListView (2 bên)
+    //   - nhãn hàng trái/phải + khoảng cách của chúng
+    final available =
+        w - (_rowOuterPadding * 2) - (_sideLabelWidth + _sideLabelGap) * 2;
+
+    // 10 ghế + 9 khoảng trống giữa ghế
+    final raw = (available - (seatsPerRow - 1) * _seatGap) / seatsPerRow;
+
+    // Giới hạn để nhìn ổn trên cực nhỏ/cực lớn
+    return raw.clamp(24, 44);
   }
 
   @override
   Widget build(BuildContext context) {
+    final seatSize = _seatSizeFor(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppHeader(
-        right: TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Đóng'),
-        ),
-      ),
+      appBar: AppHeader(),
       body: Column(
         children: [
           // Thông tin suất chiếu
@@ -114,7 +124,7 @@ class _BookingPageState extends State<BookingPage> {
 
           const SizedBox(height: 10),
 
-          // "MÀN HÌNH"
+          // MÀN HÌNH
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
@@ -139,7 +149,7 @@ class _BookingPageState extends State<BookingPage> {
                 const SizedBox(height: 8),
                 Container(
                   height: 4,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
@@ -158,18 +168,19 @@ class _BookingPageState extends State<BookingPage> {
           // Sơ đồ ghế
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: _rowOuterPadding),
               child: Column(
                 children: rows.map((r) {
                   final isCoupleRow = _coupleRows.contains(r);
+
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Nhãn hàng bên trái
+                        // Nhãn hàng trái
                         SizedBox(
-                          width: 26,
+                          width: _sideLabelWidth,
                           child: Text(
                             r,
                             textAlign: TextAlign.center,
@@ -179,9 +190,10 @@ class _BookingPageState extends State<BookingPage> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: _sideLabelGap),
 
                         if (!isCoupleRow)
+                          // GHẾ ĐƠN
                           ...List.generate(seatsPerRow, (i) {
                             final id = '$r${i + 1}';
                             final isBooked = _booked.contains(id);
@@ -189,38 +201,42 @@ class _BookingPageState extends State<BookingPage> {
 
                             Color bg;
                             Color border = Colors.grey.shade300;
-                            Color textColor = Colors.black87;
                             Widget child;
 
                             if (isBooked) {
                               bg = Colors.grey.shade200;
                               child = Icon(Icons.close,
-                                  size: 16, color: Colors.grey.shade600);
+                                  size: seatSize * .47,
+                                  color: Colors.grey.shade600);
                             } else if (isSelected) {
                               bg = kOrange;
                               border = kOrange.withOpacity(.85);
                               child = const Text(
                                 '✓',
                                 style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               );
                             } else {
                               bg = Colors.white;
                               child = Text(
                                 (i + 1).toString(),
-                                style: TextStyle(
-                                    color: textColor,
+                                style: const TextStyle(
                                     fontWeight: FontWeight.w600),
                               );
                             }
 
+                            final bool isLast = i == seatsPerRow - 1;
+
                             return GestureDetector(
                               onTap: isBooked ? null : () => _toggle(id),
                               child: Container(
-                                margin: const EdgeInsets.all(4),
-                                width: 34,
-                                height: 34,
+                                // ❗ Chỉ đặt khoảng cách bên phải, ghế cuối = 0
+                                margin: EdgeInsets.only(
+                                    right: isLast ? 0 : _seatGap),
+                                width: seatSize,
+                                height: seatSize,
                                 decoration: BoxDecoration(
                                   color: bg,
                                   borderRadius: BorderRadius.circular(8),
@@ -233,12 +249,13 @@ class _BookingPageState extends State<BookingPage> {
                                     )
                                   ],
                                 ),
-                                child: Center(child: child),
+                                alignment: Alignment.center,
+                                child: child,
                               ),
                             );
                           })
                         else
-                          // Hàng ghế đôi: đi theo cặp (1-2, 3-4, ..., 9-10)
+                          // GHẾ ĐÔI
                           ...[
                           for (int col = 1; col <= seatsPerRow; col += 2)
                             _CoupleSeatBlock(
@@ -249,14 +266,17 @@ class _BookingPageState extends State<BookingPage> {
                               isSelected:
                                   _selected.contains('$r$col-${col + 1}'),
                               onTap: () => _toggle('$r$col-${col + 1}'),
+                              seatSize: seatSize,
+                              gap: _seatGap,
+                              isLastBlock: col >= seatsPerRow - 1,
                             ),
                         ],
 
-                        const SizedBox(width: 4),
+                        const SizedBox(width: _sideLabelGap),
 
-                        // Nhãn hàng bên phải
+                        // Nhãn hàng phải
                         SizedBox(
-                          width: 26,
+                          width: _sideLabelWidth,
                           child: Text(
                             r,
                             textAlign: TextAlign.center,
@@ -274,7 +294,7 @@ class _BookingPageState extends State<BookingPage> {
             ),
           ),
 
-          // Chú thích + giá (căn ngang đều)
+          // Chú thích + giá
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
             child: Column(
@@ -343,7 +363,7 @@ class _BookingPageState extends State<BookingPage> {
                       Text(
                         _selected.isEmpty
                             ? 'Chưa chọn ghế'
-                            : 'Ghế: ${_selected.join(', ')}',
+                            : 'Ghế: ${_selected.toList()..sort()}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(color: Colors.black54),
@@ -369,7 +389,8 @@ class _BookingPageState extends State<BookingPage> {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 22),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     onPressed: _selected.isEmpty
                         ? null
@@ -377,7 +398,9 @@ class _BookingPageState extends State<BookingPage> {
                     child: const Text(
                       'ĐẶT VÉ',
                       style: TextStyle(
-                          fontWeight: FontWeight.w800, letterSpacing: .5),
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: .5,
+                      ),
                     ),
                   ),
                 ),
@@ -396,10 +419,12 @@ class _BookingPageState extends State<BookingPage> {
     final total = _total;
 
     final textTier = <String>[];
-    if (std > 0)
+    if (std > 0) {
       textTier.add('Ghế thường x$std (${fmtCurrency(priceStandard)}/ghế)');
-    if (cpl > 0)
+    }
+    if (cpl > 0) {
       textTier.add('Ghế đôi x$cpl (${fmtCurrency(priceCouple)}/block)');
+    }
 
     await showDialog(
       context: context,
@@ -428,13 +453,12 @@ class _BookingPageState extends State<BookingPage> {
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Đóng')),
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Đóng'),
+          ),
         ],
       ),
     );
-    // Nếu muốn reset sau khi đặt xong:
-    // setState(() => _selected.clear());
   }
 
   Widget _kv(String k, String v) {
@@ -444,15 +468,20 @@ class _BookingPageState extends State<BookingPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-              width: 80,
-              child: Text('$k: ',
-                  style: const TextStyle(fontWeight: FontWeight.w600))),
+            width: 80,
+            child: Text('$k: ',
+                style: const TextStyle(fontWeight: FontWeight.w600)),
+          ),
           Expanded(child: Text(v)),
         ],
       ),
     );
   }
 }
+
+// ──────────────────────────────────────────────────────────────
+//   WIDGETS PHỤ
+// ──────────────────────────────────────────────────────────────
 
 class _CoupleSeatBlock extends StatelessWidget {
   final String row;
@@ -462,6 +491,11 @@ class _CoupleSeatBlock extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
+  // responsive
+  final double seatSize; // kích thước 1 ghế
+  final double gap; // khoảng cách giữa 2 ghế
+  final bool isLastBlock;
+
   const _CoupleSeatBlock({
     required this.row,
     required this.from,
@@ -469,11 +503,16 @@ class _CoupleSeatBlock extends StatelessWidget {
     required this.isBooked,
     required this.isSelected,
     required this.onTap,
+    required this.seatSize,
+    this.gap = 8,
+    this.isLastBlock = false,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     final idText = '$from-$to';
+    final blockWidth = seatSize * 2 + gap; // 2 ghế + khe hở
 
     Color bg;
     Color border;
@@ -482,28 +521,36 @@ class _CoupleSeatBlock extends StatelessWidget {
     if (isBooked) {
       bg = Colors.grey.shade200;
       border = Colors.grey.shade300;
-      child = Icon(Icons.close, size: 16, color: Colors.grey.shade600);
+      child =
+          Icon(Icons.close, size: seatSize * .47, color: Colors.grey.shade600);
     } else if (isSelected) {
-      bg = Colors.purple;
-      border = Colors.purple.withOpacity(.85);
-      child = const Text('✓',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800));
+      // ⬇️ ĐỔI THÀNH GIỐNG GHẾ ĐƠN
+      bg = kOrange;
+      border = kOrange.withOpacity(.85);
+      child = const Text(
+        '✓',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
+      );
     } else {
       bg = Colors.white;
-      border = Colors.purple.withOpacity(.35);
+      border =
+          Colors.purple.withOpacity(.35); // giữ style ghế đôi khi chưa chọn
       child = Text(
         idText,
         style: TextStyle(
-            color: Colors.purple.shade400, fontWeight: FontWeight.w600),
+          color: Colors.purple.shade400,
+          fontWeight: FontWeight.w600,
+        ),
       );
     }
 
     return GestureDetector(
       onTap: isBooked ? null : onTap,
       child: Container(
-        margin: const EdgeInsets.all(4),
-        width: 72, // ~ 2 ghế (34*2) + khoảng trống
-        height: 34,
+        // ❗ Chỉ tạo khe ở bên phải, block cuối = 0
+        margin: EdgeInsets.only(right: isLastBlock ? 0 : gap),
+        width: blockWidth,
+        height: seatSize,
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(8),
@@ -516,7 +563,8 @@ class _CoupleSeatBlock extends StatelessWidget {
             )
           ],
         ),
-        child: Center(child: child),
+        alignment: Alignment.center,
+        child: child,
       ),
     );
   }
@@ -537,6 +585,7 @@ class _LegendFancy extends StatelessWidget {
     this.icon,
     this.textOnBox,
     this.textColor,
+    super.key,
   });
 
   @override

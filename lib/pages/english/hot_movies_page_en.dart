@@ -190,8 +190,8 @@ class _HotMoviesPageEnState extends State<HotMoviesPageEn> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    Text('Top Trending 🔥',
-                        style: TextStyle(fontWeight: FontWeight.w700)),
+                    // Text('Top Trending 🔥',
+                    //     style: TextStyle(fontWeight: FontWeight.w700)),
                   ],
                 ),
               ),

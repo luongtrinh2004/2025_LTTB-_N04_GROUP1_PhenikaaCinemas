@@ -1,4 +1,3 @@
-// booking_page_en.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_cinema_booking_ui/core/colors.dart';
 import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
@@ -21,22 +20,15 @@ class BookingPageEn extends StatefulWidget {
 }
 
 class _BookingPageEnState extends State<BookingPageEn> {
-  // Seat layout
+  // ── Seat map config ───────────────────────────────────────────
   final List<String> rows = const ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-  final int seatsPerRow = 10; // 1..10
+  final int seatsPerRow = 10;
 
-  // Prices
-  static const double priceStandard = 70000;
-  static const double priceCouple = priceStandard * 2; // 2x standard
-
-  // Convention: entire row H is couple (paired) seats
+  // Couple-seat rows
   final Set<String> _coupleRows = {'H'};
 
-  // Selected seats (id: "A1" or "H1-2" for couple)
+  // Selected & booked seats
   final Set<String> _selected = {};
-
-  // Pretend some seats are already booked (disabled)
-  // Note: couple row uses pair ids like "H1-2", "H3-4", ...
   final Set<String> _booked = {
     'A4', 'A5',
     'B3', 'B4',
@@ -45,11 +37,20 @@ class _BookingPageEnState extends State<BookingPageEn> {
     'E2', 'E5', 'E6',
     'F4', 'F5', 'F7',
     'G1',
-    'H9-10', // last pair already booked
+    'H9-10', // last couple block is booked
   };
 
-  bool _isCoupleSeatId(String id) => id.contains('-'); // couple seat has '-'
+  // ── Prices ────────────────────────────────────────────────────
+  static const double priceStandard = 70000;
+  static const double priceCouple = priceStandard * 2;
 
+  // ── Responsive constants ──────────────────────────────────────
+  static const double _sideLabelWidth = 26; // A..H
+  static const double _sideLabelGap = 4; // label ↔ seats
+  static const double _rowOuterPadding = 8; // ListView horizontal padding
+  static const double _seatGap = 8; // gap between two seats
+
+  bool _isCoupleSeatId(String id) => id.contains('-');
   double _priceOf(String id) =>
       _isCoupleSeatId(id) ? priceCouple : priceStandard;
 
@@ -67,24 +68,32 @@ class _BookingPageEnState extends State<BookingPageEn> {
   int get _countStandard => _selected.where((s) => !_isCoupleSeatId(s)).length;
   int get _countCouple => _selected.where((s) => _isCoupleSeatId(s)).length;
 
-  double get _total {
-    double sum = 0;
-    for (final id in _selected) {
-      sum += _priceOf(id);
-    }
-    return sum;
+  double get _total => _selected.fold(0.0, (p, id) => p + _priceOf(id));
+
+  /// Compute the size of **one seat** based on row available width
+  double _seatSizeFor(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+
+    // Available width = screen width
+    //   - outer padding of the ListView (both sides)
+    //   - left/right row labels + their gaps
+    final available =
+        w - (_rowOuterPadding * 2) - (_sideLabelWidth + _sideLabelGap) * 2;
+
+    // 10 seats + 9 inner gaps
+    final raw = (available - (seatsPerRow - 1) * _seatGap) / seatsPerRow;
+
+    // Clamp for very small/large screens
+    return raw.clamp(24, 44);
   }
 
   @override
   Widget build(BuildContext context) {
+    final seatSize = _seatSizeFor(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppHeader(
-        right: TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Close'),
-        ),
-      ),
+      appBar: AppHeader(),
       body: Column(
         children: [
           // Showtime info
@@ -115,7 +124,7 @@ class _BookingPageEnState extends State<BookingPageEn> {
 
           const SizedBox(height: 10),
 
-          // "SCREEN"
+          // SCREEN banner
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
@@ -159,10 +168,11 @@ class _BookingPageEnState extends State<BookingPageEn> {
           // Seat map
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: _rowOuterPadding),
               child: Column(
                 children: rows.map((r) {
                   final isCoupleRow = _coupleRows.contains(r);
+
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Row(
@@ -170,7 +180,7 @@ class _BookingPageEnState extends State<BookingPageEn> {
                       children: [
                         // Left row label
                         SizedBox(
-                          width: 26,
+                          width: _sideLabelWidth,
                           child: Text(
                             r,
                             textAlign: TextAlign.center,
@@ -180,9 +190,10 @@ class _BookingPageEnState extends State<BookingPageEn> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: _sideLabelGap),
 
                         if (!isCoupleRow)
+                          // SINGLE seats
                           ...List.generate(seatsPerRow, (i) {
                             final id = '$r${i + 1}';
                             final isBooked = _booked.contains(id);
@@ -190,38 +201,42 @@ class _BookingPageEnState extends State<BookingPageEn> {
 
                             Color bg;
                             Color border = Colors.grey.shade300;
-                            Color textColor = Colors.black87;
                             Widget child;
 
                             if (isBooked) {
                               bg = Colors.grey.shade200;
                               child = Icon(Icons.close,
-                                  size: 16, color: Colors.grey.shade600);
+                                  size: seatSize * .47,
+                                  color: Colors.grey.shade600);
                             } else if (isSelected) {
                               bg = kOrange;
                               border = kOrange.withOpacity(.85);
                               child = const Text(
                                 '✓',
                                 style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               );
                             } else {
                               bg = Colors.white;
                               child = Text(
                                 (i + 1).toString(),
-                                style: TextStyle(
-                                    color: textColor,
+                                style: const TextStyle(
                                     fontWeight: FontWeight.w600),
                               );
                             }
 
+                            final bool isLast = i == seatsPerRow - 1;
+
                             return GestureDetector(
                               onTap: isBooked ? null : () => _toggle(id),
                               child: Container(
-                                margin: const EdgeInsets.all(4),
-                                width: 34,
-                                height: 34,
+                                // Right margin only; last seat = 0
+                                margin: EdgeInsets.only(
+                                    right: isLast ? 0 : _seatGap),
+                                width: seatSize,
+                                height: seatSize,
                                 decoration: BoxDecoration(
                                   color: bg,
                                   borderRadius: BorderRadius.circular(8),
@@ -234,12 +249,13 @@ class _BookingPageEnState extends State<BookingPageEn> {
                                     )
                                   ],
                                 ),
-                                child: Center(child: child),
+                                alignment: Alignment.center,
+                                child: child,
                               ),
                             );
                           })
                         else
-                          // Couple row: paired (1-2, 3-4, ..., 9-10)
+                          // COUPLE seat blocks
                           ...[
                           for (int col = 1; col <= seatsPerRow; col += 2)
                             _CoupleSeatBlockEn(
@@ -250,14 +266,17 @@ class _BookingPageEnState extends State<BookingPageEn> {
                               isSelected:
                                   _selected.contains('$r$col-${col + 1}'),
                               onTap: () => _toggle('$r$col-${col + 1}'),
+                              seatSize: seatSize,
+                              gap: _seatGap,
+                              isLastBlock: col >= seatsPerRow - 1,
                             ),
                         ],
 
-                        const SizedBox(width: 4),
+                        const SizedBox(width: _sideLabelGap),
 
                         // Right row label
                         SizedBox(
-                          width: 26,
+                          width: _sideLabelWidth,
                           child: Text(
                             r,
                             textAlign: TextAlign.center,
@@ -280,8 +299,8 @@ class _BookingPageEnState extends State<BookingPageEn> {
             padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
             child: Column(
               children: [
-                const Row(
-                  children: [
+                Row(
+                  children: const [
                     Expanded(
                       child: _LegendFancyEn(
                         label: 'Standard',
@@ -344,7 +363,7 @@ class _BookingPageEnState extends State<BookingPageEn> {
                       Text(
                         _selected.isEmpty
                             ? 'No seats selected'
-                            : 'Seats: ${_selected.join(', ')}',
+                            : 'Seats: ${_selected.toList()..sort()}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(color: Colors.black54),
@@ -370,15 +389,18 @@ class _BookingPageEnState extends State<BookingPageEn> {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 22),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     onPressed: _selected.isEmpty
                         ? null
                         : () => _confirmAndShowDialog(context),
                     child: const Text(
-                      'BOOK',
+                      'BOOK TICKETS',
                       style: TextStyle(
-                          fontWeight: FontWeight.w800, letterSpacing: .5),
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: .5,
+                      ),
                     ),
                   ),
                 ),
@@ -397,15 +419,17 @@ class _BookingPageEnState extends State<BookingPageEn> {
     final total = _total;
 
     final textTier = <String>[];
-    if (std > 0)
+    if (std > 0) {
       textTier.add('Standard x$std (${fmtCurrency(priceStandard)}/seat)');
-    if (cpl > 0)
+    }
+    if (cpl > 0) {
       textTier.add('Couple x$cpl (${fmtCurrency(priceCouple)}/block)');
+    }
 
     await showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Booking Confirmed 🎉'),
+        title: const Text('Booking successful 🎉'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -413,7 +437,7 @@ class _BookingPageEnState extends State<BookingPageEn> {
             _kv('Movie', widget.movieTitle),
             _kv('Showtime', '${widget.showTime} • ${widget.showDate}'),
             _kv('Seats', seats.join(', ')),
-            _kv('Fare', textTier.join(' • ')),
+            _kv('Fare breakdown', textTier.join(' • ')),
             const SizedBox(height: 8),
             Text(
               'Total: ${fmtCurrency(total)}',
@@ -424,18 +448,17 @@ class _BookingPageEnState extends State<BookingPageEn> {
               ),
             ),
             const SizedBox(height: 12),
-            const Text('Enjoy your movie! 🍿'),
+            const Text('Have a great screening! 🍿'),
           ],
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Close')),
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
         ],
       ),
     );
-    // If you want to reset after booking:
-    // setState(() => _selected.clear());
   }
 
   Widget _kv(String k, String v) {
@@ -445,15 +468,20 @@ class _BookingPageEnState extends State<BookingPageEn> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-              width: 80,
-              child: Text('$k: ',
-                  style: const TextStyle(fontWeight: FontWeight.w600))),
+            width: 110,
+            child: Text('$k: ',
+                style: const TextStyle(fontWeight: FontWeight.w600)),
+          ),
           Expanded(child: Text(v)),
         ],
       ),
     );
   }
 }
+
+// ──────────────────────────────────────────────────────────────
+//   SUB WIDGETS (EN)
+// ──────────────────────────────────────────────────────────────
 
 class _CoupleSeatBlockEn extends StatelessWidget {
   final String row;
@@ -463,6 +491,11 @@ class _CoupleSeatBlockEn extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
+  // responsive
+  final double seatSize; // size of one seat
+  final double gap; // gap between two seats
+  final bool isLastBlock;
+
   const _CoupleSeatBlockEn({
     required this.row,
     required this.from,
@@ -470,11 +503,16 @@ class _CoupleSeatBlockEn extends StatelessWidget {
     required this.isBooked,
     required this.isSelected,
     required this.onTap,
+    required this.seatSize,
+    this.gap = 8,
+    this.isLastBlock = false,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     final idText = '$from-$to';
+    final blockWidth = seatSize * 2 + gap; // 2 seats + inner gap
 
     Color bg;
     Color border;
@@ -483,28 +521,35 @@ class _CoupleSeatBlockEn extends StatelessWidget {
     if (isBooked) {
       bg = Colors.grey.shade200;
       border = Colors.grey.shade300;
-      child = Icon(Icons.close, size: 16, color: Colors.grey.shade600);
+      child =
+          Icon(Icons.close, size: seatSize * .47, color: Colors.grey.shade600);
     } else if (isSelected) {
-      bg = Colors.purple;
-      border = Colors.purple.withOpacity(.85);
-      child = const Text('✓',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800));
+      // Match single-seat selected style
+      bg = kOrange;
+      border = kOrange.withOpacity(.85);
+      child = const Text(
+        '✓',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
+      );
     } else {
       bg = Colors.white;
-      border = Colors.purple.withOpacity(.35);
+      border = Colors.purple.withOpacity(.35); // keep couple style when idle
       child = Text(
         idText,
         style: TextStyle(
-            color: Colors.purple.shade400, fontWeight: FontWeight.w600),
+          color: Colors.purple.shade400,
+          fontWeight: FontWeight.w600,
+        ),
       );
     }
 
     return GestureDetector(
       onTap: isBooked ? null : onTap,
       child: Container(
-        margin: const EdgeInsets.all(4),
-        width: 72, // ~ two seats (34*2) + spacing
-        height: 34,
+        // Right gap only; last block = 0
+        margin: EdgeInsets.only(right: isLastBlock ? 0 : gap),
+        width: blockWidth,
+        height: seatSize,
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(8),
@@ -517,7 +562,8 @@ class _CoupleSeatBlockEn extends StatelessWidget {
             )
           ],
         ),
-        child: Center(child: child),
+        alignment: Alignment.center,
+        child: child,
       ),
     );
   }
@@ -538,6 +584,7 @@ class _LegendFancyEn extends StatelessWidget {
     this.icon,
     this.textOnBox,
     this.textColor,
+    super.key,
   });
 
   @override
@@ -554,9 +601,9 @@ class _LegendFancyEn extends StatelessWidget {
         child: icon != null
             ? Icon(icon, size: 14, color: Colors.grey.shade700)
             : (textOnBox != null
-                ? Text(
-                    textOnBox!,
-                    style: const TextStyle(
+                ? const Text(
+                    '✓',
+                    style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.w900),
                   )
                 : null),
