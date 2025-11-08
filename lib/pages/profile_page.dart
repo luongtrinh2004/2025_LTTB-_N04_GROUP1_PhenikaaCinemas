@@ -19,7 +19,7 @@ class GroupMember {
   });
 }
 
-const String kProjectTitle = 'App đặt vé xem phim';
+const String kProjectTitle = 'PhenikaaCinemas - Ứng dụng đặt vé xem phimm';
 const String kGroupCode = '01';
 const String kClassName = 'Lập trình cho thiết bị di động (N04)';
 const List<GroupMember> kMembers = [
@@ -150,10 +150,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       Expanded(
                         child: SizedBox(
                           height: 46,
-                          child: FilledButton.tonal(
+                          child: FilledButton(
                             style: FilledButton.styleFrom(
-                              backgroundColor: cs.errorContainer,
-                              foregroundColor: cs.onErrorContainer,
+                              backgroundColor: cs.primary,
+                              foregroundColor: cs.onPrimary,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12)),
                             ),
@@ -180,7 +180,7 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(height: 12),
             Center(
               child: Text(
-                'v1.0.0 • Movie Ticket Booking UI',
+                'v1.0.0 • Phenikaa Cinemas',
                 style: t.bodySmall?.copyWith(color: cs.onSurfaceVariant),
               ),
             ),
@@ -226,7 +226,7 @@ class _HeroCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Movie Booking',
+                Text('Phenikaa Cinemas',
                     style: t.titleMedium?.copyWith(
                         color: cs.onPrimary, fontWeight: FontWeight.w800)),
                 const SizedBox(height: 2),
@@ -300,6 +300,7 @@ class _MemberTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final t = Theme.of(context).textTheme;
     final initials = _initialsFromName(member.name);
 
     return Container(
@@ -315,14 +316,36 @@ class _MemberTile extends StatelessWidget {
           CircleAvatar(
             radius: 16,
             backgroundColor: cs.primary.withOpacity(.12),
-            child: Text(initials,
-                style:
-                    TextStyle(color: cs.primary, fontWeight: FontWeight.w800)),
+            child: Text(
+              initials,
+              style: TextStyle(color: cs.primary, fontWeight: FontWeight.w800),
+            ),
           ),
           const SizedBox(width: 10),
+          // ⬇️ Name (trên) + MSSV (dưới)
           Expanded(
-            child: Text('MSSV: ${member.mssv} — ${member.name}',
-                overflow: TextOverflow.ellipsis),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Tên ở trên
+                Text(
+                  member.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: t.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 2),
+                // MSSV ở dưới
+                Text(
+                  'MSSV: ${member.mssv}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: t.bodyMedium?.copyWith(
+                    color: cs.onSurface.withOpacity(.75),
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(width: 8),
           Container(

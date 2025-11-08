@@ -13,7 +13,7 @@ class MaiDetailPageEn extends StatefulWidget {
 class _MaiDetailPageEnState extends State<MaiDetailPageEn> {
   // Images
   static const poster = 'img/mai.webp';
-  static const stills = ['img/mai.webp', 'img/mai.webp', 'img/mai.webp'];
+  static const stills = ['img/mai5.png', 'img/mai6.jpg', 'img/mai7.jpg'];
 
   // Date & time selection
   final List<String> _dates = const ['Today', 'Tomorrow', 'Saturday'];

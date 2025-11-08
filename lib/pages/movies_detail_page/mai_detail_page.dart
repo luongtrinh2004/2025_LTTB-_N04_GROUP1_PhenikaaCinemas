@@ -7,70 +7,36 @@ class MaiDetailPage extends StatefulWidget {
   const MaiDetailPage({super.key});
 
   @override
-  State<MaiDetailPage> createState() =>
-      _MaiDetailPageState();
+  State<MaiDetailPage> createState() => _MaiDetailPageState();
 }
 
 class _MaiDetailPageState extends State<MaiDetailPage> {
   // Ảnh
   static const poster = 'img/mai.webp';
-  static const stills = [
-    'img/mai.webp',
-    'img/mai.webp',
-    'img/mai.webp'
-  ];
+  static const stills = ['img/mai5.png', 'img/mai6.jpg', 'img/mai7.jpg'];
 
   // Chọn ngày/giờ
-  final List<String> _dates = const [
-    'Hôm nay',
-    'Ngày mai',
-    'Thứ 7'
-  ];
-  final List<String> _times = const [
-    '10:00',
-    '13:30',
-    '16:45',
-    '20:15'
-  ];
+  final List<String> _dates = const ['Hôm nay', 'Ngày mai', 'Thứ 7'];
+  final List<String> _times = const ['10:00', '13:30', '16:45', '20:15'];
   int _dateIndex = 0;
   int _timeIndex = 0;
 
   // Ghế còn (demo)
   final int _roomCapacity = 110;
-  final Map<String, Map<String, int>> _remainingByDateTime =
-      const {
-    'Hôm nay': {
-      '10:00': 66,
-      '13:30': 30,
-      '16:45': 18,
-      '20:15': 74
-    },
-    'Ngày mai': {
-      '10:00': 80,
-      '13:30': 52,
-      '16:45': 40,
-      '20:15': 90
-    },
-    'Thứ 7': {
-      '10:00': 35,
-      '13:30': 22,
-      '16:45': 10,
-      '20:15': 16
-    },
+  final Map<String, Map<String, int>> _remainingByDateTime = const {
+    'Hôm nay': {'10:00': 66, '13:30': 30, '16:45': 18, '20:15': 74},
+    'Ngày mai': {'10:00': 80, '13:30': 52, '16:45': 40, '20:15': 90},
+    'Thứ 7': {'10:00': 35, '13:30': 22, '16:45': 10, '20:15': 16},
   };
 
   String get _selectedDate => _dates[_dateIndex];
   String get _selectedTime => _times[_timeIndex];
   int get _seatsLeft =>
-      _remainingByDateTime[_selectedDate]?[_selectedTime] ??
-      _roomCapacity;
+      _remainingByDateTime[_selectedDate]?[_selectedTime] ?? _roomCapacity;
 
   @override
   Widget build(BuildContext context) {
-    final subtle = Theme.of(context)
-        .colorScheme
-        .onSurface
-        .withOpacity(.7);
+    final subtle = Theme.of(context).colorScheme.onSurface.withOpacity(.7);
 
     return Scaffold(
       appBar: const AppHeader(),
@@ -93,8 +59,7 @@ class _MaiDetailPageState extends State<MaiDetailPage> {
                     height: 195,
                     color: const Color(0xFFF1F3F6),
                     alignment: Alignment.center,
-                    child: const Icon(
-                        Icons.broken_image_outlined),
+                    child: const Icon(Icons.broken_image_outlined),
                   ),
                 ),
               ),
@@ -139,8 +104,7 @@ class _MaiDetailPageState extends State<MaiDetailPage> {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: stills.length,
-              separatorBuilder: (_, __) =>
-                  const SizedBox(width: 12),
+              separatorBuilder: (_, __) => const SizedBox(width: 12),
               itemBuilder: (_, i) => ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: AspectRatio(
@@ -151,8 +115,7 @@ class _MaiDetailPageState extends State<MaiDetailPage> {
                     errorBuilder: (_, __, ___) => Container(
                       color: const Color(0xFFF1F3F6),
                       alignment: Alignment.center,
-                      child: const Icon(
-                          Icons.broken_image_outlined),
+                      child: const Icon(Icons.broken_image_outlined),
                     ),
                   ),
                 ),
@@ -172,13 +135,11 @@ class _MaiDetailPageState extends State<MaiDetailPage> {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: _dates.length,
-              separatorBuilder: (_, __) =>
-                  const SizedBox(width: 10),
+              separatorBuilder: (_, __) => const SizedBox(width: 10),
               itemBuilder: (_, i) => ChoiceChip(
                 label: Text(_dates[i]),
                 selected: i == _dateIndex,
-                onSelected: (_) =>
-                    setState(() => _dateIndex = i),
+                onSelected: (_) => setState(() => _dateIndex = i),
               ),
             ),
           ),
@@ -194,8 +155,7 @@ class _MaiDetailPageState extends State<MaiDetailPage> {
               return InputChip(
                 label: Text(_times[i]),
                 selected: sel,
-                onSelected: (_) =>
-                    setState(() => _timeIndex = i),
+                onSelected: (_) => setState(() => _timeIndex = i),
               );
             }),
           ),
@@ -203,8 +163,7 @@ class _MaiDetailPageState extends State<MaiDetailPage> {
           const SizedBox(height: 8),
           Text(
             'Còn $_seatsLeft / $_roomCapacity ghế cho suất $_selectedTime • $_selectedDate',
-            style: TextStyle(
-                fontWeight: FontWeight.w600, color: subtle),
+            style: TextStyle(fontWeight: FontWeight.w600, color: subtle),
           ),
 
           const SizedBox(height: 24),
@@ -244,17 +203,14 @@ class _MovieInfo extends StatelessWidget {
       children: [
         Text(
           'MAI',
-          style: TextStyle(
-              fontSize: 22, fontWeight: FontWeight.w800),
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
         ),
         SizedBox(height: 6),
         Row(
           children: [
             Icon(Icons.star_rounded, color: kOrange),
             SizedBox(width: 6),
-            Text('8.7 / 10',
-                style:
-                    TextStyle(fontWeight: FontWeight.w600)),
+            Text('8.7 / 10', style: TextStyle(fontWeight: FontWeight.w600)),
             SizedBox(width: 12),
             Icon(Icons.access_time, size: 18),
             SizedBox(width: 6),
@@ -275,9 +231,7 @@ class _MovieInfo extends StatelessWidget {
           children: [
             Icon(Icons.language_outlined, size: 18),
             SizedBox(width: 6),
-            Expanded(
-                child: Text(
-                    'Ngôn ngữ: Tiếng Việt, phụ đề tiếng Anh')),
+            Expanded(child: Text('Ngôn ngữ: Tiếng Việt, phụ đề tiếng Anh')),
           ],
         ),
       ],
@@ -293,8 +247,7 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(
-          fontWeight: FontWeight.w700, fontSize: 16),
+      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
     );
   }
 }
@@ -309,8 +262,7 @@ class _Tag extends StatelessWidget {
       label: Text(text),
       backgroundColor: const Color(0xFFF1F3F6),
       side: BorderSide.none,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
 }

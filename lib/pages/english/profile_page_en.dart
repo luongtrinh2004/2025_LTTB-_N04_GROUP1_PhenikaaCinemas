@@ -19,7 +19,7 @@ class GroupMember {
   });
 }
 
-const String kProjectTitle = 'Movie Ticket Booking App';
+const String kProjectTitle = 'Phenikaa Cinemas-Movie Ticket Booking App';
 const String kGroupCode = '01';
 const String kClassName = 'Mobile Programming (N04)';
 const List<GroupMember> kMembers = [
@@ -106,22 +106,26 @@ class _ProfilePageEnState extends State<ProfilePageEn> {
             _SectionCardEn(
               icon: Icons.groups_rounded,
               title: 'Group',
-              trailing: Text('#$kGroupCode', style: t.labelLarge),
+              // giống ảnh: không có dấu #
+              trailing: Text(' $kGroupCode', style: t.labelLarge),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const _KeyValueRowEn(label: 'Project', value: kProjectTitle),
-                  const SizedBox(height: 8),
-                  const _KeyValueRowEn(label: 'Class', value: kClassName),
-                  const SizedBox(height: 12),
-                  Text('Members',
-                      style:
-                          t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 8),
-                  ...kMembers.map((m) => _MemberTileEn(member: m)),
+                children: const [
+                  _KeyValueRowEn(label: 'Project', value: kProjectTitle),
+                  SizedBox(height: 8),
+                  _KeyValueRowEn(label: 'Class', value: kClassName),
+                  SizedBox(height: 12),
                 ],
               ),
             ),
+
+            // Members list
+            Padding(
+              padding: const EdgeInsets.only(top: 4, bottom: 10),
+              child: Text('Members',
+                  style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+            ),
+            ...kMembers.map((m) => _MemberTileEn(member: m)),
 
             const SizedBox(height: 14),
 
@@ -132,26 +136,30 @@ class _ProfilePageEnState extends State<ProfilePageEn> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Language',
-                      style: t.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: cs.onSurface.withOpacity(.9),
-                      )),
+                  Text(
+                    'Language',
+                    style: t.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: cs.onSurface.withOpacity(.9),
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
+                      // Vietnamese = outlined
                       Expanded(
                         child: _LangButtonEn(
                           label: 'Vietnamese',
-                          filled: false, // outlined
+                          filled: false,
                           onTap: () => _switchToVi(context),
                         ),
                       ),
                       const SizedBox(width: 10),
+                      // English = filled (cam)
                       Expanded(
                         child: _LangButtonEn(
                           label: 'English',
-                          filled: true, // filled (current)
+                          filled: true,
                           onTap: () => _switchToEn(context),
                         ),
                       ),
@@ -160,12 +168,14 @@ class _ProfilePageEnState extends State<ProfilePageEn> {
                   const SizedBox(height: 16),
                   SizedBox(
                     height: 46,
-                    child: FilledButton.tonal(
+                    child: FilledButton(
+                      // nút cam đặc, chữ & icon trắng
                       style: FilledButton.styleFrom(
-                        backgroundColor: cs.errorContainer,
-                        foregroundColor: cs.onErrorContainer,
+                        backgroundColor: cs.primary,
+                        foregroundColor: cs.onPrimary,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                       onPressed: () => _logout(context),
                       child: Row(
@@ -173,8 +183,10 @@ class _ProfilePageEnState extends State<ProfilePageEn> {
                         children: const [
                           Icon(Icons.logout_rounded, size: 18),
                           SizedBox(width: 8),
-                          Text('Log out',
-                              style: TextStyle(fontWeight: FontWeight.w800)),
+                          Text(
+                            'Log out',
+                            style: TextStyle(fontWeight: FontWeight.w800),
+                          ),
                         ],
                       ),
                     ),
@@ -186,7 +198,7 @@ class _ProfilePageEnState extends State<ProfilePageEn> {
             const SizedBox(height: 12),
             Center(
               child: Text(
-                'v1.0.0 • Movie Ticket Booking UI',
+                'v1.0.0 • Phenikaa Cinemas',
                 style: t.bodySmall?.copyWith(color: cs.onSurfaceVariant),
               ),
             ),
@@ -234,9 +246,14 @@ class _HeroCardEn extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Movie Booking',
-                    style: t.titleMedium?.copyWith(
-                        color: cs.onPrimary, fontWeight: FontWeight.w800)),
+                // giữ "Movie Booking" như ảnh
+                Text(
+                  'Movie Booking',
+                  style: t.titleMedium?.copyWith(
+                    color: cs.onPrimary,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
                 const SizedBox(height: 2),
                 Text(
                   'Group $kGroupCode • $kClassName',
@@ -308,6 +325,7 @@ class _MemberTileEn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final t = Theme.of(context).textTheme;
     final initials = _initialsFromName(member.name);
 
     return Container(
@@ -323,14 +341,34 @@ class _MemberTileEn extends StatelessWidget {
           CircleAvatar(
             radius: 16,
             backgroundColor: cs.primary.withOpacity(.12),
-            child: Text(initials,
-                style:
-                    TextStyle(color: cs.primary, fontWeight: FontWeight.w800)),
+            child: Text(
+              initials,
+              style: TextStyle(color: cs.primary, fontWeight: FontWeight.w800),
+            ),
           ),
           const SizedBox(width: 10),
+          // Name (trên) + Student ID (dưới)
           Expanded(
-            child: Text('Student ID: ${member.mssv} — ${member.name}',
-                overflow: TextOverflow.ellipsis),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  member.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: t.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Student ID: ${member.mssv}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: t.bodyMedium?.copyWith(
+                    color: cs.onSurface.withOpacity(.75),
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(width: 8),
           Container(
@@ -343,10 +381,11 @@ class _MemberTileEn extends StatelessWidget {
             child: Text(
               _roleEn(member.roleVi),
               style: TextStyle(
-                  color: cs.primary,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: .2),
+                color: cs.primary,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: .2,
+              ),
             ),
           ),
         ],
@@ -389,9 +428,10 @@ class _SectionCardEn extends StatelessWidget {
                 _LeadingIconEn(icon: icon),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(title,
-                      style:
-                          t.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                  child: Text(
+                    title,
+                    style: t.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                  ),
                 ),
                 if (trailing != null) trailing!,
               ],
@@ -449,8 +489,9 @@ class _LangButtonEn extends StatelessWidget {
           style: FilledButton.styleFrom(
             backgroundColor: cs.primary,
             foregroundColor: cs.onPrimary,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
           onPressed: onTap,
           child: child,
@@ -464,8 +505,9 @@ class _LangButtonEn extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           foregroundColor: cs.primary,
           side: BorderSide(color: cs.primary.withOpacity(.55)),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         onPressed: onTap,
         child: child,
