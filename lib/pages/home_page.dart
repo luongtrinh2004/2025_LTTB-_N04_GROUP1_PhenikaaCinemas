@@ -29,6 +29,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static const _orange = Color(0xFFFF7A00);
+  static const Map<String, String> _vn2en = {
+    'Tình cảm': 'Romance',
+    'Hài': 'Comedy',
+    'Kinh dị': 'Horror',
+    'Tâm lý': 'Drama',
+    'Hành động': 'Action',
+    'Hoạt hình': 'Animation',
+  };
 
   final List<Map<String, dynamic>> movies = const [
     {
@@ -218,7 +226,11 @@ class _HomePageState extends State<HomePage> {
         ? movies
         : movies.where((m) {
             final gs = (m['genres'] as List).cast<String>();
-            return gs.contains(_selectedCategory);
+            // chuyển nhãn VN -> key EN để so khớp với dữ liệu
+            final key = _vn2en[_selectedCategory] ?? _selectedCategory!;
+            // so sánh không phân biệt hoa thường + trim an toàn
+            final norm = gs.map((e) => e.toLowerCase().trim()).toList();
+            return norm.contains(key.toLowerCase().trim());
           }).toList();
 
     return Scaffold(
