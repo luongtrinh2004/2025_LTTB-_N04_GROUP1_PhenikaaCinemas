@@ -163,7 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               children: const [
                                 Icon(Icons.logout_rounded, size: 18),
                                 SizedBox(width: 8),
-                                Text('Log out',
+                                Text('Đăng Xuất',
                                     style:
                                         TextStyle(fontWeight: FontWeight.w800)),
                               ],

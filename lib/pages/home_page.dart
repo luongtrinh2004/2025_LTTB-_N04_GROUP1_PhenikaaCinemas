@@ -29,6 +29,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static const _orange = Color(0xFFFF7A00);
+
+  // VN -> EN cho so khớp dữ liệu
   static const Map<String, String> _vn2en = {
     'Tình cảm': 'Romance',
     'Hài': 'Comedy',
@@ -36,6 +38,16 @@ class _HomePageState extends State<HomePage> {
     'Tâm lý': 'Drama',
     'Hành động': 'Action',
     'Hoạt hình': 'Animation',
+  };
+
+  // EN -> VN hiển thị chip (tự suy ra từ _vn2en)
+  static const Map<String, String> _en2vn = {
+    'Romance': 'Tình cảm',
+    'Comedy': 'Hài',
+    'Horror': 'Kinh dị',
+    'Drama': 'Tâm lý',
+    'Action': 'Hành động',
+    'Animation': 'Hoạt hình',
   };
 
   final List<Map<String, dynamic>> movies = const [
@@ -212,26 +224,42 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // ====== PHẦN CHỈNH LỌC: dynamic categories + normalize so khớp ======
+
+  // Lấy danh sách thể loại từ dữ liệu (EN) rồi hiển thị theo VN nếu có map
+  List<String> _categoriesFromMoviesVN() {
+    final set = <String>{};
+    for (final m in movies) {
+      final gs = (m['genres'] as List).cast<String>();
+      for (final g in gs) {
+        final en = g.trim();
+        final vn = _en2vn[en] ?? en; // nếu chưa map thì giữ nguyên
+        set.add(vn);
+      }
+    }
+    final list = set.toList()..sort();
+    return list;
+  }
+
+  bool _movieMatchesCategoryVN(Map<String, dynamic> m, String selectedVN) {
+    // Chuyển nhãn VN thành EN để so khớp genres dữ liệu
+    final wantedEN = (_vn2en[selectedVN] ?? selectedVN).toLowerCase().trim();
+    final gs = (m['genres'] as List).cast<String>();
+    final normalized = gs.map((e) => e.toLowerCase().trim());
+    return normalized.contains(wantedEN);
+  }
+
   @override
   Widget build(BuildContext context) {
-    const categories = [
-      'Tình cảm',
-      'Hài',
-      'Kinh dị',
-      'Tâm lý',
-      'Hành động',
-      'Hoạt hình',
-    ];
+    // (1) CHIP hiển thị động từ dữ liệu để không lệch tên thể loại
+    final categories = _categoriesFromMoviesVN();
+
+    // (2) Lọc an toàn: VN -> EN + lowercase + trim
     final filteredMovies = _selectedCategory == null
         ? movies
-        : movies.where((m) {
-            final gs = (m['genres'] as List).cast<String>();
-            // chuyển nhãn VN -> key EN để so khớp với dữ liệu
-            final key = _vn2en[_selectedCategory] ?? _selectedCategory!;
-            // so sánh không phân biệt hoa thường + trim an toàn
-            final norm = gs.map((e) => e.toLowerCase().trim()).toList();
-            return norm.contains(key.toLowerCase().trim());
-          }).toList();
+        : movies
+            .where((m) => _movieMatchesCategoryVN(m, _selectedCategory!))
+            .toList();
 
     return Scaffold(
       appBar: const AppHeader(),

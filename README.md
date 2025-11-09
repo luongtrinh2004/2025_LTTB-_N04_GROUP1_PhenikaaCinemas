@@ -1,88 +1,69 @@
-# Flutter Cinema Booking UI
+# 🎬 PhenikaaCinemas – Ứng dụng đặt vé xem phim
 
-Welcome to the Flutter Cinema Booking UI project! This application is designed to provide an engaging and user-friendly cinema ticket booking experience.
+> Prototype ứng dụng di động mô phỏng quy trình **đặt vé xem phim trực tuyến** được phát triển bằng **Flutter** – phục vụ đồ án môn _Lập trình cho thiết bị di động (N04)_, Trường Đại học Phenikaa.
 
-## Table of Contents
+---
 
-- [Flutter Cinema Booking UI](#flutter-cinema-booking-ui)
-  - [Table of Contents](#table-of-contents)
-  - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Running the Application](#running-the-application)
-  - [Features](#features)
-  - [Screenshots](#screenshots)
-  - [Contribution](#contribution)
-  - [License](#license)
-  - [Contact](#contact)
+## 🧩 Giới thiệu
 
-## Getting Started
+Trong thời đại số, việc đặt vé xem phim trực tuyến trở thành nhu cầu phổ biến, giúp người xem **tiết kiệm thời gian** và **chủ động chọn chỗ ngồi**.  
+Nhóm sinh viên Phenikaa đã phát triển **PhenikaaCinemas** – một ứng dụng Flutter mô phỏng quy trình đặt vé xem phim, tập trung vào **giao diện người dùng (UI)** và **trải nghiệm (UX)**.
 
-This project is a starting point for a Flutter application focused on creating a cinema ticket booking interface.
+Dự án hướng đến **thiết kế nguyên mẫu (prototype)**, chưa kết nối cơ sở dữ liệu hoặc API thật, nhưng có cấu trúc rõ ràng để mở rộng thành sản phẩm hoàn chỉnh trong tương lai.
 
-### Prerequisites
+---
 
-- Flutter SDK: [Install Flutter](https://flutter.dev/docs/get-started/install)
-- Dart SDK: Included with Flutter
-- IDE with Flutter support (e.g., Android Studio, IntelliJ, VS Code)
+## 🧠 Mục tiêu
 
-1. Clone the repository:
+- Xây dựng ứng dụng Flutter mô phỏng **toàn bộ quy trình đặt vé xem phim**.
+- Thiết kế UI trực quan, hiện đại, hỗ trợ **song ngữ Việt – Anh**.
+- Tổ chức mã nguồn khoa học theo mô hình module, dễ bảo trì và mở rộng.
+- Rèn luyện kỹ năng làm việc nhóm, quản lý dự án và tư duy thiết kế phần mềm.
 
-    ```bash
-    git clone https://github.com/IlhamGhaza/flutter_cinema_booking_ui.git
-    ```
+---
 
-2. Navigate to the project directory:
+## ⚙️ Công nghệ sử dụng
 
-    ```bash
-    cd flutter_cinema_booking_ui
-    ```
+| Thành phần        | Công nghệ                 |
+| ----------------- | ------------------------- |
+| Framework         | Flutter (Material Design) |
+| Ngôn ngữ          | Dart                      |
+| IDE khuyến nghị   | VS Code / Android Studio  |
+| Thư viện phụ trợ  | `cupertino_icons`, `intl` |
+| Ảnh và tài nguyên | Thư mục `assets/img/`     |
 
-3. Get the dependencies:
+---
 
-    ```bash
-    flutter pub get
-    ```
+## 🧭 Cấu trúc thư mục
 
-### Running the Application
-
-1. Connect a device or start an emulator.
-2. Run the application:
-
-```markdown
-    flutter run
+```bash
+lib/
+├── core/
+│   └── colors.dart           # Màu sắc thương hiệu, theme
+│
+├── widgets/
+│   ├── app_shell.dart        # Khung điều hướng chính (VN)
+│   ├── app_header.dart       # Thanh tiêu đề chung
+│
+├── pages/
+│   ├── home_page.dart
+│   ├── hot_movies_page.dart
+│   ├── all_movies_page.dart
+│   ├── booking_page.dart
+│   ├── tickets_page.dart
+│   ├── profile_page.dart
+│   ├── login_page.dart
+│   │
+│   ├── english/              # Phiên bản giao diện tiếng Anh
+│   │   └── app_shell_en.dart
+│   │
+│   └── movies_detail_page/   # Trang chi tiết phim riêng lẻ
+│       ├── avatar3_detail_page.dart
+│       ├── shin_detail_page.dart
+│       ├── roboco_detail_page.dart
+│       ├── van_may_detail_page.dart
+│       └── ...
+│
+└── utils/
+    └── utils.dart            # Hàm tiện ích định dạng, xử lý chuỗi
 ```
-
-## Features
-
-- Display of currently showing movies
-- Interactive cinema seat selection
-- Easy ticket booking process
-- Attractive and responsive user interface
-
-## Screenshots
-
-| Feature                | Screenshot                                      |
-|------------------------|-------------------------------------------------|
-| Signup                 | <img src="assets/ss/signup.png" width="200">               |
-| Login                  | <img src="assets/ss/login.png" width="200">                 |
-| Home                   | <img src="assets/ss/home.png" width="200">                   |
-| Discover               | <img src="assets/ss/discover.png" width="200">           |
-| Category               | <img src="assets/ss/category.png" width="200">           |
-| Category Movie         | <img src="assets/ss/cateMovie.png" width="200">|
-| Movie Details         | <img src="assets/ss/movieDetail.png" width="200">   |
-| Seat Selection         | <img src="assets/ss/seat.png" width="200">|
-| Account Page           | <img src="assets/ss/account.png" width="200">   |
-
-## Contribution
-
-We greatly appreciate your contributions! If you would like to contribute to this project, please create a pull request or open an issue for discussion.
-
-## License
-
-This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International Public License - see the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-If you have any questions or suggestions, feel free to contact us at [email](mailto:cb7ezeur@selenakuyang.anonaddy.com).
-
-Thank you for using Flutter Cinema Booking UI!
