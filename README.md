@@ -5,10 +5,10 @@
 
 ## Thành viên nhóm
 
-| MSSV     | Họ tên           | Vai trò                          | Tỉ lệ |
-| -------- | ---------------- | -------------------------------- | ----- |
-| 22010064 | Trịnh Phúc Lương | Trưởng nhóm, lập trình chính     | 60%   |
-| 22010033 | Đặng Thanh Huyền | Thiết kế giao diện, viết báo cáo | 40%   |
+| MSSV     | Họ tên           | Vai trò                          |
+| -------- | ---------------- | -------------------------------- |
+| 22010064 | Trịnh Phúc Lương | Trưởng nhóm, lập trình chính     |
+| 22010033 | Đặng Thanh Huyền | Thiết kế giao diện, viết báo cáo |
 
 ## Thông tin lớp học
 
