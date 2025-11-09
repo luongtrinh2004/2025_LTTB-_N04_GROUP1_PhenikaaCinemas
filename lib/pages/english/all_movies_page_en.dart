@@ -1,4 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cinema_booking_ui/widgets/app_header.dart';
+
+// Điều hướng tab "Home" (EN)
+import 'package:flutter_cinema_booking_ui/pages/english/home_page_en.dart';
+// Nếu bạn đã có các trang EN cho Hot/Tickets/Profile, import vào đây và thay
+// SnackBar ở _onBottomTabTap tương ứng:
+// import 'package:flutter_cinema_booking_ui/pages/english/hot_movies_page_en.dart';
+// import 'package:flutter_cinema_booking_ui/pages/english/tickets_page_en.dart';
+// import 'package:flutter_cinema_booking_ui/pages/english/profile_page_en.dart';
 
 class AllMoviesPageEn extends StatefulWidget {
   final List<Map<String, dynamic>> allMovies;
@@ -17,16 +26,10 @@ class AllMoviesPageEn extends StatefulWidget {
 }
 
 class _AllMoviesPageEnState extends State<AllMoviesPageEn> {
-  static const categories = [
-    'Romance',
-    'Comedy',
-    'Horror',
-    'Drama',
-    'Action',
-    'Animation',
-  ];
-
   String? _category;
+
+  // Tab index: 0 = Home, 1 = Hot, 2 = Tickets, 3 = Info
+  int _currentTabIndex = 1; // hợp ngữ cảnh phim (giống “Hot/Movies”)
 
   @override
   void initState() {
@@ -34,17 +37,81 @@ class _AllMoviesPageEnState extends State<AllMoviesPageEn> {
     _category = widget.initialCategory;
   }
 
+  // ===== Categories (EN) sinh động từ dữ liệu =====
+  List<String> _categoriesFromMovies() {
+    final set = <String>{};
+    for (final m in widget.allMovies) {
+      final gs = (m['genres'] as List).cast<String>();
+      for (final g in gs) {
+        set.add(g.trim());
+      }
+    }
+    final list = set.toList()..sort();
+    return list;
+  }
+
+  bool _movieHasGenre(Map<String, dynamic> m, String selected) {
+    final wanted = selected.toLowerCase().trim();
+    final gs = (m['genres'] as List).cast<String>();
+    final normalized = gs.map((e) => e.toLowerCase().trim());
+    return normalized.contains(wanted);
+  }
+
+  void _onBottomTabTap(int index) {
+    if (index == _currentTabIndex) return;
+    setState(() => _currentTabIndex = index);
+
+    switch (index) {
+      case 0: // Home
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const HomePageEn()),
+          (route) => false,
+        );
+        break;
+      case 1: // Hot
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Hot: Coming soon')),
+        );
+        // Khi có trang: thay bằng điều hướng
+        // Navigator.of(context).pushAndRemoveUntil(
+        //   MaterialPageRoute(builder: (_) => const HotMoviesPageEn()),
+        //   (route) => false,
+        // );
+        break;
+      case 2: // Tickets
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Tickets: Coming soon')),
+        );
+        // Navigator.of(context).pushAndRemoveUntil(
+        //   MaterialPageRoute(builder: (_) => const TicketsPageEn()),
+        //   (route) => false,
+        // );
+        break;
+      case 3: // Info/Profile
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Info: Coming soon')),
+        );
+        // Navigator.of(context).pushAndRemoveUntil(
+        //   MaterialPageRoute(builder: (_) => const ProfilePageEn()),
+        //   (route) => false,
+        // );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final categories = _categoriesFromMovies();
+
     final filtered = _category == null
         ? widget.allMovies
-        : widget.allMovies.where((m) {
-            final gs = (m['genres'] as List).cast<String>();
-            return gs.contains(_category);
-          }).toList();
+        : widget.allMovies.where((m) => _movieHasGenre(m, _category!)).toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('All Movies')),
+      // ===== Header trên cùng =====
+      appBar: const AppHeader(),
+
+      // ===== Nội dung =====
       body: Column(
         children: [
           const SizedBox(height: 12),
@@ -130,6 +197,34 @@ class _AllMoviesPageEnState extends State<AllMoviesPageEn> {
                   ),
           ),
         ],
+      ),
+
+      // ===== App shell (bottom nav) dưới cùng =====
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: BottomNavigationBar(
+          currentIndex: _currentTabIndex,
+          type: BottomNavigationBarType.fixed,
+          onTap: _onBottomTabTap,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.local_fire_department),
+              label: 'Hot',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.confirmation_number),
+              label: 'Tickets',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Info',
+            ),
+          ],
+        ),
       ),
     );
   }
